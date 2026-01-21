@@ -12,7 +12,7 @@ title: Erkan Ağaslan
        border-radius: 12px;
        object-fit: cover;
        margin-left: 25px;
-       margin-top: 10px;
+       margin-top: -35px;
      ">
 
 # Dr. Erkan Ağaslan
