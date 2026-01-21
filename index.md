@@ -12,13 +12,15 @@ title: Erkan Ağaslan
        border-radius: 12px;
        object-fit: cover;
        margin-left: 25px;
-       margin-top: -18px;
+       margin-top: -12px;
      ">
 
 # Dr. Erkan Ağaslan
 
 Associate Professor of Econometrics  
 Kütahya Dumlupınar University
+
+[🇹🇷 Türkçe](./tr/)
 
 ## Research Interests
 - Time Series Analysis
@@ -27,9 +29,8 @@ Kütahya Dumlupınar University
 - Macroeconometrics
 
 ## Contact
-
 - **Email:** [erkan.agaslan@dpu.edu.tr](mailto:erkan.agaslan@dpu.edu.tr)
 - **ORCID:** [0000-0001-8118-7222](https://orcid.org/0000-0001-8118-7222)
-- **YouTube:** [Erkan Ağaslan - YouTube Channel](https://www.youtube.com/erkanagaslan)
-- **X (Twitter):** [@erkanagaslan](https://x.com/erkanagaslan)
+- **YouTube:** [Erkan Ağaslan](https://www.youtube.com/erkanagaslan)
+- **X:** [@erkanagaslan](https://x.com/erkanagaslan)
 - **Instagram:** [@erkanagaslan](https://instagram.com/erkanagaslan)
