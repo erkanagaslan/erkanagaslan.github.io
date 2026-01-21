@@ -3,7 +3,7 @@ layout: default
 title: Erkan Ağaslan
 ---
 
-<img src="/assets/img/profile.jpg"
+<img src="/assets/img/profile.jpg](https://raw.githubusercontent.com/erkanagaslan/assets-images-/main/profile.jpg"
      alt="Dr. Erkan Ağaslan"
      width="150"
      height="150"
