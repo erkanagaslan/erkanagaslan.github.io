@@ -52,3 +52,8 @@ Kütahya Dumlupınar University
 - **YouTube:** [Erkan Ağaslan](https://www.youtube.com/erkanagaslan)
 - **X:** [@erkanagaslan](https://x.com/erkanagaslan)
 - **Instagram:** [@erkanagaslan](https://instagram.com/erkanagaslan)
+
+/* Hide site title (erkanagaslan) on top */
+.site-title {
+  display: none;
+}
