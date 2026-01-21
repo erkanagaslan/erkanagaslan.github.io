@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Erkan Ağaslan
+title: Assoc.Erkan Ağaslan
 ---
 
 # Dr. Erkan Ağaslan
@@ -15,6 +15,7 @@ Kütahya Dumlupınar University
 - Macroeconometrics
 
 ## Contact
-- Email: erkanagaslan@dpu.edu.tr
-- Google Scholar
-- ORCID
+
+- **Email:** [erkan.agaslan@dpu.edu.tr](mailto:erkan.agaslan@dpu.edu.tr)
+- **ORCID:** [0000-0001-8118-7222](https://orcid.org/0000-0001-8118-7222)
+- **YouTube:** [Dr. Erkan Ağaslan – YouTube Kanalı](https://www.youtube.com/@DrErkanAgaslan)
