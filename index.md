@@ -3,18 +3,37 @@ layout: default
 title: Erkan Ağaslan
 ---
 
-<img src="https://raw.githubusercontent.com/erkanagaslan/assets-images-/main/profile.jpg"
-     alt="Dr. Erkan Ağaslan"
-     width="180"
-     height="180"
-     style="
-       float: right;
-       border-radius: 12px;
-       object-fit: cover;
-       margin-left: 25px;
-       margin-top: -12px;
-     ">
+<div style="
+     position: relative;
+     float: right;
+     margin-left: 25px;
+     margin-top: -12px;
+">
+  <img src="https://raw.githubusercontent.com/erkanagaslan/assets-images-/main/profile.jpg"
+       alt="Dr. Erkan Ağaslan"
+       width="180"
+       height="180"
+       style="
+         border-radius: 12px;
+         object-fit: cover;
+         display: block;
+       ">
 
+  <!-- Language switch -->
+  <div style="
+       position: absolute;
+       top: 8px;
+       right: 10px;
+       background: rgba(255,255,255,0.85);
+       padding: 4px 8px;
+       border-radius: 6px;
+       font-size: 13px;
+       box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  ">
+    <a href="/tr/" style="text-decoration:none;">🇹🇷 TR</a> |
+    <a href="/" style="text-decoration:none;">🇬🇧 EN</a>
+  </div>
+</div>
 # Dr. Erkan Ağaslan
 
 Associate Professor of Econometrics  
