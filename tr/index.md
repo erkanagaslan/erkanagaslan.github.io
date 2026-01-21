@@ -17,19 +17,19 @@ title: Erkan Ağaslan
 
 # Dr. Erkan Ağaslan
 
-Ekonometri Doçenti  
-Kütahya Dumlupınar Üniversitesi
+Associate Professor of Econometrics  
+Kütahya Dumlupınar University
 
-[🇬🇧 English](../)
+[🇹🇷 Türkçe](./tr/)
 
-## Araştırma Alanları
-- Zaman Serileri Analizi
-- Finansal Ekonometri
-- Panel Veri Ekonometri
-- Makroekonometri
+## Research Interests
+- Time Series Analysis
+- Financial Econometrics
+- Panel Data Econometrics
+- Macroeconometrics
 
-## İletişim
-- **E-posta:** [erkan.agaslan@dpu.edu.tr](mailto:erkan.agaslan@dpu.edu.tr)
+## Contact
+- **Email:** [erkan.agaslan@dpu.edu.tr](mailto:erkan.agaslan@dpu.edu.tr)
 - **ORCID:** [0000-0001-8118-7222](https://orcid.org/0000-0001-8118-7222)
 - **YouTube:** [Erkan Ağaslan](https://www.youtube.com/erkanagaslan)
 - **X:** [@erkanagaslan](https://x.com/erkanagaslan)
