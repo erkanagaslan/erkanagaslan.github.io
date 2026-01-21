@@ -3,10 +3,17 @@ layout: default
 title: Erkan Ağaslan
 ---
 
-<img src="https://raw.githubusercontent.com/erkanagaslan/assets-images-/main/profile.jpg"
+<img src="/assets/img/profile.jpg"
      alt="Dr. Erkan Ağaslan"
      width="150"
-     style="float:right; border-radius:50%; margin-left:25px; margin-top:10px;">
+     height="150"
+     style="
+       float:right;
+       border-radius:50%;
+       object-fit:cover;
+       margin-left:25px;
+       margin-top:10px;
+     ">
 
 # Dr. Erkan Ağaslan
 
@@ -14,9 +21,9 @@ Associate Professor of Econometrics
 Kütahya Dumlupınar University
 
 ## Research Interests
-- Panel Data Econometrics
 - Time Series Analysis
 - Financial Econometrics
+- Panel Data Econometrics
 - Macroeconometrics
 
 ## Contact
