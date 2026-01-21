@@ -3,26 +3,34 @@ layout: default
 title: Erkan Ağaslan
 ---
 
+<style>
+/* Hide site title (erkanagaslan) */
+.site-title {
+  display: none !important;
+}
+</style>
+
 <div style="
-     position: relative;
-     float: right;
-     margin-left: 25px;
-     margin-top: -12px;
+  position: relative;
+  float: right;
+  margin-left: 25px;
+  margin-top: -14px;
 ">
+
   <!-- Language switch ABOVE the photo -->
   <div style="
-       position: absolute;
-       top: -28px;
-       right: 0;
-       background: rgba(255,255,255,0.95);
-       padding: 4px 10px;
-       border-radius: 6px;
-       font-size: 13px;
-       box-shadow: 0 1px 4px rgba(0,0,0,0.15);
-       white-space: nowrap;
+    position: absolute;
+    top: -30px;
+    right: 0;
+    background: rgba(255,255,255,0.95);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+    white-space: nowrap;
   ">
     <a href="/tr/" style="text-decoration:none;">🇹🇷 TR</a> |
-    <a href="/" style="text-decoration:none;">🇬🇧 EN</a>
+    <strong>🇬🇧 EN</strong>
   </div>
 
   <img src="https://raw.githubusercontent.com/erkanagaslan/assets-images-/main/profile.jpg"
@@ -35,6 +43,7 @@ title: Erkan Ağaslan
          display: block;
        ">
 </div>
+
 # Dr. Erkan Ağaslan
 
 Associate Professor of Econometrics  
@@ -52,8 +61,3 @@ Kütahya Dumlupınar University
 - **YouTube:** [Erkan Ağaslan](https://www.youtube.com/erkanagaslan)
 - **X:** [@erkanagaslan](https://x.com/erkanagaslan)
 - **Instagram:** [@erkanagaslan](https://instagram.com/erkanagaslan)
-
-/* Hide site title (erkanagaslan) on top */
-.site-title {
-  display: none;
-}
