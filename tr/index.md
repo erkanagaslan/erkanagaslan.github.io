@@ -3,17 +3,37 @@ layout: default
 title: Erkan Ağaslan
 ---
 
-<img src="https://raw.githubusercontent.com/erkanagaslan/assets-images-/main/profile.jpg"
-     alt="Dr. Erkan Ağaslan"
-     width="180"
-     height="180"
-     style="
-       float: right;
-       border-radius: 12px;
-       object-fit: cover;
-       margin-left: 25px;
-       margin-top: -12px;
-     ">
+<div style="
+     position: relative;
+     float: right;
+     margin-left: 25px;
+     margin-top: -12px;
+">
+  <div style="
+       position: absolute;
+       top: -28px;
+       right: 0;
+       background: rgba(255,255,255,0.95);
+       padding: 4px 10px;
+       border-radius: 6px;
+       font-size: 13px;
+       box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+       white-space: nowrap;
+  ">
+    <a href="/" style="text-decoration:none;">🇬🇧 EN</a> |
+    <a href="/tr/" style="text-decoration:none;">🇹🇷 TR</a>
+  </div>
+
+  <img src="https://raw.githubusercontent.com/erkanagaslan/assets-images-/main/profile.jpg"
+       alt="Dr. Erkan Ağaslan"
+       width="180"
+       height="180"
+       style="
+         border-radius: 12px;
+         object-fit: cover;
+         display: block;
+       ">
+</div>
 
 # Dr. Erkan Ağaslan
 
