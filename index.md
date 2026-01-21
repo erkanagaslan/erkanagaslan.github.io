@@ -5,11 +5,10 @@ title: Erkan Ağaslan
 
 <img src="https://raw.githubusercontent.com/erkanagaslan/assets-images-/main/profile.jpg"
      alt="Dr. Erkan Ağaslan"
-     width="160"
-     height="160"
+     width="180"
+     height="180"
      style="
        float: right;
-       border-radius: 50%;
        object-fit: cover;
        margin-left: 25px;
        margin-top: 10px;
