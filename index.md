@@ -40,8 +40,6 @@ title: Erkan Ağaslan
 Associate Professor of Econometrics  
 Kütahya Dumlupınar University
 
-[🇹🇷 Türkçe](./tr/)
-
 ## Research Interests
 - Time Series Analysis
 - Financial Econometrics
