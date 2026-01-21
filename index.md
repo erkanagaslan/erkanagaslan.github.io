@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Assoc.Erkan Ağaslan
+title: Erkan Ağaslan
 ---
 
 # Dr. Erkan Ağaslan
