@@ -9,7 +9,7 @@ title: Erkan Ağaslan
      height="180"
      style="
        float: right;
-       border-radius:8px;
+       border-radius: 12px;
        object-fit: cover;
        margin-left: 25px;
        margin-top: 10px;
