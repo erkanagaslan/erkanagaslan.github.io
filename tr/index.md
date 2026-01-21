@@ -20,8 +20,6 @@ title: Erkan Ağaslan
 Ekonometri Doçenti  
 Kütahya Dumlupınar Üniversitesi
 
-[🇬🇧 English](../)
-
 ## Araştırma Alanları
 - Zaman Serileri Analizi
 - Finansal Ekonometri
