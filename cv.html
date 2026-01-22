@@ -1,90 +1,92 @@
 <main>
   <div class="wrap">
 
-    <!-- HERO (CV üst kart) -->
-    <header class="hero" style="padding-top:10px;">
-      <div class="hero-grid">
-        <!-- Sol: başlık + hızlı erişim -->
-        <div class="hero-card">
-          <div class="inner">
-            <div class="kicker">
-              <span class="pill">Akademik CV</span>
-              <span>Öğrenim • Yayınlar • Projeler</span>
-            </div>
-
-            <h1>Doç. Dr. Erkan Ağaslan</h1>
-
-            <p class="subtitle" style="max-width:70ch;">
-              Bilim Dalı: Ekonometri • e-posta:
-              <a href="mailto:erkan.agaslan@dpu.tr" style="text-decoration:underline;">erkan.agaslan@dpu.tr</a>
-            </p>
-
-            <div class="hero-cta">
-              <a class="btn primary" href="#ogrenim">Öğrenim</a>
-              <a class="btn" href="#yayinlar">Yayınlar</a>
-              <a class="btn" href="#projeler">Projeler</a>
-              <a class="btn" href="./index.html#iletisim">İletişim</a>
-              <a class="btn" href="assets/cv.pdf" target="_blank" rel="noopener">CV (PDF)</a>
-            </div>
-
-            <div class="mini-stats" style="grid-template-columns: repeat(4, 1fr);">
-              <div class="stat"><div class="n">Panel Veri</div><div class="t">Çalışma alanı</div></div>
-              <div class="stat"><div class="n">Zaman Serileri</div><div class="t">Çalışma alanı</div></div>
-              <div class="stat"><div class="n">Finansal Ekonometri</div><div class="t">Çalışma alanı</div></div>
-              <div class="stat"><div class="n">Makroekonometri</div><div class="t">Çalışma alanı</div></div>
-            </div>
-          </div>
+    <!-- ÜST: Başlık + kısa özet -->
+    <section class="hero-card" style="margin-top:18px;">
+      <div class="inner">
+        <div class="kicker">
+          <span class="pill">Akademik CV</span>
+          <span>Öğrenim • Yayınlar • Projeler</span>
         </div>
 
-        <!-- Sağ: hızlı bilgi kartı (profil foto istemezsen böyle kalsın) -->
-        <div class="hero-card profile">
-          <div class="profile-body">
-            <div class="card">
-              <h3>Hızlı Bilgi</h3>
-              <p>
-                Kütahya Dumlupınar Üniversitesi<br>
-                İİBF • Ekonometri Bölümü
-              </p>
-              <div class="meta">
-                <span class="chip">ORCID</span>
-                <span class="chip">YouTube</span>
-                <span class="chip">Google Scholar</span>
-              </div>
+        <h1 style="margin-top:14px;">Doç. Dr. Erkan Ağaslan</h1>
 
-              <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
-                <a class="btn" href="https://orcid.org/0000-0001-8118-7222" target="_blank" rel="noopener">ORCID</a>
-                <a class="btn" href="https://www.youtube.com/@erkanagaslan" target="_blank" rel="noopener">YouTube</a>
-                <a class="btn" href="./index.html">Ana sayfa</a>
-              </div>
+        <p class="subtitle" style="max-width:75ch;">
+          Bilim Dalı: <b>Ekonometri</b> • e-posta:
+          <a href="mailto:erkan.agaslan@dpu.tr" style="text-decoration:underline;">erkan.agaslan@dpu.tr</a>
+        </p>
+
+        <div class="hero-cta">
+          <a class="btn primary" href="#kartlar">CV Kutuları</a>
+          <a class="btn" href="./index.html#iletisim">İletişim</a>
+
+          <!-- PDF aynı sekmede açılsın istiyorsanız target="_blank" kaldırın -->
+          <a class="btn" href="assets/cv.pdf">CV (PDF)</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- KARTLAR -->
+    <section id="kartlar" style="margin-top:18px;">
+      <div class="section-head">
+        <h2>Akademik CV</h2>
+        <p>İçerikler kartlar halinde</p>
+      </div>
+
+      <div class="section-body">
+        <div class="grid">
+
+          <!-- 1) Kimlik / İletişim -->
+          <div class="card col-6">
+            <h3>Kimlik ve İletişim</h3>
+            <p style="margin-top:8px; color: var(--muted); line-height:1.7;">
+              <b style="color:var(--text);">Ad Soyad:</b> Doç. Dr. Erkan Ağaslan<br>
+              <b style="color:var(--text);">Bilim Dalı:</b> Ekonometri<br>
+              <b style="color:var(--text);">E-posta:</b> <a href="mailto:erkan.agaslan@dpu.tr">erkan.agaslan@dpu.tr</a><br>
+              <b style="color:var(--text);">Kurum:</b> Kütahya Dumlupınar Üniversitesi, İİBF, Ekonometri Bölümü
+            </p>
+
+            <div class="meta" style="margin-top:12px;">
+              <span class="chip">ORCID</span>
+              <span class="chip">YouTube</span>
+              <span class="chip">X</span>
             </div>
 
-            <div class="badges" style="margin-top:auto;">
+            <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+              <a class="btn" href="https://orcid.org/0000-0001-8118-7222" target="_blank" rel="noopener">ORCID</a>
+              <a class="btn" href="https://www.youtube.com/@erkanagaslan" target="_blank" rel="noopener">YouTube</a>
+              <a class="btn" href="https://x.com/erkanagaslan" target="_blank" rel="noopener">X</a>
+            </div>
+          </div>
+
+          <!-- 2) Çalışma alanları -->
+          <div class="card col-6">
+            <h3>Çalışma Alanları</h3>
+            <p style="margin-top:6px; color: var(--muted);">Odak başlıkları</p>
+            <div class="badges" style="margin-top:12px;">
               <span class="badge">Panel Veri</span>
               <span class="badge">Zaman Serileri</span>
               <span class="badge">Finansal Ekonometri</span>
               <span class="badge">Makroekonometri</span>
             </div>
-          </div>
-        </div>
-      </div>
-    </header>
 
-    <!-- ÖĞRENİM + GÖREVLER -->
-    <section id="ogrenim">
-      <div class="section-head">
-        <h2>Öğrenim ve Akademik Görevler</h2>
-        <p>Temel bilgiler</p>
-      </div>
-      <div class="section-body">
-        <div class="grid">
-          <div class="card col-6">
-            <h3>Öğrenim Bilgisi</h3>
+            <div class="card" style="margin-top:12px; background: rgba(255,255,255,.03);">
+              <h3 style="margin-bottom:6px;">Hızlı Bilgi</h3>
+              <p style="margin:0; color:var(--muted); line-height:1.7;">
+                CV içeriği kutular şeklinde sunulmuştur. İlgili başlığa tıklayıp aşağıdan detaylara gidebilirsiniz.
+              </p>
+            </div>
+          </div>
+
+          <!-- 3) Öğrenim -->
+          <div class="card col-6" id="ogrenim">
+            <h3>Öğrenim</h3>
             <div class="list" style="margin-top:10px;">
               <div class="item">
                 <div class="icon">🎓</div>
                 <div>
                   <h4>Doktora (2019) — Gazi Üniversitesi, SBE, Ekonometri</h4>
-                  <p class="small">Tez: Türkiye'de para ikamesi: doğrusal olmayan ekonometrik modelleme • Danışman: Prof. Dr. Alpaslan Akçoraoğlu</p>
+                  <p class="small">Tez: Türkiye'de para ikamesi... • Danışman: Prof. Dr. Alpaslan Akçoraoğlu</p>
                 </div>
               </div>
 
@@ -92,7 +94,7 @@
                 <div class="icon">🎓</div>
                 <div>
                   <h4>Yüksek Lisans (2008) — Gazi Üniversitesi, SBE, Ekonometri</h4>
-                  <p class="small">Tez: Türkiye'de cari açıkların boyutları ve sürdürülebilirliği • Danışman: Doç. Dr. Alpaslan Akçoraoğlu</p>
+                  <p class="small">Tez: Türkiye'de cari açıkların... • Danışman: Doç. Dr. Alpaslan Akçoraoğlu</p>
                 </div>
               </div>
 
@@ -100,12 +102,13 @@
                 <div class="icon">🎓</div>
                 <div>
                   <h4>Lisans (2002) — Selçuk Üniversitesi, İİBF, İktisat</h4>
-                  <p class="small"> </p>
+                  <p class="small"></p>
                 </div>
               </div>
             </div>
           </div>
 
+          <!-- 4) Akademik görevler -->
           <div class="card col-6">
             <h3>Akademik Görevler</h3>
             <div class="list" style="margin-top:10px;">
@@ -121,7 +124,7 @@
                 <div class="icon">🏛️</div>
                 <div>
                   <h4>Araştırma Görevlisi (2019)</h4>
-                  <p class="small">Kütahya Dumlupınar Üniversitesi, İİBF, Ekonetri Bölümü, Yöneylem ABD</p>
+                  <p class="small">Kütahya Dumlupınar Üniversitesi, İİBF, Ekonometri Bölümü, Yöneylem ABD</p>
                 </div>
               </div>
 
@@ -143,165 +146,119 @@
             </div>
           </div>
 
-        </div>
-      </div>
-    </section>
+          <!-- 5) Makaleler - Ulusal -->
+          <div class="card col-6" id="makaleler-ulusal">
+            <h3>Makaleler • Ulusal</h3>
+            <ol style="margin:10px 0 0; padding-left:18px; color:var(--muted); line-height:1.7;">
+              <li><b style="color:var(--text);">EKİM, KOCAMAN. BADE; AĞASLAN, ERKAN</b> (2025). ... <i>Nişantaşı Üniversitesi Sosyal Bilimler Dergisi</i>.</li>
+              <li><b style="color:var(--text);">AĞASLAN, ERKAN</b> (2025). ... <i>Uluslararası Ekonomi ve Yenilik Dergisi</i>.</li>
+              <li><b style="color:var(--text);">AĞASLAN, ERKAN</b> (2025). ... <i>Gazi İktisat ve İşletme Dergisi</i>.</li>
+              <li><b style="color:var(--text);">AĞASLAN, ERKAN</b> (2025). ... <i>Dumlupınar Üniversitesi Sosyal Bilimler Dergisi</i>.</li>
+              <li><b style="color:var(--text);">AĞASLAN, ERKAN</b> (2025). ... <i>Bulletin of Economic Theory and Analysis</i>.</li>
+            </ol>
+          </div>
 
-    <!-- YAYINLAR -->
-    <section id="yayinlar">
-      <div class="section-head">
-        <h2>Yayınlar</h2>
-        <p>Makaleler, bildiriler ve kitaplar</p>
-      </div>
-      <div class="section-body">
+          <!-- 6) Makaleler - Uluslararası -->
+          <div class="card col-6" id="makaleler-uluslararasi">
+            <h3>Makaleler • Uluslararası</h3>
+            <ol style="margin:10px 0 0; padding-left:18px; color:var(--muted); line-height:1.7;">
+              <li><b style="color:var(--text);">AĞASLAN, ERKAN</b> (2025). ... <i>Kapanaltı Dergisi</i>.</li>
+              <li><b style="color:var(--text);">AĞASLAN, ERKAN</b> (2025). ... <i>Aizanoi Academia</i>.</li>
+              <li><b style="color:var(--text);">GAYAKER, SAVAŞ; AĞASLAN, ERKAN; ...</b> (2021). ... <i>International Review of Economics & Finance</i>.</li>
+            </ol>
+          </div>
 
-        <!-- Makaleler Ulusal -->
-        <div class="card" style="margin-bottom:14px;">
-          <h3>Makaleler • Ulusal</h3>
-          <ol style="margin:10px 0 0; padding-left: 18px; color: var(--muted); line-height:1.7;">
-            <li><b style="color:var(--text);">EKİM, KOCAMAN. BADE; AĞASLAN, ERKAN</b> (2025). Hisse senedi getirilerindeki eşikli rejim değişimlerinin doğrusal olmayan analizi: SETAR modeli uygulaması. <i>Nişantaşı Üniversitesi Sosyal Bilimler Dergisi</i>, 13(), 721–734. doi:10.52122/nisantasisbd.1759397</li>
-            <li><b style="color:var(--text);">AĞASLAN, ERKAN</b> (2025). Yeni Keynesyen Teori Çerçevesinde Türkiye’de Enflasyon Dinamikleri... <i>Uluslararası Ekonomi ve Yenilik Dergisi</i>, 11. doi:10.20979/ueyd.1751527</li>
-            <li><b style="color:var(--text);">AĞASLAN, ERKAN</b> (2025). Zamanla değişen parametreli TVP-VAR... <i>Gazi İktisat ve İşletme Dergisi</i>, 11(3), 301–314. doi:10.30855/gjeb.2025.11.3.007</li>
-            <li><b style="color:var(--text);">AĞASLAN, ERKAN</b> (2025). Avrupa Birliği Ülkelerinde Ekonomik Büyüme... <i>Dumlupınar Üniversitesi Sosyal Bilimler Dergisi</i>(86), 335–349. doi:10.51290/dpusbe.1755700</li>
-            <li><b style="color:var(--text);">AĞASLAN, ERKAN</b> (2025). Financing the Current Account Deficit... <i>Bulletin of Economic Theory and Analysis</i>, 10. doi:10.25229/beta.1619017</li>
-            <li><b style="color:var(--text);">AĞASLAN, ERKAN; ALKAN, BUKET</b> (2021). Döviz Kuru Oynaklığı... <i>Ankara Hacı Bayram Veli Üniversitesi İİBF Dergisi</i>, 23(3), 1001–1016.</li>
-            <li><b style="color:var(--text);">AĞASLAN, ERKAN; GAYAKER, SAVAŞ</b> (2020). Türkiye Ekonomisindeki Emisyon Hacminin... <i>Bankacılar</i>, 31(114), 30–49.</li>
-            <li><b style="color:var(--text);">AĞASLAN, ERKAN; GAYAKER, SAVAŞ</b> (2019). Türkiye'de Para İkamesinin Belirleyicileri... <i>Ankara Hacı Bayram Veli Üniversitesi İ.İ.B.F Dergisi</i>, 21(2), 362–387.</li>
-            <li><b style="color:var(--text);">AKÇORAOĞLU, ALPASLAN; AĞASLAN, ERKAN</b> (2009). Current Account Deficits... <i>Ekonomik Yaklaşım</i>, 20(72), 1–20.</li>
-          </ol>
-        </div>
-
-        <!-- Makaleler Uluslararası -->
-        <div class="card" style="margin-bottom:14px;">
-          <h3>Makaleler • Uluslararası</h3>
-          <ol style="margin:10px 0 0; padding-left: 18px; color: var(--muted); line-height:1.7;">
-            <li><b style="color:var(--text);">AĞASLAN, ERKAN</b> (2025). Gelir, Döviz Kuru... <i>Kapanaltı Dergisi</i>(8), 1–21.</li>
-            <li><b style="color:var(--text);">AĞASLAN, ERKAN</b> (2025). BİST100 endeksi için öngörü... <i>Aizanoi Academia</i>, 3(2), 74–92.</li>
-            <li><b style="color:var(--text);">AĞASLAN, ERKAN; KOÇ, YASEMİN DENİZ</b> (2024). Türkiye'de Seçili Sürdürülebilirlik... <i>Dumlupınar Üniversitesi İİBF Dergisi</i>.</li>
-            <li><b style="color:var(--text);">AĞASLAN, ERKAN; GAYAKER, SAVAŞ; BULUT, EROL</b> (2024). Determinants of Exchange Rate Jumps in Türkiye. <i>Ege Akademik Bakış</i>.</li>
-            <li><b style="color:var(--text);">GAYAKER, SAVAŞ; AĞASLAN, ERKAN; ...</b> (2021). The Deterioration in Credibility... <i>International Review of Economics & Finance</i>, 76.</li>
-          </ol>
-        </div>
-
-        <!-- Bildiriler -->
-        <div class="grid">
-          <div class="card col-6">
-            <h3>Bildiriler • Ulusal</h3>
-            <ul style="margin:10px 0 0; padding-left: 16px; color: var(--muted); line-height:1.7;">
+          <!-- 7) Kongre/Bildiriler - Ulusal -->
+          <div class="card col-6" id="kongre-ulusal">
+            <h3>Kongre / Bildiriler • Ulusal</h3>
+            <ul style="margin:10px 0 0; padding-left:16px; color:var(--muted); line-height:1.7;">
               <li>Türkiye’de Parasal Genişleme... — (2025) 28. Finans Sempozyumu</li>
               <li>Asimetrik Volatilite... — (2025) 28. Finans Sempozyumu</li>
               <li>Makroekonomik Belirsizlik... — (2025) 5. Uluslararası Bankacılık Kongresi</li>
               <li>An Analysis of Exchange Rate Jumps... — (2024) TEA2024</li>
-              <li>Türkiye'de Dolarizasyon... — (2023) FSCONGRESS (Özet)</li>
-              <li>Türkiye’de Para İkamesinin Belirleyicileri — (2013) Symposium...</li>
-              <li>Gelişmişlik Düzeylerine Göre... — (2010) Sempozyum</li>
-              <li>Türkiye’de Cari İşlemler Açığı… — (2009) Sempozyum</li>
-              <li>Döviz Kuru ve Faiz Oranları... — (2008) Kongre</li>
-              <li>Türkiye’de Cari İşlemler... — (2007) Kongre</li>
             </ul>
           </div>
 
-          <div class="card col-6">
-            <h3>Bildiriler • Uluslararası</h3>
-            <ul style="margin:10px 0 0; padding-left: 16px; color: var(--muted); line-height:1.7;">
+          <!-- 8) Kongre/Bildiriler - Uluslararası -->
+          <div class="card col-6" id="kongre-uluslararasi">
+            <h3>Kongre / Bildiriler • Uluslararası</h3>
+            <ul style="margin:10px 0 0; padding-left:16px; color:var(--muted); line-height:1.7;">
               <li>The Relationship Between Energy Consumption... — (2024) VGISC</li>
               <li>Evolution of Current Account Determinants... — (2023) VGISC</li>
-              <li>Çeşitli Oynaklık Endekslerinin... — (2023) EMIDWORLD</li>
               <li>Calculation of Hunger and Poverty Threshold... — (2014) EBES</li>
             </ul>
           </div>
-        </div>
 
-        <!-- Kitaplar -->
-        <div class="card" style="margin-top:14px;">
-          <h3>Kitaplar</h3>
-
-          <div class="list" style="margin-top:10px;">
-            <div class="item">
-              <div class="icon">📘</div>
-              <div>
-                <h4>Kitap</h4>
-                <p class="small"><i>Ekonometri Terimleri Sözlüğü</i> (2019). Türk Dil Kurumu. ISBN: 978-975-16-3651-5</p>
+          <!-- 9) Kitaplar -->
+          <div class="card col-6" id="kitaplar">
+            <h3>Kitaplar</h3>
+            <div class="list" style="margin-top:10px;">
+              <div class="item">
+                <div class="icon">📘</div>
+                <div>
+                  <h4>Kitap</h4>
+                  <p class="small"><i>Ekonometri Terimleri Sözlüğü</i> (2019). Türk Dil Kurumu.</p>
+                </div>
               </div>
-            </div>
 
-            <div class="item">
-              <div class="icon">📗</div>
-              <div>
-                <h4>Kitapta Bölüm</h4>
-                <p class="small"><i>Ekonometride İleri Araştırmalar</i> (2024). “Türkiye'de Dolarizasyon Dinamikleri...” ISBN: 978-625-6171-79-4</p>
-                <p class="small"><i>Kütahya İİBF’nin 50. Yılına Armağan...</i> (2024). “Gelişmişlik Sınıflandırmalarında Yeni Bir Yaklaşım...” ISBN: 978-625-5971-93-7</p>
-                <p class="small"><i>İktisadi Gelişmelerin Ekonometrik Analizi</i> (2022). “Çekirdek Enflasyon...” ISBN: 978-625-8275-92-6</p>
-                <p class="small"><i>Ekonometrik Modeller 1</i> (2020). “Kayan Pencere Yöntemi...” ISBN: 9786257315364</p>
+              <div class="item">
+                <div class="icon">📗</div>
+                <div>
+                  <h4>Kitapta Bölüm</h4>
+                  <p class="small"><i>Ekonometride İleri Araştırmalar</i> (2024). “Türkiye'de Dolarizasyon Dinamikleri...”</p>
+                  <p class="small"><i>Kütahya İİBF’nin 50. Yılına Armağan...</i> (2024). “Gelişmişlik Sınıflandırmalarında...”</p>
+                </div>
               </div>
             </div>
           </div>
 
-        </div>
-
-      </div>
-    </section>
-
-    <!-- PROJELER + TEZ + EDİTÖRLÜK -->
-    <section id="projeler">
-      <div class="section-head">
-        <h2>Projeler • Tez Danışmanlığı • Editörlük</h2>
-        <p>Akademik faaliyetler</p>
-      </div>
-      <div class="section-body">
-        <div class="grid">
-          <div class="card col-6">
-            <h3>Projeler</h3>
+          <!-- 10) Projeler / Tez / Editörlük -->
+          <div class="card col-6" id="projeler">
+            <h3>Projeler • Tez • Editörlük</h3>
             <div class="list" style="margin-top:10px;">
               <div class="item">
                 <div class="icon">🧪</div>
                 <div>
-                  <h4>TÜBİTAK Eğitimleri</h4>
-                  <p class="small">RStudio ile Ekonometri ve Zaman Serilerinde Simülasyon Eğitimi — (03/09/2022–09/09/2022)</p>
-                  <p class="small">Tek ve Çok Değişkenli ARCH/GARCH... — (09/10/2021–13/11/2021)</p>
-                  <p class="small">Ekonometrik Analiz: RStudio ile... — (04/01/2021–09/01/2021)</p>
+                  <h4>Projeler</h4>
+                  <p class="small">TÜBİTAK eğitimleri ve akademik projeleriniz...</p>
                 </div>
               </div>
-            </div>
-          </div>
-
-          <div class="card col-6">
-            <h3>Lisansüstü Tez Danışmanlığı</h3>
-            <div class="list" style="margin-top:10px;">
               <div class="item">
                 <div class="icon">📝</div>
                 <div>
-                  <h4>Yüksek Lisans Tezleri</h4>
-                  <p class="small">Seçili oynaklık endekslerinin BİST 100 endeksi üzerindeki etkileri — Ecrin Şark (2024) Tez No: 897967</p>
-                  <p class="small">Döviz kuru oynaklığının cari işlemler hesabı üzerine etkisi — Ötüken Sünger (2024) Tez No: 921132</p>
+                  <h4>Lisansüstü Tez Danışmanlığı</h4>
+                  <p class="small">Ecrin Şark (2024) • Ötüken Sünger (2024)</p>
+                </div>
+              </div>
+              <div class="item">
+                <div class="icon">📚</div>
+                <div>
+                  <h4>Editörlükler</h4>
+                  <p class="small"><i>Ekonometrik Araştırmalar: Yöntem, Politika, Güncel Yaklaşımlar</i> — (2025)</p>
                 </div>
               </div>
             </div>
 
-            <div class="card" style="margin-top:12px; background: rgba(255,255,255,.03);">
-              <h3>Editörlükler</h3>
-              <p class="small" style="margin-top:8px; color:var(--muted); line-height:1.7;">
-                <i>Ekonometrik Araştırmalar: Yöntem, Politika, Güncel Yaklaşımlar</i> — Gazi Kitabevi (22.12.2025)<br>
-                <i>İktisadi Gelişmelerin Ekonometrik Analizi</i> — Editör, Gazi Kitabevi (21.12.2022)<br>
-                <i>Türkiye'nin Güncel İktisadi Sorunları</i> — Editör, Gazi Kitabevi (01.02.2019)
-              </p>
+            <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+              <a class="btn" href="./index.html">Ana sayfaya dön</a>
+              <a class="btn" href="#kartlar">⬆︎ Yukarı</a>
             </div>
           </div>
-        </div>
 
-        <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
-          <a class="btn" href="#ogrenim">⬆︎ Yukarı</a>
-          <a class="btn" href="./index.html">Ana sayfaya dön</a>
         </div>
       </div>
     </section>
 
-    <footer>
+    <footer style="padding: 26px 0 38px;">
       <div class="foot">
         <div>© <span id="year"></span> Doç. Dr. Erkan Ağaslan</div>
-        <div><a href="#ogrenim">Yukarı</a></div>
+        <div><a href="#kartlar">Yukarı</a></div>
       </div>
     </footer>
 
   </div>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
 </main>
