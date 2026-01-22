@@ -58,6 +58,6 @@ Kütahya Dumlupınar University
 ## Contact
 - **Email:** [erkan.agaslan@dpu.edu.tr](mailto:erkan.agaslan@dpu.edu.tr)
 - **ORCID:** [0000-0001-8118-7222](https://orcid.org/0000-0001-8118-7222)
-- **YouTube:** [Erkan Ağaslan](https://www.youtube.com/erkanagaslan)
+- **YouTube:** [Erkan Ağaslan](https://www.youtube.com/@erkanagaslan)
 - **X:** [@erkanagaslan](https://x.com/erkanagaslan)
 - **Instagram:** [@erkanagaslan](https://instagram.com/erkanagaslan)
