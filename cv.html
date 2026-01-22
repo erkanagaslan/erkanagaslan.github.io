@@ -1,177 +1,307 @@
-<main class="container">
+<main>
+  <div class="wrap">
 
-  <!-- Üst Özet Kart -->
-  <section class="card card--hero">
-    <div class="hero-top">
-      <div>
-        <div class="badge">Akademik CV</div>
-        <h1>Doç. Dr. Erkan Ağaslan</h1>
-        <p class="muted">Bilim Dalı: Ekonometri • e-posta: <a href="mailto:erkan.agaslan@dpu.tr">erkan.agaslan@dpu.tr</a></p>
+    <!-- HERO (CV üst kart) -->
+    <header class="hero" style="padding-top:10px;">
+      <div class="hero-grid">
+        <!-- Sol: başlık + hızlı erişim -->
+        <div class="hero-card">
+          <div class="inner">
+            <div class="kicker">
+              <span class="pill">Akademik CV</span>
+              <span>Öğrenim • Yayınlar • Projeler</span>
+            </div>
 
-        <div class="btn-row">
-          <a class="btn" href="#ogrenim">Öğrenim</a>
-          <a class="btn btn--ghost" href="#yayinlar">Yayınlar</a>
-          <a class="btn btn--ghost" href="#projeler">Projeler</a>
+            <h1>Doç. Dr. Erkan Ağaslan</h1>
+
+            <p class="subtitle" style="max-width:70ch;">
+              Bilim Dalı: Ekonometri • e-posta:
+              <a href="mailto:erkan.agaslan@dpu.tr" style="text-decoration:underline;">erkan.agaslan@dpu.tr</a>
+            </p>
+
+            <div class="hero-cta">
+              <a class="btn primary" href="#ogrenim">Öğrenim</a>
+              <a class="btn" href="#yayinlar">Yayınlar</a>
+              <a class="btn" href="#projeler">Projeler</a>
+              <a class="btn" href="./index.html#iletisim">İletişim</a>
+              <a class="btn" href="assets/cv.pdf" target="_blank" rel="noopener">CV (PDF)</a>
+            </div>
+
+            <div class="mini-stats" style="grid-template-columns: repeat(4, 1fr);">
+              <div class="stat"><div class="n">Panel Veri</div><div class="t">Çalışma alanı</div></div>
+              <div class="stat"><div class="n">Zaman Serileri</div><div class="t">Çalışma alanı</div></div>
+              <div class="stat"><div class="n">Finansal Ekonometri</div><div class="t">Çalışma alanı</div></div>
+              <div class="stat"><div class="n">Makroekonometri</div><div class="t">Çalışma alanı</div></div>
+            </div>
+          </div>
         </div>
 
-        <div class="pill-row">
-          <span class="pill">Panel Veri</span>
-          <span class="pill">Zaman Serileri</span>
-          <span class="pill">Finansal Ekonometri</span>
-          <span class="pill">Makroekonometri</span>
+        <!-- Sağ: hızlı bilgi kartı (profil foto istemezsen böyle kalsın) -->
+        <div class="hero-card profile">
+          <div class="profile-body">
+            <div class="card">
+              <h3>Hızlı Bilgi</h3>
+              <p>
+                Kütahya Dumlupınar Üniversitesi<br>
+                İİBF • Ekonometri Bölümü
+              </p>
+              <div class="meta">
+                <span class="chip">ORCID</span>
+                <span class="chip">YouTube</span>
+                <span class="chip">Google Scholar</span>
+              </div>
+
+              <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+                <a class="btn" href="https://orcid.org/0000-0001-8118-7222" target="_blank" rel="noopener">ORCID</a>
+                <a class="btn" href="https://www.youtube.com/@erkanagaslan" target="_blank" rel="noopener">YouTube</a>
+                <a class="btn" href="./index.html">Ana sayfa</a>
+              </div>
+            </div>
+
+            <div class="badges" style="margin-top:auto;">
+              <span class="badge">Panel Veri</span>
+              <span class="badge">Zaman Serileri</span>
+              <span class="badge">Finansal Ekonometri</span>
+              <span class="badge">Makroekonometri</span>
+            </div>
+          </div>
         </div>
       </div>
+    </header>
 
-      <!-- Sağ mini bilgi kartı (isteğe bağlı) -->
-      <aside class="card card--mini">
-        <h3>Hızlı Bilgi</h3>
-        <p class="muted">
-          Kütahya Dumlupınar Üniversitesi<br>
-          İİBF • Ekonometri Bölümü
-        </p>
-      </aside>
-    </div>
-  </section>
+    <!-- ÖĞRENİM + GÖREVLER -->
+    <section id="ogrenim">
+      <div class="section-head">
+        <h2>Öğrenim ve Akademik Görevler</h2>
+        <p>Temel bilgiler</p>
+      </div>
+      <div class="section-body">
+        <div class="grid">
+          <div class="card col-6">
+            <h3>Öğrenim Bilgisi</h3>
+            <div class="list" style="margin-top:10px;">
+              <div class="item">
+                <div class="icon">🎓</div>
+                <div>
+                  <h4>Doktora (2019) — Gazi Üniversitesi, SBE, Ekonometri</h4>
+                  <p class="small">Tez: Türkiye'de para ikamesi: doğrusal olmayan ekonometrik modelleme • Danışman: Prof. Dr. Alpaslan Akçoraoğlu</p>
+                </div>
+              </div>
 
-  <!-- 2 sütun kart düzeni -->
-  <section class="grid-2">
+              <div class="item">
+                <div class="icon">🎓</div>
+                <div>
+                  <h4>Yüksek Lisans (2008) — Gazi Üniversitesi, SBE, Ekonometri</h4>
+                  <p class="small">Tez: Türkiye'de cari açıkların boyutları ve sürdürülebilirliği • Danışman: Doç. Dr. Alpaslan Akçoraoğlu</p>
+                </div>
+              </div>
 
-    <!-- Öğrenim -->
-    <article id="ogrenim" class="card">
-      <h2>Öğrenim Bilgisi</h2>
-      <ul class="list">
-        <li><b>Doktora (2019)</b> — Gazi Üniversitesi, SBE, Ekonometri<br>
-          <span class="muted">Tez: Türkiye'de para ikamesi: doğrusal olmayan ekonometrik modelleme • Danışman: Prof. Dr. Alpaslan Akçoraoğlu</span>
-        </li>
-        <li><b>Yüksek Lisans (2008)</b> — Gazi Üniversitesi, SBE, Ekonometri<br>
-          <span class="muted">Tez: Türkiye'de cari açıkların boyutları ve sürdürülebilirliği • Danışman: Doç. Dr. Alpaslan Akçoraoğlu</span>
-        </li>
-        <li><b>Lisans (2002)</b> — Selçuk Üniversitesi, İİBF, İktisat</li>
-      </ul>
-    </article>
+              <div class="item">
+                <div class="icon">🎓</div>
+                <div>
+                  <h4>Lisans (2002) — Selçuk Üniversitesi, İİBF, İktisat</h4>
+                  <p class="small"> </p>
+                </div>
+              </div>
+            </div>
+          </div>
 
-    <!-- Akademik görevler -->
-    <article class="card">
-      <h2>Akademik Görevler</h2>
-      <ul class="list">
-        <li><b>Doktor Öğretim Üyesi (2022–)</b> — Kütahya Dumlupınar Üniversitesi, İİBF, Ekonometri Bölümü, Yöneylem ABD</li>
-        <li><b>Araştırma Görevlisi (2019)</b> — Kütahya Dumlupınar Üniversitesi, İİBF, Ekonetri Bölümü, Yöneylem ABD</li>
-        <li><b>Araştırma Görevlisi (2004)</b> — Gazi Üniversitesi, İİBF, Ekonometri Bölümü, Ekonometri ABD</li>
-        <li><b>Araştırma Görevlisi (2002)</b> — Kütahya Dumlupınar Üniversitesi, İİBF, İktisat Bölümü, İktisat Teorisi ABD</li>
-      </ul>
-    </article>
+          <div class="card col-6">
+            <h3>Akademik Görevler</h3>
+            <div class="list" style="margin-top:10px;">
+              <div class="item">
+                <div class="icon">🏛️</div>
+                <div>
+                  <h4>Doktor Öğretim Üyesi (2022–)</h4>
+                  <p class="small">Kütahya Dumlupınar Üniversitesi, İİBF, Ekonometri Bölümü, Yöneylem ABD</p>
+                </div>
+              </div>
 
-  </section>
+              <div class="item">
+                <div class="icon">🏛️</div>
+                <div>
+                  <h4>Araştırma Görevlisi (2019)</h4>
+                  <p class="small">Kütahya Dumlupınar Üniversitesi, İİBF, Ekonetri Bölümü, Yöneylem ABD</p>
+                </div>
+              </div>
 
-  <!-- Yayınlar: Akordeon (uzun liste için en temiz görünüm) -->
-  <section id="yayinlar" class="card">
-    <h2>Yayınlar</h2>
+              <div class="item">
+                <div class="icon">🏛️</div>
+                <div>
+                  <h4>Araştırma Görevlisi (2004)</h4>
+                  <p class="small">Gazi Üniversitesi, İİBF, Ekonometri Bölümü, Ekonometri ABD</p>
+                </div>
+              </div>
 
-    <details open class="accordion">
-      <summary><b>Makaleler • Ulusal</b></summary>
-      <ol class="pub-list">
-        <li>EKİM, KOCAMAN. BADE; AĞASLAN, ERKAN (2025). Hisse senedi getirilerindeki eşikli rejim değişimlerinin doğrusal olmayan analizi: SETAR modeli uygulaması. <i>Nişantaşı Üniversitesi Sosyal Bilimler Dergisi</i>, 13(), 721–734. doi:10.52122/nisantasisbd.1759397</li>
-        <li>AĞASLAN, ERKAN (2025). Yeni Keynesyen Teori Çerçevesinde Türkiye’de Enflasyon Dinamikleri: Dış Ticaret Dengesi, Kur ve Beklentiler Üzerine Yapısal VAR Analizi. <i>Uluslararası Ekonomi ve Yenilik Dergisi</i>, 11. doi:10.20979/ueyd.1751527</li>
-        <li>AĞASLAN, ERKAN (2025). Zamanla değişen parametreli TVP-VAR yaklaşımıyla Türkiye ekonomisinde kredi kanalının etkinliğinin analizi. <i>Gazi İktisat ve İşletme Dergisi</i>, 11(3), 301–314. doi:10.30855/gjeb.2025.11.3.007</li>
-        <li>AĞASLAN, ERKAN (2025). Avrupa Birliği Ülkelerinde Ekonomik Büyüme ve Çevresel Bozulma İlişkisi: Çevresel Kuznets Eğrisi Temelli Panel Veri Analizi. <i>Dumlupınar Üniversitesi Sosyal Bilimler Dergisi</i>(86), 335–349. doi:10.51290/dpusbe.1755700</li>
-        <li>AĞASLAN, ERKAN (2025). Financing the Current Account Deficit in the Turkish Economy: ARDL Bounds Test Approach. <i>Bulletin of Economic Theory and Analysis</i>, 10. doi:10.25229/beta.1619017</li>
-        <li>AĞASLAN, ERKAN; ALKAN, BUKET (2021). Döviz Kuru Oynaklığı ve Ekonomik Büyüme İlişkisine Yeniden Bakış. <i>Ankara Hacı Bayram Veli Üniversitesi İİBF Dergisi</i>, 23(3), 1001–1016. doi:10.26745/ahbvuibfd.1001886</li>
-        <li>AĞASLAN, ERKAN; GAYAKER, SAVAŞ (2020). Türkiye Ekonomisindeki Emisyon Hacminin Düşük ve Yüksek Frekanslı Modeller ile Öngörüsü. <i>Bankacılar</i>, 31(114), 30–49.</li>
-        <li>AĞASLAN, ERKAN; GAYAKER, SAVAŞ (2019). Türkiye'de Para İkamesinin Belirleyicileri Doğrusal Olmayan Bir Yaklaşım. <i>Ankara Hacı Bayram Veli Üniversitesi İ.İ.B.F Dergisi</i>, 21(2), 362–387.</li>
-        <li>AKÇORAOĞLU, ALPASLAN; AĞASLAN, ERKAN (2009). Current Account Deficits, Sustainability and Global Financial Crisis: Evidence from Turkey, 1987–2008. <i>Ekonomik Yaklaşım</i>, 20(72), 1–20.</li>
-      </ol>
-    </details>
+              <div class="item">
+                <div class="icon">🏛️</div>
+                <div>
+                  <h4>Araştırma Görevlisi (2002)</h4>
+                  <p class="small">Kütahya Dumlupınar Üniversitesi, İİBF, İktisat Bölümü, İktisat Teorisi ABD</p>
+                </div>
+              </div>
+            </div>
+          </div>
 
-    <details class="accordion">
-      <summary><b>Makaleler • Uluslararası</b></summary>
-      <ol class="pub-list">
-        <li>AĞASLAN, ERKAN (2025). Gelir, Döviz Kuru, Ulaşım Maliyetleri ve Enflasyon Şoklarının Türkiye Turizm Gelirlerine Etkisi: ARDL-ECM Temelli İnceleme. <i>Kapanaltı Dergisi</i>(8), 1–21. doi:10.62080/kmfed.1779482</li>
-        <li>AĞASLAN, ERKAN (2025). BİST100 endeksi için öngörü: ARIMA, GARCH, SVR ve LightGBM modellerinin ekonometrik karşılaştırması. <i>Aizanoi Academia</i>, 3(2), 74–92.</li>
-        <li>AĞASLAN, ERKAN; KOÇ, YASEMİN DENİZ (2024). Türkiye'de Seçili Sürdürülebilirlik ve Finansal Gelişmişlik Göstergeleri Arasındaki İlişkinin Bootstrap Yöntemine Dayalı Analizi. <i>Dumlupınar Üniversitesi İİBF Dergisi</i>. doi:10.58627/dpuiibf.l598480</li>
-        <li>AĞASLAN, ERKAN; GAYAKER, SAVAŞ; BULUT, EROL (2024). Determinants of Exchange Rate Jumps in Türkiye. <i>Ege Akademik Bakış (Ege Academic Review)</i>. doi:10.21121/eab.20240409</li>
-        <li>GAYAKER, SAVAŞ; AĞASLAN, ERKAN; ALKAN, BUKET; ÇİÇEK, SERKAN (2021). The Deterioration in Credibility, Destabilization of Exchange Rate and The Rise in Exchange Rate Pass-Through in Turkey. <i>International Review of Economics & Finance</i>, 76. doi:10.1016/j.iref.2021.07.004</li>
-      </ol>
-    </details>
-  </section>
+        </div>
+      </div>
+    </section>
 
-  <!-- Bildiriler -->
-  <section class="grid-2">
-    <article class="card">
-      <h2>Bildiriler • Ulusal</h2>
-      <ul class="list">
-        <li>Türkiye’de Parasal Genişleme, Belirsizlik ve Riskten Kaçınma Dinamikleri: Eşik Regresyon ve Markov Switching Yaklaşımıyla Rejimsel Analiz — (2025) 28. Finans Sempozyumu</li>
-        <li>Asimetrik Volatilite ve Bilgi Akışı Hipotezi Çerçevesinde Türkiye'de İyi-Kötü Oynaklığın GJR-GARCH ve Quantile-HAR Modelleriyle Analizi — (2025) 28. Finans Sempozyumu</li>
-        <li>Makroekonomik Belirsizlik Karşısında Finansal Piyasa Tepkilerinin Zamanla Evrimi: Türkiye Örneğinde TVP-VAR Yaklaşımı — (2025) 5. Uluslararası Bankacılık Kongresi</li>
-        <li>An Analysis of Exchange Rate Jumps in Turkey: A Two-Phase Approach… — (2024) TEA2024</li>
-        <li>Türkiye'de Dolarizasyonun Belirleyicileri: Bir Kantil Regresyon Analizi — (2023) FSCONGRESS 2023 (Özet bildiri)</li>
-        <li>Türkiye’de Para İkamesinin Belirleyicileri — (2013) 14th International Symposium on Econometrics…</li>
-        <li>Gelişmişlik Düzeylerine Göre Ülkelerin Sınıflandırılması — (2010) 11. Ekonometri ve İstatistik Sempozyumu</li>
-        <li>Türkiye’de Cari İşlemler Açığı… — (2009) 10. Ekonometri ve İstatistik Sempozyumu</li>
-        <li>Döviz Kuru ve Faiz Oranları Eşliğinde Cari İşlemler Hesabı… — (2008) 9. Ekonometri ve İstatistik Sempozyumu</li>
-        <li>Türkiye’de Cari İşlemler Hesabının Boyutu ve Sürdürülebilirliği — (2007) 8. Türkiye Ekonometri ve İstatistik Kongresi</li>
-      </ul>
-    </article>
+    <!-- YAYINLAR -->
+    <section id="yayinlar">
+      <div class="section-head">
+        <h2>Yayınlar</h2>
+        <p>Makaleler, bildiriler ve kitaplar</p>
+      </div>
+      <div class="section-body">
 
-    <article class="card">
-      <h2>Bildiriler • Uluslararası</h2>
-      <ul class="list">
-        <li>The Relationship Between Energy Consumption, CO2 Emissions, Economic Growth, And Macroeconomic Openness — (2024) 19th Prof. Vladas Gronskas… doi:10.15388/VGISC.2024.II</li>
-        <li>Evolution of Current Account Determinants Over Time — (2023) 18th Prof. Vladas Gronskas…</li>
-        <li>Çeşitli Oynaklık Endekslerinin BİST100 Endeksi Üzerindeki Etkisinin İncelenmesi — (2023) EMIDWORLD…</li>
-        <li>Calculation of Hunger and Poverty Threshold at NUTS and Regional Mapping — (2014) EBES</li>
-      </ul>
-    </article>
-  </section>
+        <!-- Makaleler Ulusal -->
+        <div class="card" style="margin-bottom:14px;">
+          <h3>Makaleler • Ulusal</h3>
+          <ol style="margin:10px 0 0; padding-left: 18px; color: var(--muted); line-height:1.7;">
+            <li><b style="color:var(--text);">EKİM, KOCAMAN. BADE; AĞASLAN, ERKAN</b> (2025). Hisse senedi getirilerindeki eşikli rejim değişimlerinin doğrusal olmayan analizi: SETAR modeli uygulaması. <i>Nişantaşı Üniversitesi Sosyal Bilimler Dergisi</i>, 13(), 721–734. doi:10.52122/nisantasisbd.1759397</li>
+            <li><b style="color:var(--text);">AĞASLAN, ERKAN</b> (2025). Yeni Keynesyen Teori Çerçevesinde Türkiye’de Enflasyon Dinamikleri... <i>Uluslararası Ekonomi ve Yenilik Dergisi</i>, 11. doi:10.20979/ueyd.1751527</li>
+            <li><b style="color:var(--text);">AĞASLAN, ERKAN</b> (2025). Zamanla değişen parametreli TVP-VAR... <i>Gazi İktisat ve İşletme Dergisi</i>, 11(3), 301–314. doi:10.30855/gjeb.2025.11.3.007</li>
+            <li><b style="color:var(--text);">AĞASLAN, ERKAN</b> (2025). Avrupa Birliği Ülkelerinde Ekonomik Büyüme... <i>Dumlupınar Üniversitesi Sosyal Bilimler Dergisi</i>(86), 335–349. doi:10.51290/dpusbe.1755700</li>
+            <li><b style="color:var(--text);">AĞASLAN, ERKAN</b> (2025). Financing the Current Account Deficit... <i>Bulletin of Economic Theory and Analysis</i>, 10. doi:10.25229/beta.1619017</li>
+            <li><b style="color:var(--text);">AĞASLAN, ERKAN; ALKAN, BUKET</b> (2021). Döviz Kuru Oynaklığı... <i>Ankara Hacı Bayram Veli Üniversitesi İİBF Dergisi</i>, 23(3), 1001–1016.</li>
+            <li><b style="color:var(--text);">AĞASLAN, ERKAN; GAYAKER, SAVAŞ</b> (2020). Türkiye Ekonomisindeki Emisyon Hacminin... <i>Bankacılar</i>, 31(114), 30–49.</li>
+            <li><b style="color:var(--text);">AĞASLAN, ERKAN; GAYAKER, SAVAŞ</b> (2019). Türkiye'de Para İkamesinin Belirleyicileri... <i>Ankara Hacı Bayram Veli Üniversitesi İ.İ.B.F Dergisi</i>, 21(2), 362–387.</li>
+            <li><b style="color:var(--text);">AKÇORAOĞLU, ALPASLAN; AĞASLAN, ERKAN</b> (2009). Current Account Deficits... <i>Ekonomik Yaklaşım</i>, 20(72), 1–20.</li>
+          </ol>
+        </div>
 
-  <!-- Kitaplar -->
-  <section class="card">
-    <h2>Kitaplar</h2>
+        <!-- Makaleler Uluslararası -->
+        <div class="card" style="margin-bottom:14px;">
+          <h3>Makaleler • Uluslararası</h3>
+          <ol style="margin:10px 0 0; padding-left: 18px; color: var(--muted); line-height:1.7;">
+            <li><b style="color:var(--text);">AĞASLAN, ERKAN</b> (2025). Gelir, Döviz Kuru... <i>Kapanaltı Dergisi</i>(8), 1–21.</li>
+            <li><b style="color:var(--text);">AĞASLAN, ERKAN</b> (2025). BİST100 endeksi için öngörü... <i>Aizanoi Academia</i>, 3(2), 74–92.</li>
+            <li><b style="color:var(--text);">AĞASLAN, ERKAN; KOÇ, YASEMİN DENİZ</b> (2024). Türkiye'de Seçili Sürdürülebilirlik... <i>Dumlupınar Üniversitesi İİBF Dergisi</i>.</li>
+            <li><b style="color:var(--text);">AĞASLAN, ERKAN; GAYAKER, SAVAŞ; BULUT, EROL</b> (2024). Determinants of Exchange Rate Jumps in Türkiye. <i>Ege Akademik Bakış</i>.</li>
+            <li><b style="color:var(--text);">GAYAKER, SAVAŞ; AĞASLAN, ERKAN; ...</b> (2021). The Deterioration in Credibility... <i>International Review of Economics & Finance</i>, 76.</li>
+          </ol>
+        </div>
 
-    <details open class="accordion">
-      <summary><b>Kitap</b></summary>
-      <ul class="list">
-        <li><i>Ekonometri Terimleri Sözlüğü</i> (2019). Türk Dil Kurumu. ISBN: 978-975-16-3651-5</li>
-      </ul>
-    </details>
+        <!-- Bildiriler -->
+        <div class="grid">
+          <div class="card col-6">
+            <h3>Bildiriler • Ulusal</h3>
+            <ul style="margin:10px 0 0; padding-left: 16px; color: var(--muted); line-height:1.7;">
+              <li>Türkiye’de Parasal Genişleme... — (2025) 28. Finans Sempozyumu</li>
+              <li>Asimetrik Volatilite... — (2025) 28. Finans Sempozyumu</li>
+              <li>Makroekonomik Belirsizlik... — (2025) 5. Uluslararası Bankacılık Kongresi</li>
+              <li>An Analysis of Exchange Rate Jumps... — (2024) TEA2024</li>
+              <li>Türkiye'de Dolarizasyon... — (2023) FSCONGRESS (Özet)</li>
+              <li>Türkiye’de Para İkamesinin Belirleyicileri — (2013) Symposium...</li>
+              <li>Gelişmişlik Düzeylerine Göre... — (2010) Sempozyum</li>
+              <li>Türkiye’de Cari İşlemler Açığı… — (2009) Sempozyum</li>
+              <li>Döviz Kuru ve Faiz Oranları... — (2008) Kongre</li>
+              <li>Türkiye’de Cari İşlemler... — (2007) Kongre</li>
+            </ul>
+          </div>
 
-    <details class="accordion">
-      <summary><b>Kitapta Bölüm</b></summary>
-      <ul class="list">
-        <li><i>Ekonometride İleri Araştırmalar</i> (2024). Bölüm: “Türkiye'de Dolarizasyon Dinamikleri: Kur Korumalı Mevduat ve Makroekonomik Faktörlerin Etkisi”. ISBN: 978-625-6171-79-4</li>
-        <li><i>Kütahya İİBF’nin 50. Yılına Armağan…</i> (2024). Bölüm: “Gelişmişlik Sınıflandırmalarında Yeni Bir Yaklaşım…”. ISBN: 978-625-5971-93-7</li>
-        <li><i>İktisadi Gelişmelerin Ekonometrik Analizi</i> (2022). Bölüm: “Çekirdek Enflasyon ve Manşet Enflasyonda Enflasyon Geçişkenliği…”. ISBN: 978-625-8275-92-6</li>
-        <li><i>Ekonometrik Modeller 1</i> (2020). Bölüm: “Türkiye Ekonomisinde Döviz Kurunda… Kayan Pencere Yöntemi…”. ISBN: 9786257315364</li>
-      </ul>
-    </details>
-  </section>
+          <div class="card col-6">
+            <h3>Bildiriler • Uluslararası</h3>
+            <ul style="margin:10px 0 0; padding-left: 16px; color: var(--muted); line-height:1.7;">
+              <li>The Relationship Between Energy Consumption... — (2024) VGISC</li>
+              <li>Evolution of Current Account Determinants... — (2023) VGISC</li>
+              <li>Çeşitli Oynaklık Endekslerinin... — (2023) EMIDWORLD</li>
+              <li>Calculation of Hunger and Poverty Threshold... — (2014) EBES</li>
+            </ul>
+          </div>
+        </div>
 
-  <!-- Projeler + Tez + Editörlük -->
-  <section class="grid-2">
-    <article id="projeler" class="card">
-      <h2>Projeler</h2>
-      <ul class="list">
-        <li>RStudio ile Ekonometri ve Zaman Serilerinde Simülasyon Eğitimi — TÜBİTAK (03/09/2022–09/09/2022)</li>
-        <li>Tek ve Çok Değişkenli ARCH/GARCH Modelleri ile Tahmin: RStudio ile Uygulama Eğitimi — TÜBİTAK (09/10/2021–13/11/2021)</li>
-        <li>Ekonometrik Analiz: RStudio ile Ekonometrik Analiz Eğitimi — TÜBİTAK (04/01/2021–09/01/2021)</li>
-      </ul>
-    </article>
+        <!-- Kitaplar -->
+        <div class="card" style="margin-top:14px;">
+          <h3>Kitaplar</h3>
 
-    <article class="card">
-      <h2>Lisansüstü Tez Danışmanlığı</h2>
-      <ul class="list">
-        <li>Seçili oynaklık endekslerinin BİST 100 endeksi üzerindeki etkileri — Ecrin Şark (2024) Tez No: 897967</li>
-        <li>Döviz kuru oynaklığının cari işlemler hesabı üzerine etkisi — Ötüken Sünger (2024) Tez No: 921132</li>
-      </ul>
+          <div class="list" style="margin-top:10px;">
+            <div class="item">
+              <div class="icon">📘</div>
+              <div>
+                <h4>Kitap</h4>
+                <p class="small"><i>Ekonometri Terimleri Sözlüğü</i> (2019). Türk Dil Kurumu. ISBN: 978-975-16-3651-5</p>
+              </div>
+            </div>
 
-      <hr class="divider">
+            <div class="item">
+              <div class="icon">📗</div>
+              <div>
+                <h4>Kitapta Bölüm</h4>
+                <p class="small"><i>Ekonometride İleri Araştırmalar</i> (2024). “Türkiye'de Dolarizasyon Dinamikleri...” ISBN: 978-625-6171-79-4</p>
+                <p class="small"><i>Kütahya İİBF’nin 50. Yılına Armağan...</i> (2024). “Gelişmişlik Sınıflandırmalarında Yeni Bir Yaklaşım...” ISBN: 978-625-5971-93-7</p>
+                <p class="small"><i>İktisadi Gelişmelerin Ekonometrik Analizi</i> (2022). “Çekirdek Enflasyon...” ISBN: 978-625-8275-92-6</p>
+                <p class="small"><i>Ekonometrik Modeller 1</i> (2020). “Kayan Pencere Yöntemi...” ISBN: 9786257315364</p>
+              </div>
+            </div>
+          </div>
 
-      <h2>Editörlükler</h2>
-      <ul class="list">
-        <li><i>Ekonometrik Araştırmalar: Yöntem, Politika, Güncel Yaklaşımlar</i> — Gazi Kitabevi (22.12.2025)</li>
-        <li><i>İktisadi Gelişmelerin Ekonometrik Analizi</i> — Editör, Gazi Kitabevi (21.12.2022)</li>
-        <li><i>Türkiye'nin Güncel İktisadi Sorunları</i> — Editör, Gazi Kitabevi (01.02.2019)</li>
-      </ul>
-    </article>
-  </section>
+        </div>
 
+      </div>
+    </section>
+
+    <!-- PROJELER + TEZ + EDİTÖRLÜK -->
+    <section id="projeler">
+      <div class="section-head">
+        <h2>Projeler • Tez Danışmanlığı • Editörlük</h2>
+        <p>Akademik faaliyetler</p>
+      </div>
+      <div class="section-body">
+        <div class="grid">
+          <div class="card col-6">
+            <h3>Projeler</h3>
+            <div class="list" style="margin-top:10px;">
+              <div class="item">
+                <div class="icon">🧪</div>
+                <div>
+                  <h4>TÜBİTAK Eğitimleri</h4>
+                  <p class="small">RStudio ile Ekonometri ve Zaman Serilerinde Simülasyon Eğitimi — (03/09/2022–09/09/2022)</p>
+                  <p class="small">Tek ve Çok Değişkenli ARCH/GARCH... — (09/10/2021–13/11/2021)</p>
+                  <p class="small">Ekonometrik Analiz: RStudio ile... — (04/01/2021–09/01/2021)</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card col-6">
+            <h3>Lisansüstü Tez Danışmanlığı</h3>
+            <div class="list" style="margin-top:10px;">
+              <div class="item">
+                <div class="icon">📝</div>
+                <div>
+                  <h4>Yüksek Lisans Tezleri</h4>
+                  <p class="small">Seçili oynaklık endekslerinin BİST 100 endeksi üzerindeki etkileri — Ecrin Şark (2024) Tez No: 897967</p>
+                  <p class="small">Döviz kuru oynaklığının cari işlemler hesabı üzerine etkisi — Ötüken Sünger (2024) Tez No: 921132</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="card" style="margin-top:12px; background: rgba(255,255,255,.03);">
+              <h3>Editörlükler</h3>
+              <p class="small" style="margin-top:8px; color:var(--muted); line-height:1.7;">
+                <i>Ekonometrik Araştırmalar: Yöntem, Politika, Güncel Yaklaşımlar</i> — Gazi Kitabevi (22.12.2025)<br>
+                <i>İktisadi Gelişmelerin Ekonometrik Analizi</i> — Editör, Gazi Kitabevi (21.12.2022)<br>
+                <i>Türkiye'nin Güncel İktisadi Sorunları</i> — Editör, Gazi Kitabevi (01.02.2019)
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+          <a class="btn" href="#ogrenim">⬆︎ Yukarı</a>
+          <a class="btn" href="./index.html">Ana sayfaya dön</a>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="foot">
+        <div>© <span id="year"></span> Doç. Dr. Erkan Ağaslan</div>
+        <div><a href="#ogrenim">Yukarı</a></div>
+      </div>
+    </footer>
+
+  </div>
 </main>
