@@ -1,4 +1,98 @@
-<main>
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Akademik CV | Doç. Dr. Erkan Ağaslan</title>
+
+  <style>
+    :root{
+      --bg:#0b1220;
+      --panel:#111827;
+      --card:rgba(255,255,255,.04);
+      --text:rgba(255,255,255,.92);
+      --muted:rgba(255,255,255,.68);
+      --border:rgba(255,255,255,.12);
+      --accent:#4cc9f0;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      background:linear-gradient(180deg,#0b1220,#070b14);
+      color:var(--text);
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial;
+    }
+
+    a{ color:inherit; text-decoration:none; }
+    a:hover{ text-decoration:underline; }
+
+    .wrap{ max-width:1200px; margin:0 auto; padding:28px 20px; }
+
+    .hero-card,.card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:22px;
+      box-shadow:0 20px 60px rgba(0,0,0,.35);
+    }
+
+    .kicker{ display:flex; gap:10px; color:var(--muted); font-size:.9rem; }
+    .pill{
+      background:rgba(76,201,240,.15);
+      color:var(--accent);
+      padding:4px 10px;
+      border-radius:999px;
+      font-weight:600;
+    }
+
+    h1,h2,h3{ margin:0 0 10px; }
+    .subtitle{ color:var(--muted); }
+
+    .btn{
+      padding:8px 14px;
+      border-radius:10px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.06);
+      font-size:.9rem;
+    }
+    .btn.primary{
+      background:var(--accent);
+      color:#02131a;
+      border-color:transparent;
+      font-weight:600;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(12,1fr);
+      gap:16px;
+    }
+    .col-6{ grid-column:span 6; }
+
+    .section-head{
+      margin:24px 0 12px;
+      padding-bottom:10px;
+      border-bottom:1px solid var(--border);
+    }
+
+    .badge{
+      background:rgba(255,255,255,.08);
+      border:1px solid var(--border);
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:.8rem;
+    }
+
+    footer{ margin-top:40px; color:var(--muted); font-size:.85rem; }
+
+    @media(max-width:900px){
+      .col-6{ grid-column:span 12; }
+    }
+  </style>
+</head>
+<body>
+  <main>
   <div class="wrap">
 
     <!-- ÜST: Başlık + kısa özet -->
