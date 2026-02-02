@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Finansal Ekonometri | Doç. Dr. Erkan Ağaslan</title>
+
+<style>
+:root{
+  --bg:#0b1220;
+  --card:rgba(255,255,255,.08);
+  --card2:rgba(255,255,255,.05);
+  --text:rgba(255,255,255,.92);
+  --muted:rgba(255,255,255,.70);
+  --border:rgba(255,255,255,.14);
+  --accent:#5eead4;
+  --radius:18px;
+  --max:1100px;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto;
+  background:linear-gradient(180deg,#070b14,#0b1220,#070b14);
+  color:var(--text);
+}
+a{color:inherit;text-decoration:none}
+.wrap{width:min(var(--max),calc(100% - 40px));margin:auto}
+header{
+  padding:30px 0 20px;
+}
+h1{
+  font-size:clamp(28px,3vw,42px);
+  margin:0 0 8px;
+}
+.subtitle{color:var(--muted);max-width:65ch}
+.section{
+  margin-top:20px;
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  background:rgba(255,255,255,.04);
+}
+.section-head{
+  padding:16px 18px;
+  border-bottom:1px solid rgba(255,255,255,.1);
+}
+.section-body{padding:18px}
+.week{
+  padding:14px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.1);
+  background:var(--card2);
+  margin-bottom:10px;
+}
+.week b{color:var(--accent)}
+.back{
+  display:inline-flex;
+  gap:8px;
+  margin-bottom:18px;
+  padding:8px 12px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.05);
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="wrap">
+    <a href="index.html" class="back">⬅ Ana Sayfa</a>
+    <h1>Finansal Ekonometri</h1>
+    <p class="subtitle">
+      Lisans Dersi • 14 Hafta • R &amp; EViews Uygulamaları  
+      <br><b>Ders Sorumlusu:</b> Doç. Dr. Erkan Ağaslan
+    </p>
+  </div>
+</header>
+
+<main>
+<div class="wrap">
+
+<div class="section">
+  <div class="section-head"><h3>Dersin Amacı</h3></div>
+  <div class="section-body">
+Finansal ekonometri, finansal verileri analiz etmek ve finans alanındaki nicel sorunları ele almak amacıyla
+istatistiksel yöntemler ile ekonomi teorisini birleştiren disiplinlerarası bir alandır.
+Bu ders kapsamında; varlık getirileri, risk yönetimi, portföy dağılımı, türev ürünlerin fiyatlandırılması
+ve piyasa davranışlarının anlaşılmasına yönelik finansal modellerin oluşturulması,
+tahmin edilmesi ve test edilmesi uygulamalı olarak ele alınmaktadır.
+ARCH/GARCH tipi volatilite modelleri, parametrik olmayan yaklaşımlar ve farklı sıklıklarda örneklenen
+finansal verilerin analizi gibi ileri teknikler dersin temel bileşenlerini oluşturmaktadır.
+Finans, ekonomi, olasılık, istatistik ve uygulamalı matematik disiplinlerini bir araya getiren
+finansal ekonometri, hem akademik araştırmalar hem de finans sektöründeki pratik uygulamalar için
+güçlü ampirik araçlar sunmaktadır.
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-head"><h3>Haftalık Ders Planı</h3></div>
+  <div class="section">
+  <div class="section-head">
+    <h3>Ders İçeriği (Detaylı)</h3>
+  </div>
+  <div class="section-body">
+
+    <div class="week">
+      <b>1. Hafta – Finansal Ekonometriye Giriş</b>
+      <ul>
+        <li>Finansal ekonometri nedir, neden gereklidir?</li>
+        <li>Finansal veri türleri (fiyat, getiri, hacim, volatilite)</li>
+        <li>Getiri hesaplama (aritmetik – log getiri)</li>
+        <li>Finansal zaman serilerinin temel özellikleri</li>
+      </ul>
+      <em>Uygulama:</em> R’de fiyat ve getiri serisi oluşturma
+    </div>
+
+    <div class="week">
+      <b>2. Hafta – Finansal Zaman Serilerinin İstatistiksel Özellikleri</b>
+      <ul>
+        <li>Stilize edilmiş olgular (volatility clustering, leptokurtosis)</li>
+        <li>Ortalama, varyans, çarpıklık, basıklık</li>
+        <li>Jarque–Bera normallik testi</li>
+      </ul>
+      <em>Uygulama:</em> Finansal getiri dağılımlarının analizi
+    </div>
+
+    <div class="week">
+      <b>3. Hafta – Durağanlık ve Birim Kök Testleri</b>
+      <ul>
+        <li>Zayıf ve güçlü durağanlık</li>
+        <li>Finansal serilerde birim kök</li>
+        <li>ADF, PP ve KPSS testleri</li>
+      </ul>
+      <em>Uygulama:</em> Hisse senedi ve döviz kuru serileri
+    </div>
+
+    <div class="week">
+      <b>4. Hafta – AR, MA ve ARMA Modelleri</b>
+      <ul>
+        <li>Finansal serilerde doğrusal modeller</li>
+        <li>ACF – PACF yorumlama</li>
+        <li>Model seçimi (AIC, BIC)</li>
+      </ul>
+      <em>Uygulama:</em> ARMA modeli tahmini
+    </div>
+
+    <div class="week">
+      <b>5. Hafta – ARIMA Modelleri ve Tahmin</b>
+      <ul>
+        <li>ARIMA(p,d,q) yapısı</li>
+        <li>Finansal serilerde fark alma</li>
+        <li>Kısa dönem tahminleme</li>
+      </ul>
+      <em>Uygulama:</em> Getiri tahmini
+    </div>
+
+    <div class="week">
+      <b>6. Hafta – Finansal Serilerde Oynaklık (Volatilite)</b>
+      <ul>
+        <li>Sabit varyans varsayımının ihlali</li>
+        <li>ARCH etkisi</li>
+        <li>ARCH-LM testi</li>
+      </ul>
+      <em>Uygulama:</em> Volatilite varlığı testi
+    </div>
+
+    <div class="week">
+      <b>7. Hafta –  VİZE SINAVI</b>
+      <ul>
+        <li>Kapsam: 1–6. haftalar</li>
+        <li>Teorik + uygulama ağırlıklı</li>
+      </ul>
+    </div>
+
+    <div class="week">
+      <b>8. Hafta – ARCH ve GARCH Modelleri</b>
+      <ul>
+        <li>ARCH(q), GARCH(1,1) modeli</li>
+        <li>Volatilite dinamikleri</li>
+        <li>Model yorumlama</li>
+      </ul>
+      <em>Uygulama:</em> Hisse senedi volatilitesi
+    </div>
+
+    <div class="week">
+      <b>9. Hafta – Asimetrik Volatilite Modelleri</b>
+      <ul>
+        <li>Leverage effect</li>
+        <li>EGARCH, TGARCH, GJR-GARCH</li>
+      </ul>
+      <em>Uygulama:</em> Negatif şokların volatiliteye etkisi
+    </div>
+
+    <div class="week">
+      <b>10. Hafta – Finansal Risk Ölçümü</b>
+      <ul>
+        <li>Risk kavramı</li>
+        <li>Value at Risk (VaR)</li>
+        <li>Expected Shortfall (ES)</li>
+      </ul>
+      <em>Uygulama:</em> GARCH tabanlı VaR hesaplama
+    </div>
+
+    <div class="week">
+      <b>11. Hafta – Doğrusal Olmayan Finansal Modeller</b>
+      <ul>
+        <li>Rejim değişimi</li>
+        <li>Eşik etkileri</li>
+        <li>Finansal kriz ve asimetri</li>
+      </ul>
+      <em>Uygulama:</em> Basit doğrusal olmayan yapıların incelenmesi
+    </div>
+
+    <div class="week">
+      <b>12. Hafta – Finansal Zaman Serilerinde Nedensellik</b>
+      <ul>
+        <li>Granger nedensellik</li>
+        <li>Finansal değişkenler arası ilişki</li>
+        <li>Getiri–volatilite etkileşimi</li>
+      </ul>
+      <em>Uygulama:</em> Hisse senedi–döviz kuru ilişkisi
+    </div>
+
+    <div class="week">
+      <b>13. Hafta – Güncel Uygulamalar</b>
+      <ul>
+        <li>Kriz dönemleri analizi</li>
+        <li>Portföy volatilitesi</li>
+        <li>Akademik makale tartışmaları</li>
+      </ul>
+      <em>Uygulama:</em> Mini proje / vaka analizi
+    </div>
+
+    <div class="week">
+      <b>14. Hafta –  FINAL SINAVI</b>
+      <ul>
+        <li>Kapsam: Tüm dönem</li>
+        <li>Teorik + uygulama + yorumlama</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+</div>
+
+</div>
+</main>
+
+</body>
+</html>
