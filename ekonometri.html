@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ekonometri | Doç. Dr. Erkan Ağaslan</title>
+
+<style>
+:root{
+  --bg:#0b1220;
+  --card:rgba(255,255,255,.08);
+  --card2:rgba(255,255,255,.05);
+  --text:rgba(255,255,255,.92);
+  --muted:rgba(255,255,255,.70);
+  --border:rgba(255,255,255,.14);
+  --accent:#5eead4;
+  --radius:18px;
+  --max:1100px;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto;
+  background:linear-gradient(180deg,#070b14,#0b1220,#070b14);
+  color:var(--text);
+}
+a{color:inherit;text-decoration:none}
+.wrap{width:min(var(--max),calc(100% - 40px));margin:auto}
+header{padding:30px 0 20px}
+h1{font-size:clamp(28px,3vw,42px);margin:0 0 8px}
+.subtitle{color:var(--muted);max-width:65ch}
+.section{
+  margin-top:20px;
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  background:rgba(255,255,255,.04);
+}
+.section-head{
+  padding:16px 18px;
+  border-bottom:1px solid rgba(255,255,255,.1);
+}
+.section-body{padding:18px}
+.week{
+  padding:14px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.1);
+  background:var(--card2);
+  margin-bottom:10px;
+}
+.week b{color:var(--accent)}
+.back{
+  display:inline-flex;
+  gap:8px;
+  margin-bottom:18px;
+  padding:8px 12px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.05);
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="wrap">
+    <a href="index.html" class="back">⬅ Ana Sayfa</a>
+    <h1>Ekonometri</h1>
+    <p class="subtitle">
+      Lisans Dersi • 14 Hafta • R &amp; EViews Uygulamaları  
+      <br><b>Ders Sorumlusu:</b> Doç. Dr. Erkan Ağaslan
+    </p>
+  </div>
+</header>
+
+<main>
+<div class="wrap">
+
+<div class="section">
+  <div class="section-head"><h3>Dersin Amacı</h3></div>
+  <div class="section-body">
+Ekonometri, iktisadi teorilerin gerçek veriler yardımıyla test edilmesini sağlayan,
+istatistiksel ve matematiksel yöntemlere dayalı bir analiz disiplinidir.
+Bu ders kapsamında; iktisadi ilişkilerin nicel olarak modellenmesi,
+parametrelerin tahmin edilmesi, model varsayımlarının test edilmesi ve
+elde edilen sonuçların iktisadi açıdan yorumlanması amaçlanmaktadır.
+Öğrencilerin doğrusal regresyon modelleri başta olmak üzere temel ekonometrik
+yaklaşımları kavraması ve bu modelleri gerçek veriler üzerinde
+R ve EViews yazılımları ile uygulayabilmesi hedeflenmektedir.
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-head"><h3>Haftalık Ders Planı</h3></div>
+  <div class="section-body">
+
+    <div class="week">
+      <b>1. Hafta – Ekonometriye Giriş</b>
+      <ul>
+        <li>Ekonometri nedir, neden gereklidir?</li>
+        <li>Ekonometrik analiz süreci</li>
+        <li>İktisadi veri türleri</li>
+        <li>Model, parametre ve hata terimi kavramları</li>
+      </ul>
+    </div>
+
+    <div class="week">
+      <b>2. Hafta – Regresyon Analizine Giriş</b>
+      <ul>
+        <li>Regresyon ve korelasyon farkı</li>
+        <li>Anakütle ve örneklem regresyonu</li>
+        <li>Nedensellik ve açıklayıcı değişkenler</li>
+        <li>Ekonomik yorumlama</li>
+      </ul>
+    </div>
+
+    <div class="week">
+      <b>3. Hafta – Basit Doğrusal Regresyon Modeli</b>
+      <ul>
+        <li>Modelin matematiksel yapısı</li>
+        <li>EKK yöntemi</li>
+        <li>Katsayı tahmini</li>
+        <li>İktisadi anlam ve yorum</li>
+      </ul>
+    </div>
+
+    <div class="week">
+      <b>4. Hafta – EKK Tahmincilerinin Özellikleri</b>
+      <ul>
+        <li>Yansızlık ve etkinlik</li>
+        <li>Varyans–kovaryans yapısı</li>
+        <li>Hata varyansının tahmini</li>
+        <li>Esneklik kavramı</li>
+      </ul>
+    </div>
+
+    <div class="week">
+      <b>5. Hafta – Aralık Tahmini ve Hipotez Testleri</b>
+      <ul>
+        <li>Güven aralıkları</li>
+        <li>Hipotez testleri</li>
+        <li>t testi</li>
+        <li>İktisadi hipotezlerin sınanması</li>
+      </ul>
+    </div>
+
+    <div class="week">
+      <b>6. Hafta – Uyumun İyiliği</b>
+      <ul>
+        <li>R² ve düzeltilmiş R²</li>
+        <li>Tahmin hataları</li>
+        <li>Model başarısının ölçülmesi</li>
+        <li>İktisadi değerlendirme</li>
+      </ul>
+    </div>
+
+    <div class="week">
+      <b>7. Hafta – VİZE SINAVI</b>
+      <ul>
+        <li>Kapsam: 1–6. haftalar</li>
+      </ul>
+    </div>
+
+    <div class="week">
+      <b>8. Hafta – Fonksiyonel Biçim ve Model Seçimi</b>
+      <ul>
+        <li>Doğrusal ve logaritmik modeller</li>
+        <li>Esneklik yorumu</li>
+        <li>Model karşılaştırmaları</li>
+        <li>Normallik varsayımı</li>
+      </ul>
+    </div>
+
+    <div class="week">
+      <b>9. Hafta – Çok Değişkenli Regresyon Modeli</b>
+      <ul>
+        <li>Çoklu regresyon yapısı</li>
+        <li>Kısmi regresyon katsayıları</li>
+        <li>Varsayımlar</li>
+        <li>İktisadi uygulamalar</li>
+      </ul>
+    </div>
+
+    <div class="week">
+      <b>10. Hafta – Çoklu Regresyonda Hipotez Testleri</b>
+      <ul>
+        <li>Bireysel parametre testleri</li>
+        <li>Genel anlamlılık</li>
+        <li>F testi</li>
+        <li>ANOVA yaklaşımı</li>
+      </ul>
+    </div>
+
+    <div class="week">
+      <b>11. Hafta – Otokorelasyon</b>
+      <ul>
+        <li>Otokorelasyonun nedenleri</li>
+        <li>Sonuçları</li>
+        <li>Tespit yöntemleri</li>
+        <li>Temel çözüm yaklaşımları</li>
+      </ul>
+    </div>
+
+    <div class="week">
+      <b>12. Hafta – Değişen Varyans</b>
+      <ul>
+        <li>Değişen varyans sorunu</li>
+        <li>Test yöntemleri</li>
+        <li>Tahminciler üzerindeki etkiler</li>
+        <li>Çözüm yolları</li>
+      </ul>
+    </div>
+
+    <div class="week">
+      <b>13. Hafta – Çoklu Doğrusal Bağlantı</b>
+      <ul>
+        <li>Çoklu doğrusal bağlantının nedenleri</li>
+        <li>Model üzerindeki etkiler</li>
+        <li>Tespit yöntemleri</li>
+        <li>İktisadi yorum sorunları</li>
+      </ul>
+    </div>
+
+    <div class="week">
+      <b>14. Hafta – FINAL SINAVI</b>
+      <ul>
+        <li>Kapsam: Tüm dönem</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+</div>
+</main>
+
+</body>
+</html>
