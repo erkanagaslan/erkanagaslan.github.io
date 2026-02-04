@@ -234,6 +234,62 @@
       margin-top: 16px;
     }
 
+    /* Dersler mini kartları */
+    .mini-courses {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 18px;
+    }
+    
+    .mini-course-card {
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 14px;
+      padding: 14px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    
+    .mini-course-card:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.18);
+      transform: translateY(-2px);
+    }
+    
+    .mini-course-card h4 {
+      margin: 0 0 6px;
+      font-size: 15px;
+      display: inline-block; /* Alt çizgi için gerekli */
+    }
+    
+    .mini-course-card:hover h4 {
+      text-decoration: underline;
+    }
+    
+    .mini-course-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    
+    .course-badges {
+      display: flex;
+      gap: 6px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+    
+    .course-badge {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--muted);
+    }
+
     .mini-stats{
       display:grid;
       grid-template-columns: repeat(3, 1fr);
@@ -352,6 +408,46 @@
       background: rgba(255,255,255,.08);
       border-color: rgba(255,255,255,.18);
     }
+    
+    /* Renkli sosyal ikonlar */
+    .social a:nth-child(1):hover { /* Email */
+      background: rgba(220, 53, 69, 0.15);
+      border-color: rgba(220, 53, 69, 0.3);
+    }
+    
+    .social a:nth-child(2):hover { /* ORCID */
+      background: rgba(166, 206, 57, 0.15);
+      border-color: rgba(166, 206, 57, 0.3);
+    }
+    
+    .social a:nth-child(3):hover { /* YouTube */
+      background: rgba(255, 0, 0, 0.15);
+      border-color: rgba(255, 0, 0, 0.3);
+    }
+    
+    .social a:nth-child(4):hover { /* X (Twitter) */
+      background: rgba(29, 161, 242, 0.15);
+      border-color: rgba(29, 161, 242, 0.3);
+    }
+    
+    /* İletişim bölümündeki ikonlar için renkler */
+    .item .icon.yt {
+      background: rgba(255, 0, 0, 0.15);
+      border-color: rgba(255, 0, 0, 0.3);
+      color: #ff0000;
+    }
+    
+    .item .icon.x {
+      background: rgba(29, 161, 242, 0.15);
+      border-color: rgba(29, 161, 242, 0.3);
+      color: #1da1f2;
+    }
+    
+    .item .icon.ig {
+      background: rgba(225, 48, 108, 0.15);
+      border-color: rgba(225, 48, 108, 0.3);
+      color: #e1306c;
+    }
 
     /* Sections */
     main{ padding: 10px 0 50px; }
@@ -399,11 +495,26 @@
       background: rgba(255,255,255,.04);
       border-radius: var(--radius2);
       padding: 14px 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
     }
-    .card h3{
+    
+    .card:hover {
+      background: rgba(255,255,255,.08);
+      border-color: rgba(255,255,255,.18);
+      transform: translateY(-2px);
+    }
+    
+    .card h3 {
       margin: 0 0 6px;
       font-size: 15.5px;
+      display: inline-block; /* Alt çizgi için gerekli */
     }
+    
+    .card:hover h3 {
+      text-decoration: underline;
+    }
+    
     .card p{
       margin: 0;
       color: var(--muted);
@@ -486,6 +597,7 @@
       .col-4{ grid-column: span 12; }
       .col-8{ grid-column: span 12; }
       .two-col{ grid-template-columns: 1fr; }
+      .mini-courses { grid-template-columns: 1fr; }
     }
 
     /* Print (CV için) */
@@ -495,16 +607,6 @@
       section, .hero-card{ box-shadow:none; border: 1px solid #ddd; }
       a{ color:#000; text-decoration: underline; }
     }
-    /* === LINK FIX (Finansal Ekonometri kartı için) === */
-a.card{
-  display:block;
-  cursor:pointer;
-  text-decoration:none;
-}
-
-a.card *{
-  pointer-events:none;
-}
   </style>
 </head>
 
@@ -568,6 +670,49 @@ a.card *{
               <a class="btn" href="#ogrenciler" data-i18n="cta_students">Öğrenciler İçin</a>
             </div>
 
+            <!-- Dersler Mini Kartları -->
+            <div class="mini-courses" aria-label="Dersler">
+              <a href="./ekonometri.html" class="mini-course-card">
+                <h4 data-i18n="course1_title">Ekonometri</h4>
+                <p data-i18n="course1_text">Uluslararası Ticaret ve Finansman Bölümü 2. Sınıf Zorunlu Dersi</p>
+                <div class="course-badges">
+                  <span class="course-badge" data-i18n="course_chip_syl">Ders planı</span>
+                  <span class="course-badge" data-i18n="course_chip_notes">Duyurular</span>
+                  <span class="course-badge" data-i18n="course_chip_hw">Ödevler</span>
+                </div>
+              </a>
+
+              <a href="./finansal-ekonometri.html" class="mini-course-card">
+                <h4 data-i18n="course2_title">Finansal Ekonometri</h4>
+                <p data-i18n="course2_text">Ekonometri Bölümü 4. Sınıf Seçmeli Dersi</p>
+                <div class="course-badges">
+                  <span class="course-badge" data-i18n="course_chip_syl">Ders planı</span>
+                  <span class="course-badge" data-i18n="course_chip_notes">Duyurular</span>
+                  <span class="course-badge" data-i18n="course_chip_hw">Ödevler</span>
+                </div>
+              </a>
+
+              <a href="#dersler" class="mini-course-card">
+                <h4 data-i18n="course3_title">Uygulamalı Zaman Serisi Analizi</h4>
+                <p data-i18n="course3_text">Ekonometri Bölümü Yüksek Lisans Dersi</p>
+                <div class="course-badges">
+                  <span class="course-badge" data-i18n="course_chip_syl">Ders planı</span>
+                  <span class="course-badge" data-i18n="course_chip_notes">Duyurular</span>
+                  <span class="course-badge" data-i18n="course_chip_hw">Ödevler</span>
+                </div>
+              </a>
+
+              <a href="#dersler" class="mini-course-card">
+                <h4 data-i18n="course4_title">Matematiksel İktisat II</h4>
+                <p data-i18n="course4_text">Ekonometri Bölümü 2. Sınıf Zorunlu Dersi</p>
+                <div class="course-badges">
+                  <span class="course-badge" data-i18n="course_chip_repo">Ders planı</span>
+                  <span class="course-badge" data-i18n="course_chip_vid">Duyurular</span>
+                  <span class="course-badge" data-i18n="course_chip_sets">Ödevler</span>
+                </div>
+              </a>
+            </div>
+
             <div class="mini-stats" aria-label="Öne çıkanlar">
               <div class="stat">
                 <div class="n" data-i18n="stat1_n">Ekonometri</div>
@@ -593,7 +738,7 @@ a.card *{
               <a href="#" id="enPill">🇬🇧 EN</a>
             </div>
 
-            <!-- FOTO: buraya kendi URL’inizi koyun -->
+            <!-- FOTO: buraya kendi URL'nizi koyun -->
             <img class="photo"
                  src="https://raw.githubusercontent.com/erkanagaslan/assets-images-/main/profile.jpg"
                  alt="Dr. Erkan Ağaslan" />
@@ -606,36 +751,38 @@ a.card *{
               <span class="badge" data-i18n="badge3">Finansal Ekonometri</span>
               <span class="badge" data-i18n="badge4">Makroekonometri</span>
             </div>
-<div class="card" style="margin-top:18px;">
-  <h3 data-i18n="yt_title">YouTube Kanalı • Uygulamalı Ekonometri & Veri Bilimi</h3>
+            
+            <div class="card" style="margin-top:18px;">
+              <h3 data-i18n="yt_title">YouTube Kanalı • Uygulamalı Ekonometri & Veri Bilimi</h3>
 
-  <p style="margin-top:8px; line-height:1.8;" data-i18n="yt_p1">
-    YouTube kanalımda <b>R</b>, <b>Python</b>, <b>SPSS</b>, <b>Jamovi</b>, <b>JASP</b> ve <b>EViews</b>
-    kullanarak <u>ekonometri</u>, <u>istatistik</u> ve <u>veri analizi</u> konularını
-    <b>temel düzeyden ileri uygulamalara</b> kadar sistematik biçimde ele alıyorum.
-  </p>
+              <p style="margin-top:8px; line-height:1.8;" data-i18n="yt_p1">
+                YouTube kanalımda <b>R</b>, <b>Python</b>, <b>SPSS</b>, <b>Jamovi</b>, <b>JASP</b> ve <b>EViews</b>
+                kullanarak <u>ekonometri</u>, <u>istatistik</u> ve <u>veri analizi</u> konularını
+                <b>temel düzeyden ileri uygulamalara</b> kadar sistematik biçimde ele alıyorum.
+              </p>
 
-  <p style="margin-top:8px; line-height:1.8;" data-i18n="yt_p2">
-    Kanalda; zaman serileri, panel veri analizi, finansal ekonometri,
-    modelleme, yorumlama ve akademik araştırmalara yönelik
-    <b>uygulamalı örnekler</b> ve <b>ders destek içerikleri</b> yer almaktadır.
-  </p>
+              <p style="margin-top:8px; line-height:1.8;" data-i18n="yt_p2">
+                Kanalda; zaman serileri, panel veri analizi, finansal ekonometri,
+                modelleme, yorumlama ve akademik araştırmalara yönelik
+                <b>uygulamalı örnekler</b> ve <b>ders destek içerikleri</b> yer almaktadır.
+              </p>
 
-  <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
-    <a class="btn primary"
-       href="https://www.youtube.com/@erkanagaslan"
-       target="_blank" rel="noopener"
-       data-i18n="yt_btn">
-      YouTube Kanalına Git
-    </a>
-    <span class="badge">R</span>
-    <span class="badge">Python</span>
-    <span class="badge">SPSS</span>
-    <span class="badge">Jamovi</span>
-    <span class="badge">JASP</span>
-    <span class="badge">EViews</span>
-  </div>
-</div>
+              <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+                <a class="btn primary"
+                   href="https://www.youtube.com/@erkanagaslan"
+                   target="_blank" rel="noopener"
+                   data-i18n="yt_btn">
+                  YouTube Kanalına Git
+                </a>
+                <span class="badge">R</span>
+                <span class="badge">Python</span>
+                <span class="badge">SPSS</span>
+                <span class="badge">Jamovi</span>
+                <span class="badge">JASP</span>
+                <span class="badge">EViews</span>
+              </div>
+            </div>
+            
             <div class="card" style="margin-top:2px;">
               <h3 data-i18n="quick_title">Hızlı Bilgi</h3>
               <p data-i18n="quick_text">
@@ -667,7 +814,7 @@ a.card *{
         </div>
         <div class="section-body">
           <div class="grid">
-            <div class="card col-6">
+            <a href="./ekonometri.html" class="card col-6">
               <h3 data-i18n="course1_title">Ekonometri</h3>
               <p data-i18n="course1_text">Uluslararası Ticaret ve Finansman Bölümü 2. Sınıf Zorunlu Dersi</p>
               <div class="meta">
@@ -675,27 +822,17 @@ a.card *{
                 <span class="chip" data-i18n="course_chip_notes">Duyurular</span>
                 <span class="chip" data-i18n="course_chip_hw">Ödevler</span>
               </div>
-            </div>
+            </a>
 
-<div class="card col-6">
-  <h3>
-    <a href="finansal-ekonometri.html"
-       class="title-link"
-       data-i18n="course2_title">
-      Finansal Ekonometri
-    </a>
-  </h3>
-
-  <p data-i18n="course2_text">
-    Ekonometri Bölümü 4. Sınıf Seçmeli Dersi
-  </p>
-
-  <div class="meta">
-    <span class="chip" data-i18n="course_chip_syl">Ders planı</span>
-    <span class="chip" data-i18n="course_chip_notes">Duyurular</span>
-    <span class="chip" data-i18n="course_chip_hw">Ödevler</span>
-  </div>
-</div>
+            <a href="./finansal-ekonometri.html" class="card col-6">
+              <h3 data-i18n="course2_title">Finansal Ekonometri</h3>
+              <p data-i18n="course2_text">Ekonometri Bölümü 4. Sınıf Seçmeli Dersi</p>
+              <div class="meta">
+                <span class="chip" data-i18n="course_chip_syl">Ders planı</span>
+                <span class="chip" data-i18n="course_chip_notes">Duyurular</span>
+                <span class="chip" data-i18n="course_chip_hw">Ödevler</span>
+              </div>
+            </a>
 
             <div class="card col-6">
               <h3 data-i18n="course3_title">Uygulamalı Zaman Serisi Analizi</h3>
@@ -758,14 +895,14 @@ a.card *{
               <h3 data-i18n="cv_side_title">CV İndir</h3>
               </p>
               <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
-                <a class="btn primary" href="assets/cv.pdf" target="_blank" rel="noopener" data-i18n="cv_btn_open">CV’yi Aç</a>
+                <a class="btn primary" href="assets/cv.pdf" target="_blank" rel="noopener" data-i18n="cv_btn_open">CV'yi Aç</a>
                 <a class="btn" href="#iletisim" data-i18n="cv_btn_contact">CV için iletişim</a>
               </div>
 
               <div class="card" style="margin-top:12px; background: rgba(255,255,255,.03);">
                 <h3 style="margin-bottom:6px;" data-i18n="cv_tip_title">İpucu</h3>
                 <p data-i18n="cv_tip_text">
-                  Yayınları ayrı bir sayfaya almak isterseniz “publications.html” oluşturup menüye ekleyebilirsiniz.
+                  Yayınları ayrı bir sayfaya almak isterseniz "publications.html" oluşturup menüye ekleyebilirsiniz.
                 </p>
               </div>
             </div>
@@ -825,7 +962,7 @@ a.card *{
               <div class="icon">📌</div>
               <div>
                 <h4 data-i18n="ann1_title">Hafta 3 materyalleri yüklendi</h4>
-                <p class="small" data-i18n="ann1_text">Ders slaytları ve örnek uygulama kodları “Dersler” bölümünde.</p>
+                <p class="small" data-i18n="ann1_text">Ders slaytları ve örnek uygulama kodları "Dersler" bölümünde.</p>
               </div>
             </div>
 
@@ -833,7 +970,7 @@ a.card *{
               <div class="icon">🗓️</div>
               <div>
                 <h4 data-i18n="ann2_title">Ödev teslim tarihi</h4>
-                <p class="small" data-i18n="ann2_text">Teslim: 10 Şubat 23:59 – PDF + kaynak kod (.R/.py) birlikte.</p>
+                <p class="small" data-i18n="ann2_text">Teslim: 10 Şubat 23:59 - PDF + kaynak kod (.R/.py) birlikte.</p>
               </div>
             </div>
 
@@ -876,21 +1013,21 @@ a.card *{
               <h3 data-i18n="contact_social_title">Sosyal</h3>
               <div class="list" style="margin-top:10px;">
                 <div class="item" style="padding:10px 12px;">
-                  <div class="icon">▶</div>
+                  <div class="icon yt">▶</div>
                   <div>
                     <h4>YouTube</h4>
                     <p class="small"><a href="https://www.youtube.com/@erkanagaslan" target="_blank" rel="noopener">youtube.com/erkanagaslan</a></p>
                   </div>
                 </div>
                 <div class="item" style="padding:10px 12px;">
-                  <div class="icon">𝕏</div>
+                  <div class="icon x">𝕏</div>
                   <div>
                     <h4>X</h4>
                     <p class="small"><a href="https://x.com/erkanagaslan" target="_blank" rel="noopener">x.com/erkanagaslan</a></p>
                   </div>
                 </div>
                 <div class="item" style="padding:10px 12px;">
-                  <div class="icon">IG</div>
+                  <div class="icon ig">IG</div>
                   <div>
                     <h4>Instagram</h4>
                     <p class="small"><a href="https://instagram.com/erkanagaslan" target="_blank" rel="noopener">instagram.com/erkanagaslan</a></p>
@@ -1032,11 +1169,11 @@ a.card *{
         cv3_text: "TÜBİTAK, BAP ve ortak araştırma projeleri.",
 
         cv_side_title: "CV İndir",
-        cv_btn_open: "CV’yi Aç",
+        cv_btn_open: "CV'yi Aç",
         cv_btn_contact: "CV için iletişim",
 
         cv_tip_title: "İpucu",
-        cv_tip_text: "Yayınları ayrı bir sayfaya almak isterseniz “publications.html” oluşturup menüye ekleyebilirsiniz.",
+        cv_tip_text: "Yayınları ayrı bir sayfaya almak isterseniz "publications.html" oluşturup menüye ekleyebilirsiniz.",
 
         sec_students: "Öğrenciler İçin",
         sec_students_desc: "Şablonlar, yönergeler ve faydalı kaynaklar",
@@ -1052,9 +1189,9 @@ a.card *{
         sec_ann: "Duyurular",
         sec_ann_desc: "Güncellemeler ve önemli tarihler",
         ann1_title: "Hafta 3 materyalleri yüklendi",
-        ann1_text: "Ders slaytları ve örnek uygulama kodları “Dersler” bölümünde.",
+        ann1_text: "Ders slaytları ve örnek uygulama kodları "Dersler" bölümünde.",
         ann2_title: "Ödev teslim tarihi",
-        ann2_text: "Teslim: 10 Şubat 23:59 – PDF + kaynak kod (.R/.py) birlikte.",
+        ann2_text: "Teslim: 10 Şubat 23:59 - PDF + kaynak kod (.R/.py) birlikte.",
         ann3_title: "Yeni YouTube videosu",
         ann3_text: "R ile uygulamalı örnekler: veri hazırlama ve model kurulumu.",
 
@@ -1169,7 +1306,7 @@ a.card *{
         ann1_title: "Week 3 materials uploaded",
         ann1_text: "Slides and sample code are available under Courses.",
         ann2_title: "Assignment deadline",
-        ann2_text: "Due: Feb 10, 23:59 – submit PDF + source code (.R/.py).",
+        ann2_text: "Due: Feb 10, 23:59 - submit PDF + source code (.R/.py).",
         ann3_title: "New YouTube video",
         ann3_text: "Applied R examples: data preparation and model setup.",
 
@@ -1234,4 +1371,3 @@ if (cvMobile) cvMobile.href = cvHref;
   </script>
 </body>
 </html>
-<!-- trigger pages -->
