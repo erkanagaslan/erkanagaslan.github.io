@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Uygulamalı Zaman Serisi Analizi | Doç. Dr. Erkan Ağaslan</title>
+
+<style>
+:root{
+  --bg:#0b1220;
+  --card:rgba(255,255,255,.08);
+  --card2:rgba(255,255,255,.05);
+  --text:rgba(255,255,255,.92);
+  --muted:rgba(255,255,255,.70);
+  --border:rgba(255,255,255,.14);
+  --accent:#5eead4;
+  --radius:18px;
+  --max:1100px;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto;
+  background:linear-gradient(180deg,#070b14,#0b1220,#070b14);
+  color:var(--text);
+}
+a{color:inherit;text-decoration:none}
+.wrap{width:min(var(--max),calc(100% - 40px));margin:auto}
+header{
+  padding:30px 0 20px;
+}
+h1{
+  font-size:clamp(28px,3vw,42px);
+  margin:0 0 8px;
+}
+.subtitle{color:var(--muted);max-width:65ch}
+.section{
+  margin-top:20px;
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  background:rgba(255,255,255,.04);
+}
+.section-head{
+  padding:16px 18px;
+  border-bottom:1px solid rgba(255,255,255,.1);
+}
+.section-body{padding:18px}
+.week{
+  padding:14px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.1);
+  background:var(--card2);
+  margin-bottom:10px;
+}
+.week b{color:var(--accent)}
+.back{
+  display:inline-flex;
+  gap:8px;
+  margin-bottom:18px;
+  padding:8px 12px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.05);
+}
+.week em{
+  display:inline-block;
+  margin-top:10px;
+  font-style:italic;
+  color:var(--muted);
+  font-size:0.9em;
+  padding:6px 10px;
+  background:rgba(255,255,255,.05);
+  border-radius:8px;
+}
+.week ul{
+  margin:8px 0 12px;
+  padding-left:20px;
+}
+.week li{
+  margin-bottom:5px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="wrap">
+    <a href="index.html" class="back">⬅ Ana Sayfa</a>
+    <h1>Uygulamalı Zaman Serisi Analizi</h1>
+    <p class="subtitle">
+      Lisans Dersi • 14 Hafta • R &amp; EViews Uygulamaları  
+      <br><b>Ders Sorumlusu:</b> Doç. Dr. Erkan Ağaslan
+    </p>
+  </div>
+</header>
+
+<main>
+<div class="wrap">
+
+<div class="section">
+  <div class="section-head"><h3>Dersin Amacı</h3></div>
+  <div class="section-body">
+    Uygulamalı Zaman Serisi Analizi dersi, ekonomi, finans ve işletme alanlarında sıklıkla karşılaşılan 
+    zaman serisi verilerinin istatistiksel yöntemlerle analiz edilmesini ve yorumlanmasını amaçlamaktadır. 
+    Ders, öğrencilere kesit, panel ve zaman serisi verileri arasındaki temel ayrımları, 
+    deterministik ve stokastik süreçleri, durağanlık kavramını, birim kök testlerini, 
+    ARIMA/SARIMA modellerini, çok değişkenli zaman serisi yaklaşımlarını (VAR/VECM) ve 
+    temel volatilite modellerini uygulamalı olarak öğretmeyi hedefler. R yazılımının 
+    kullanıldığı ders boyunca, öğrenciler gerçek ekonomik ve finansal veriler üzerinden 
+    model kurma, tahminleme, test etme ve yorumlama becerileri kazanacaktır. 
+    Dersin sonunda öğrenciler, akademik çalışmalarda veya sektörde karşılaşacakları 
+    zaman serisi problemlerine çözüm üretebilecek düzeye gelecektir.
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-head"><h3>Haftalık Ders Planı</h3></div>
+  <div class="section">
+  <div class="section-head">
+    <h3>Ders İçeriği (Detaylı)</h3>
+  </div>
+  <div class="section-body">
+
+    <div class="week">
+      <b>1. Hafta – Zaman Serilerine Giriş</b>
+      <ul>
+        <li>Zaman serisi kavramı</li>
+        <li>Kesit–panel–zaman serisi ayrımı</li>
+        <li>Deterministik ve stokastik süreçler</li>
+        <li>Ekonomik ve finansal zaman serilerinin temel özellikleri</li>
+      </ul>
+      <em>Uygulama: R ve EViews'te zaman serisi nesnesi oluşturma, grafikleme</em>
+    </div>
+
+    <div class="week">
+      <b>2. Hafta – Zaman Serilerinin Bileşenleri</b>
+      <ul>
+        <li>Trend, mevsimsellik, çevrimsel ve düzensiz bileşenler</li>
+        <li>Additif ve multiplicative ayrım</li>
+      </ul>
+      <em>Uygulama: Zaman serisi değişkenlerini bileşenlerine ayrıştırma yöntemleri</em>
+    </div>
+
+    <div class="week">
+      <b>3. Hafta – Durağanlık Kavramı</b>
+      <ul>
+        <li>Zayıf ve güçlü durağanlık</li>
+        <li>Momentler ve zaman bağımlılığı</li>
+        <li>Ekonomik anlamda durağanlık neden önemlidir?</li>
+      </ul>
+      <em>Uygulama: Ortalama–varyans analizi, rolling statistics</em>
+    </div>
+
+    <div class="week">
+      <b>4. Hafta – Birim Kök Testleri (I)</b>
+      <ul>
+        <li>ADF, PP ve DF testlerinin teorik temeli</li>
+        <li>Trendli ve trendsiz modellerin yorumu</li>
+      </ul>
+      <em>Uygulama: ur.df(), ur.pp() </em>
+    </div>
+
+    <div class="week">
+      <b>5. Hafta – Birim Kök Testleri (II)</b>
+      <ul>
+        <li>Yapısal kırılmalı birim kök testlerine giriş</li>
+        <li>Ekonomik şoklar ve rejim değişimleri</li>
+      </ul>
+      <em>Uygulama: Zivot–Andrews testi</em>
+    </div>
+
+    <div class="week">
+      <b>6. Hafta – AR, MA ve ARMA Modelleri</b>
+      <ul>
+        <li>Box–Jenkins yaklaşımı</li>
+        <li>ACF–PACF yorumları</li>
+        <li>Model tanımlama ve seçimi</li>
+      </ul>
+      <em>Uygulama: arima(), auto.arima()</em>
+    </div>
+
+    <div class="week">
+      <b>7. Hafta – ARA SINAV</b>
+      <ul>
+        <li>Teorik + uygulamalı değerlendirme</li>
+      </ul>
+    </div>
+
+    <div class="week">
+      <b>8. Hafta – ARIMA Modelleri</b>
+      <ul>
+        <li>Fark alma, bütünleşme derecesi</li>
+        <li>Tahmin mantığı ve hata yapısı</li>
+      </ul>
+      <em>Uygulama: ARIMA tahmini ve ileriye dönük öngörü</em>
+    </div>
+
+    <div class="week">
+      <b>9. Hafta – Mevsimsel Modeller (SARIMA)</b>
+      <ul>
+        <li>Mevsimsel fark alma</li>
+        <li>Mevsim yapıların modellenmesi</li>
+      </ul>
+      <em>Uygulama: SARIMA ile enflasyon / satış verisi tahmini</em>
+    </div>
+
+    <div class="week">
+      <b>10. Hafta – Çok Değişkenli Zaman Serileri</b>
+      <ul>
+        <li>VAR modeline giriş</li>
+        <li>Nedensellik kavramı</li>
+        <li>Ekonomik ilişkilerin dinamik yapısı</li>
+      </ul>
+      <em>Uygulama: VAR kurulumu, gecikme seçimi</em>
+    </div>
+
+    <div class="week">
+      <b>11. Hafta – Nedensellik ve Etki Analizi</b>
+      <ul>
+        <li>Granger nedensellik testi</li>
+        <li>Etki Tepki Fonksiyonkarı (IRF)</li>
+      </ul>
+      <em>Uygulama: Faiz–enflasyon–kur örneği</em>
+    </div>
+
+    <div class="week">
+      <b>12. Hafta – Eşbütünleşme Analizi</b>
+      <ul>
+        <li>Uzun dönem denge ilişkileri</li>
+        <li>Engle–Granger ve Johansen yaklaşımları</li>
+      </ul>
+      <em>Uygulama: VECM kurulumu</em>
+    </div>
+
+    <div class="week">
+      <b>13. Hafta – Oynaklık Modellerine Giriş</b>
+      <ul>
+        <li>Finansal zaman serilerinde volatilite</li>
+        <li>ARCH ve GARCH modellerinin mantığı</li>
+      </ul>
+      <em>Uygulama: rugarch ile volatilite tahmini</em>
+    </div>
+
+    <div class="week">
+      <b>14. Hafta – FİNAL SINAVI</b>
+      <ul>
+        <li>Uygulamalı + yorum ağırlıklı değerlendirme</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+</div>
+
+</div>
+</main>
+
+</body>
+</html>
