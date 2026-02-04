@@ -234,62 +234,75 @@
       margin-top: 16px;
     }
 
-    /* Dersler mini kartları */
-    .mini-courses {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
+    /* DERSLER BÖLÜMÜ - SOL SÜTUNA EKLENDİ */
+    .courses-inline {
       margin-top: 18px;
+      border-top: 1px solid rgba(255,255,255,.08);
+      padding-top: 18px;
     }
     
-    .mini-course-card {
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      background: rgba(255, 255, 255, 0.04);
-      border-radius: 14px;
-      padding: 14px;
+    .courses-inline h3 {
+      margin: 0 0 12px;
+      font-size: 15.5px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    
+    .inline-course-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .inline-course {
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
       transition: all 0.2s ease;
       cursor: pointer;
     }
     
-    .mini-course-card:hover {
-      background: rgba(255, 255, 255, 0.08);
-      border-color: rgba(255, 255, 255, 0.18);
+    .inline-course:hover {
+      background: rgba(255,255,255,.08);
+      border-color: rgba(255,255,255,.18);
       transform: translateY(-2px);
     }
     
-    .mini-course-card h4 {
+    .inline-course h4 {
       margin: 0 0 6px;
-      font-size: 15px;
-      display: inline-block; /* Alt çizgi için gerekli */
+      font-size: 14px;
+      display: inline-block;
     }
     
-    .mini-course-card:hover h4 {
+    .inline-course:hover h4 {
       text-decoration: underline;
     }
     
-    .mini-course-card p {
+    .inline-course p {
       margin: 0;
       color: var(--muted);
-      font-size: 13px;
+      font-size: 12.5px;
       line-height: 1.5;
     }
     
-    .course-badges {
+    .course-tags {
       display: flex;
       gap: 6px;
-      margin-top: 10px;
+      margin-top: 8px;
       flex-wrap: wrap;
     }
     
-    .course-badge {
-      font-size: 11px;
-      padding: 4px 8px;
+    .course-tag {
+      font-size: 10.5px;
+      padding: 3px 7px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.1);
       color: var(--muted);
     }
 
+    /* Mini Stats */
     .mini-stats{
       display:grid;
       grid-template-columns: repeat(3, 1fr);
@@ -597,7 +610,10 @@
       .col-4{ grid-column: span 12; }
       .col-8{ grid-column: span 12; }
       .two-col{ grid-template-columns: 1fr; }
-      .mini-courses { grid-template-columns: 1fr; }
+      .courses-inline {
+        margin-top: 18px;
+        padding-top: 16px;
+      }
     }
 
     /* Print (CV için) */
@@ -651,7 +667,7 @@
   <header class="hero">
     <div class="wrap">
       <div class="hero-grid">
-        <!-- Left -->
+        <!-- Left (DERSLER SOL SÜTUNDA) -->
         <div class="hero-card">
           <div class="inner">
             <div class="kicker">
@@ -670,7 +686,7 @@
               <a class="btn" href="#ogrenciler" data-i18n="cta_students">Öğrenciler İçin</a>
             </div>
 
-            <!-- Mini Stats (Bu kaldı) -->
+            <!-- Mini Stats -->
             <div class="mini-stats" aria-label="Öne çıkanlar">
               <div class="stat">
                 <div class="n" data-i18n="stat1_n">Ekonometri</div>
@@ -685,10 +701,56 @@
                 <div class="t" data-i18n="stat3_t">Notlar &amp; materyaller</div>
               </div>
             </div>
+            
+            <!-- DERSLER BÖLÜMÜ - SOL SÜTUNA EKLENDİ -->
+            <div class="courses-inline">
+              <h3 data-i18n="sec_courses">Dersler</h3>
+              <div class="inline-course-list">
+                <a href="./ekonometri.html" class="inline-course">
+                  <h4 data-i18n="course1_title">Ekonometri</h4>
+                  <p data-i18n="course1_text">Uluslararası Ticaret ve Finansman Bölümü 2. Sınıf Zorunlu Dersi</p>
+                  <div class="course-tags">
+                    <span class="course-tag" data-i18n="course_chip_syl">Ders planı</span>
+                    <span class="course-tag" data-i18n="course_chip_notes">Duyurular</span>
+                    <span class="course-tag" data-i18n="course_chip_hw">Ödevler</span>
+                  </div>
+                </a>
+
+                <a href="./finansal-ekonometri.html" class="inline-course">
+                  <h4 data-i18n="course2_title">Finansal Ekonometri</h4>
+                  <p data-i18n="course2_text">Ekonometri Bölümü 4. Sınıf Seçmeli Dersi</p>
+                  <div class="course-tags">
+                    <span class="course-tag" data-i18n="course_chip_syl">Ders planı</span>
+                    <span class="course-tag" data-i18n="course_chip_notes">Duyurular</span>
+                    <span class="course-tag" data-i18n="course_chip_hw">Ödevler</span>
+                  </div>
+                </a>
+
+                <a href="./uygulamali-zaman-serisi.html" class="inline-course">
+                  <h4 data-i18n="course3_title">Uygulamalı Zaman Serisi Analizi</h4>
+                  <p data-i18n="course3_text">Ekonometri Bölümü Yüksek Lisans Dersi</p>
+                  <div class="course-tags">
+                    <span class="course-tag" data-i18n="course_chip_syl">Ders planı</span>
+                    <span class="course-tag" data-i18n="course_chip_notes">Duyurular</span>
+                    <span class="course-tag" data-i18n="course_chip_hw">Ödevler</span>
+                  </div>
+                </a>
+
+                <a href="./matematiksel-iktisat-ii.html" class="inline-course">
+                  <h4 data-i18n="course4_title">Matematiksel İktisat II</h4>
+                  <p data-i18n="course4_text">Ekonometri Bölümü 2. Sınıf Zorunlu Dersi</p>
+                  <div class="course-tags">
+                    <span class="course-tag" data-i18n="course_chip_syl">Ders planı</span>
+                    <span class="course-tag" data-i18n="course_chip_notes">Duyurular</span>
+                    <span class="course-tag" data-i18n="course_chip_hw">Ödevler</span>
+                  </div>
+                </a>
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- Right profile -->
+        <!-- Right profile (UZMANLIK ALANLARI SAĞ SÜTUNDA) -->
         <div class="hero-card profile">
           <div class="photo-wrap">
             <div class="lang-switch" title="Dil">
@@ -764,57 +826,7 @@
   <main>
     <div class="wrap">
 
-      <!-- DERSLER -->
-      <section id="dersler">
-        <div class="section-head">
-          <h2 data-i18n="sec_courses">Dersler</h2>
-          <p data-i18n="sec_courses_desc">Güncel dersler, haftalık plan ve materyaller</p>
-        </div>
-        <div class="section-body">
-          <!-- Dersler Mini Kartları -->
-          <div class="mini-courses" aria-label="Dersler">
-            <a href="./ekonometri.html" class="mini-course-card">
-              <h4 data-i18n="course1_title">Ekonometri</h4>
-              <p data-i18n="course1_text">Uluslararası Ticaret ve Finansman Bölümü 2. Sınıf Zorunlu Dersi</p>
-              <div class="course-badges">
-                <span class="course-badge" data-i18n="course_chip_syl">Ders planı</span>
-                <span class="course-badge" data-i18n="course_chip_notes">Duyurular</span>
-                <span class="course-badge" data-i18n="course_chip_hw">Ödevler</span>
-              </div>
-            </a>
-
-            <a href="./finansal-ekonometri.html" class="mini-course-card">
-              <h4 data-i18n="course2_title">Finansal Ekonometri</h4>
-              <p data-i18n="course2_text">Ekonometri Bölümü 4. Sınıf Seçmeli Dersi</p>
-              <div class="course-badges">
-                <span class="course-badge" data-i18n="course_chip_syl">Ders planı</span>
-                <span class="course-badge" data-i18n="course_chip_notes">Duyurular</span>
-                <span class="course-badge" data-i18n="course_chip_hw">Ödevler</span>
-              </div>
-            </a>
-
-            <a href="./uygulamali-zaman-serisi.html" class="mini-course-card">
-              <h4 data-i18n="course3_title">Uygulamalı Zaman Serisi Analizi</h4>
-              <p data-i18n="course3_text">Ekonometri Bölümü Yüksek Lisans Dersi</p>
-              <div class="course-badges">
-                <span class="course-badge" data-i18n="course_chip_syl">Ders planı</span>
-                <span class="course-badge" data-i18n="course_chip_notes">Duyurular</span>
-                <span class="course-badge" data-i18n="course_chip_hw">Ödevler</span>
-              </div>
-            </a>
-
-            <a href="./matematiksel-iktisat-ii.html" class="mini-course-card">
-              <h4 data-i18n="course4_title">Matematiksel İktisat II</h4>
-              <p data-i18n="course4_text">Ekonometri Bölümü 2. Sınıf Zorunlu Dersi</p>
-              <div class="course-badges">
-                <span class="course-badge" data-i18n="course_chip_repo">Ders planı</span>
-                <span class="course-badge" data-i18n="course_chip_vid">Duyurular</span>
-                <span class="course-badge" data-i18n="course_chip_sets">Ödevler</span>
-              </div>
-            </a>
-          </div>
-        </div>
-      </section>
+      <!-- DERSLER BÖLÜMÜ KALDIRILDI - Artık sol sütunda hero kısmında -->
 
       <!-- AKADEMİK CV -->
       <section id="cv">
