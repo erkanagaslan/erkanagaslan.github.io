@@ -309,6 +309,8 @@ a:hover{ text-decoration: none; }
   border: 1px solid rgba(255,255,255,.1);
   color: var(--muted);
   transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
 }
 .course-tag:hover {
   transform: translateY(-1px);
@@ -724,45 +726,45 @@ a:hover{ text-decoration: none; }
             <div class="courses-inline">
               <h3 data-i18n="sec_courses">Dersler</h3>
               <div class="inline-course-list">
-                <a href="./ekonometri.html" class="inline-course">
+                <div class="inline-course" onclick="window.location='./ekonometri.html'">
                   <h4 data-i18n="course1_title">Ekonometri</h4>
                   <p data-i18n="course1_text">Uluslararası Ticaret ve Finansman Bölümü 2. Sınıf Zorunlu Dersi</p>
                   <div class="course-tags">
-                    <span class="course-tag" data-i18n="course_chip_syl">Ders planı</span>
-                    <span class="course-tag" data-i18n="course_chip_notes">Duyurular</span>
-                    <span class="course-tag" data-i18n="course_chip_hw">Ödevler</span>
+                    <span class="course-tag" onclick="event.stopPropagation(); window.location='./ekonometri_dersplani.html'" data-i18n="course_chip_syl">Ders planı</span>
+                    <span class="course-tag" onclick="event.stopPropagation(); window.location='./ekonometri_duyurular.html'" data-i18n="course_chip_notes">Duyurular</span>
+                    <span class="course-tag" onclick="event.stopPropagation(); window.location='./ekonometri_odevler.html'" data-i18n="course_chip_hw">Ödevler</span>
                   </div>
-                </a>
+                </div>
 
-                <a href="./finansal-ekonometri.html" class="inline-course">
+                <div class="inline-course" onclick="window.location='./finansal-ekonometri.html'">
                   <h4 data-i18n="course2_title">Finansal Ekonometri</h4>
                   <p data-i18n="course2_text">Ekonometri Bölümü 4. Sınıf Seçmeli Dersi</p>
                   <div class="course-tags">
-                    <span class="course-tag" data-i18n="course_chip_syl">Ders planı</span>
-                    <span class="course-tag" data-i18n="course_chip_notes">Duyurular</span>
-                    <span class="course-tag" data-i18n="course_chip_hw">Ödevler</span>
+                    <span class="course-tag" onclick="event.stopPropagation(); window.location='./finansal-ekonometri_dersplani.html'" data-i18n="course_chip_syl">Ders planı</span>
+                    <span class="course-tag" onclick="event.stopPropagation(); window.location='./finansal-ekonometri_duyurular.html'" data-i18n="course_chip_notes">Duyurular</span>
+                    <span class="course-tag" onclick="event.stopPropagation(); window.location='./finansal-ekonometri_odevler.html'" data-i18n="course_chip_hw">Ödevler</span>
                   </div>
-                </a>
+                </div>
 
-                <a href="./uygulamali-zaman-serisi.html" class="inline-course">
+                <div class="inline-course" onclick="window.location='./uygulamali-zaman-serisi.html'">
                   <h4 data-i18n="course3_title">Uygulamalı Zaman Serisi Analizi</h4>
                   <p data-i18n="course3_text">Ekonometri Bölümü Yüksek Lisans Dersi</p>
                   <div class="course-tags">
-                    <span class="course-tag" data-i18n="course_chip_syl">Ders planı</span>
-                    <span class="course-tag" data-i18n="course_chip_notes">Duyurular</span>
-                    <span class="course-tag" data-i18n="course_chip_hw">Ödevler</span>
+                    <span class="course-tag" onclick="event.stopPropagation(); window.location='./zaman-serisi_dersplani.html'" data-i18n="course_chip_syl">Ders planı</span>
+                    <span class="course-tag" onclick="event.stopPropagation(); window.location='./zaman-serisi_duyurular.html'" data-i18n="course_chip_notes">Duyurular</span>
+                    <span class="course-tag" onclick="event.stopPropagation(); window.location='./zaman-serisi_odevler.html'" data-i18n="course_chip_hw">Ödevler</span>
                   </div>
-                </a>
+                </div>
 
-                <a href="./matematiksel-iktisat-ii.html" class="inline-course">
+                <div class="inline-course" onclick="window.location='./matematiksel-iktisat-ii.html'">
                   <h4 data-i18n="course4_title">Matematiksel İktisat II</h4>
                   <p data-i18n="course4_text">Ekonometri Bölümü 2. Sınıf Zorunlu Dersi</p>
                   <div class="course-tags">
-                    <span class="course-tag" data-i18n="course_chip_syl">Ders planı</span>
-                    <span class="course-tag" data-i18n="course_chip_notes">Duyurular</span>
-                    <span class="course-tag" data-i18n="course_chip_hw">Ödevler</span>
+                    <span class="course-tag" onclick="event.stopPropagation(); window.location='./matematiksel-iktisat_dersplani.html'" data-i18n="course_chip_syl">Ders planı</span>
+                    <span class="course-tag" onclick="event.stopPropagation(); window.location='./matematiksel-iktisat_duyurular.html'" data-i18n="course_chip_notes">Duyurular</span>
+                    <span class="course-tag" onclick="event.stopPropagation(); window.location='./matematiksel-iktisat_odevler.html'" data-i18n="course_chip_hw">Ödevler</span>
                   </div>
-                </a>
+                </div>
               </div>
             </div>
           </div>
@@ -790,7 +792,7 @@ a:hover{ text-decoration: none; }
               <span class="badge" data-i18n="badge4">Makroekonometri</span>
             </div>
             
-            <div class="card" style="margin-top:18px;">
+            <div class="card" style="margin-top:18px;" onclick="window.location='https://www.youtube.com/@erkanagaslan'">
               <h3 data-i18n="yt_title">YouTube Kanalı • Uygulamalı Ekonometri & Veri Bilimi</h3>
 
               <p style="margin-top:8px; line-height:1.8;" data-i18n="yt_p1">
@@ -809,6 +811,7 @@ a:hover{ text-decoration: none; }
                 <a class="btn primary"
                    href="https://www.youtube.com/@erkanagaslan"
                    target="_blank" rel="noopener"
+                   onclick="event.stopPropagation();"
                    data-i18n="yt_btn">
                   YouTube Kanalına Git
                 </a>
