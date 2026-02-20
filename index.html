@@ -687,85 +687,132 @@ a:hover{ text-decoration: none; }
   <header class="hero">
     <div class="wrap">
       <div class="hero-grid">
-        <!-- Left (DERSLER SOL SÜTUNDA) -->
-        <div class="hero-card">
-          <div class="inner">
-            <div class="kicker">
-              <span class="pill" data-i18n="kicker_pill">Akademik</span>
-              <span data-i18n="kicker_text">Araştırma • Ders • Danışmanlık</span>
+
+  <!-- SOL SÜTUN -->
+  <div class="hero-card">
+    <div class="inner">
+
+      <div class="kicker">
+        <span class="pill" data-i18n="kicker_pill">Akademik</span>
+        <span data-i18n="kicker_text">Araştırma • Ders • Danışmanlık</span>
+      </div>
+
+      <h1 data-i18n="hero_title">Doç. Dr. Erkan Ağaslan</h1>
+      <p class="subtitle" data-i18n="hero_sub">
+        Panel veri, zaman serileri ve finansal ekonometri odaklı araştırmalar.
+        Ders materyalleri, duyurular ve öğrenci kaynakları.
+      </p>
+
+      <div class="hero-cta">
+        <a class="btn primary" href="#iletisim">İletişime Geç</a>
+        <a class="btn" href="#duyurular">Duyurulara Git</a>
+        <a class="btn" href="#ders-programi">Ders Programı</a>
+      </div>
+
+      <!-- Mini Stats -->
+      <div class="mini-stats">
+        <div class="stat">
+          <div class="n">Ekonometri</div>
+          <div class="t">Araştırma odağı</div>
+        </div>
+        <div class="stat">
+          <div class="n">R & Python</div>
+          <div class="t">Uygulamalı içerikler</div>
+        </div>
+        <div class="stat">
+          <div class="n">Açık Kaynak</div>
+          <div class="t">Notlar & materyaller</div>
+        </div>
+      </div>
+
+      <!-- DERSLER -->
+      <div class="courses-inline">
+        <h3>Dersler</h3>
+
+        <div class="inline-course-list">
+
+          <!-- EKONOMETRİ -->
+          <div class="inline-course" style="cursor:default;">
+            <h4>Ekonometri</h4>
+            <p>Uluslararası Ticaret ve Finansman Bölümü 2. Sınıf Zorunlu Dersi</p>
+            <div class="course-tags">
+              <span class="course-tag" onclick="window.location='./ekonometri_icerik.html'">Ders planı</span>
+              <span class="course-tag" onclick="window.location='./ekonometri_duyurular.html'">Duyurular</span>
+              <span class="course-tag" onclick="window.location='./ekonometri_odev.html'">Ödevler</span>
             </div>
+          </div>
 
-            <h1 data-i18n="hero_title">Doç. Dr. Erkan Ağaslan</h1>
-            <p class="subtitle" data-i18n="hero_sub">
-              Panel veri, zaman serileri ve finansal ekonometri odaklı araştırmalar. Ders materyalleri, duyurular ve öğrenci kaynakları.
-            </p>
-
-            <div class="hero-cta">
-              <a class="btn primary" href="#iletisim" data-i18n="cta_contact">İletişime Geç</a>
-              <a class="btn" href="#duyurular" data-i18n="cta_ann">Duyurulara Git</a>
-              <a class="btn" href="#ders-programi" data-i18n="cta_schedule">Ders Programı</a>
+          <!-- FİNANSAL EKONOMETRİ -->
+          <div class="inline-course" onclick="window.location='./finansal-ekonometri.html'">
+            <h4>Finansal Ekonometri</h4>
+            <p>Ekonometri Bölümü 4. Sınıf Seçmeli Dersi</p>
+            <div class="course-tags">
+              <span class="course-tag" onclick="event.stopPropagation(); window.location='./finansal-ekonometri_dersplani.html'">Ders planı</span>
+              <span class="course-tag" onclick="event.stopPropagation(); window.location='./finansal-ekonometri_duyurular.html'">Duyurular</span>
+              <span class="course-tag" onclick="event.stopPropagation(); window.location='./finansal-ekonometri_odevler.html'">Ödevler</span>
             </div>
+          </div>
 
-            <!-- Mini Stats -->
-            <div class="mini-stats" aria-label="Öne çıkanlar">
-              <div class="stat">
-                <div class="n" data-i18n="stat1_n">Ekonometri</div>
-                <div class="t" data-i18n="stat1_t">Araştırma odağı</div>
-              </div>
-              <div class="stat">
-                <div class="n" data-i18n="stat2_n">R &amp; Python</div>
-                <div class="t" data-i18n="stat2_t">Uygulamalı içerikler</div>
-              </div>
-              <div class="stat">
-                <div class="n" data-i18n="stat3_n">Açık Kaynak</div>
-                <div class="t" data-i18n="stat3_t">Notlar &amp; materyaller</div>
-              </div>
+          <!-- ZAMAN SERİSİ -->
+          <div class="inline-course" onclick="window.location='./uygulamali-zaman-serisi.html'">
+            <h4>Uygulamalı Zaman Serisi Analizi</h4>
+            <p>Ekonometri Bölümü Yüksek Lisans Dersi</p>
+            <div class="course-tags">
+              <span class="course-tag" onclick="event.stopPropagation(); window.location='./zaman-serisi_dersplani.html'">Ders planı</span>
+              <span class="course-tag" onclick="event.stopPropagation(); window.location='./zaman-serisi_duyurular.html'">Duyurular</span>
+              <span class="course-tag" onclick="event.stopPropagation(); window.location='./zaman-serisi_odevler.html'">Ödevler</span>
             </div>
-            
-            <!-- DERSLER BÖLÜMÜ - SOL SÜTUNA EKLENDİ -->
-            <div class="courses-inline">
-              <h3 data-i18n="sec_courses">Dersler</h3>
-              <div class="inline-course-list">
-                <div class="inline-course" style="cursor:default;">
-                <h4 data-i18n="course1_title">Ekonometri</h4>
-                <p data-i18n="course1_text">Uluslararası Ticaret ve Finansman Bölümü 2. Sınıf Zorunlu Dersi</p>
-                <div class="course-tags">
-                  <span class="course-tag" onclick="event.stopPropagation(); window.location='./ekonometri_icerik.html'" data-i18n="course_chip_syl">Ders planı</span>
-                  <span class="course-tag" onclick="event.stopPropagation(); window.location='./ekonometri_duyurular.html'" data-i18n="course_chip_notes">Duyurular</span>
-                  <span class="course-tag" onclick="event.stopPropagation(); window.location='./ekonometri_odev.html'" data-i18n="course_chip_hw">Ödevler</span>
-                </div>
-               </div>
+          </div>
 
-                <div class="inline-course" onclick="window.location='./finansal-ekonometri.html'">
-                  <h4 data-i18n="course2_title">Finansal Ekonometri</h4>
-                  <p data-i18n="course2_text">Ekonometri Bölümü 4. Sınıf Seçmeli Dersi</p>
-                  <div class="course-tags">
-                    <span class="course-tag" onclick="event.stopPropagation(); window.location='./finansal-ekonometri_dersplani.html'" data-i18n="course_chip_syl">Ders planı</span>
-                    <span class="course-tag" onclick="event.stopPropagation(); window.location='./finansal-ekonometri_duyurular.html'" data-i18n="course_chip_notes">Duyurular</span>
-                    <span class="course-tag" onclick="event.stopPropagation(); window.location='./finansal-ekonometri_odevler.html'" data-i18n="course_chip_hw">Ödevler</span>
-                  </div>
-                </div>
+          <!-- MATEMATİKSEL İKTİSAT -->
+          <div class="inline-course" style="cursor:default;">
+            <h4>Matematiksel İktisat II</h4>
+            <p>Ekonometri Bölümü 2. Sınıf Zorunlu Dersi</p>
+            <div class="course-tags">
+              <span class="course-tag" onclick="window.location='./matematiksel_iktisat_2_icerik.html'">Ders planı</span>
+              <span class="course-tag" onclick="window.location='./matematiksel_iktisat_2_duyurular.html'">Duyurular</span>
+              <span class="course-tag" onclick="window.location='./matematiksel_iktisat_2_odevler.html'">Ödevler</span>
+            </div>
+          </div>
 
-                <div class="inline-course" onclick="window.location='./uygulamali-zaman-serisi.html'">
-                  <h4 data-i18n="course3_title">Uygulamalı Zaman Serisi Analizi</h4>
-                  <p data-i18n="course3_text">Ekonometri Bölümü Yüksek Lisans Dersi</p>
-                  <div class="course-tags">
-                    <span class="course-tag" onclick="event.stopPropagation(); window.location='./zaman-serisi_dersplani.html'" data-i18n="course_chip_syl">Ders planı</span>
-                    <span class="course-tag" onclick="event.stopPropagation(); window.location='./zaman-serisi_duyurular.html'" data-i18n="course_chip_notes">Duyurular</span>
-                    <span class="course-tag" onclick="event.stopPropagation(); window.location='./zaman-serisi_odevler.html'" data-i18n="course_chip_hw">Ödevler</span>
-                  </div>
-                </div>
+        </div>
+      </div>
 
-                <div class="inline-course" style="cursor:default;">
-                 <h4 data-i18n="course4_title">Matematiksel İktisat II</h4>
-                 <p data-i18n="course4_text">Ekonometri Bölümü 2. Sınıf Zorunlu Dersi</p>
-                 <div class="course-tags">
-                   <span class="course-tag" onclick="event.stopPropagation(); window.location='./matematiksel_iktisat_2_icerik.html'" data-i18n="course_chip_syl">Ders planı</span>
-                   <span class="course-tag" onclick="event.stopPropagation(); window.location='./matematiksel-iktisat_duyurular.html'" data-i18n="course_chip_notes">Duyurular</span>
-                   <span class="course-tag" onclick="event.stopPropagation(); window.location='./matematiksel_iktisat_2_odevler.html'" data-i18n="course_chip_hw">Ödevler</span>
-                  </div>
-                 </div>
-                </div>
+    </div>
+  </div>
+
+
+  <!-- SAĞ SÜTUN -->
+  <div class="hero-card profile">
+    <div class="photo-wrap">
+      <img class="photo"
+           src="https://raw.githubusercontent.com/erkanagaslan/assets-images-/main/profile.jpg"
+           alt="Dr. Erkan Ağaslan" />
+    </div>
+
+    <div class="profile-body">
+
+      <div class="badges">
+        <span class="badge">Panel Veri</span>
+        <span class="badge">Zaman Serileri</span>
+        <span class="badge">Finansal Ekonometri</span>
+        <span class="badge">Makroekonometri</span>
+      </div>
+
+      <div class="card" style="margin-top:18px;">
+        <h3>YouTube Kanalı</h3>
+        <p>Uygulamalı ekonometri ve veri bilimi içerikleri.</p>
+        <div style="margin-top:10px;">
+          <a class="btn primary"
+             href="https://www.youtube.com/@erkanagaslan"
+             target="_blank">YouTube Kanalına Git</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
               
 
         <!-- Right profile (UZMANLIK ALANLARI SAĞ SÜTUNDA) -->
