@@ -16,8 +16,6 @@ if(!is.null(dev.list())) dev.off()
 cat("\014")
 rm(list=ls(all=TRUE)) 
 ```
-
-
 ```{r setup, include=FALSE}
 # ============================================================================
 # BÖLÜM 0: BAŞLANGIÇ AYARLARI - Bu bölüm sadece arka planda çalışır, görünmez
@@ -143,6 +141,10 @@ library(gridExtra)                # gridExtra paketini yükle
 
 ```{r}
 # ============================================================================
+# KOD BLOĞU 3: PAKETLERİ AKTİF ETME
+# ============================================================================
+
+# ============================================================================
 # BİST100 VERİSİNİ YAHOO FİNANCE'TEN ÇEKME
 # ============================================================================
 
@@ -246,7 +248,7 @@ $$
 
 ```{r}
 # ============================================================================
-# KOD BLOĞU 5: GETİRİ HESAPLAMA
+# KOD BLOĞU 4: GETİRİ HESAPLAMA
 # ============================================================================
 
 # prices: fiyat vektörü
@@ -320,9 +322,13 @@ f^{(3)}(R) &= \frac{2}{(1+R)^3} \Rightarrow f^{(3)}(0) = 2 \\[8pt]
 \text{Yani küçük getiriler için logaritmik getiri yaklaşık olarak basit getiriye eşittir.
 }
 $$
+
+## 5.2 Sayısal İspat
+
+
 ```{r}
 # ============================================================================
-# KOD BLOĞU 6: SAYISAL İSPAT
+# KOD BLOĞU 5: SAYISAL İSPAT
 # ============================================================================
 
 # ------------------------------------------------------------
@@ -441,10 +447,12 @@ ggplot(plot_data, aes(x = R)) +
            size = 4, color = "gray30")
 ```
 
+# 6. BETİMSEL İSTATİSTİKLER
+
 
 ```{r}
 # ============================================================================
-# KOD BLOĞU 7: BETİMSEL İSTATİSTİKLER
+# KOD BLOĞU 6: BETİMSEL İSTATİSTİKLER
 # ============================================================================
 
 # ------------------------------------------------------------
@@ -559,18 +567,6 @@ kable(normallik_sonuc,
       digits = 4) %>% 
   kable_styling(position = "center", full_width = FALSE)
 ```
-
-
-
-
-
-
-```{r}
-knitr::kable(desc_table, digits = 4) %>%
-  kable_styling(position = "center", full_width = FALSE)
-```
-
-
 
 
 
