@@ -1,0 +1,583 @@
+---
+title: "Finansal Ekonometri - Birinci Uygulama"
+author: "Doç.Dr. Erkan Ağaslan"
+date: "3 Mart 2026 / Salı / 14:00"
+output: 
+  html_document:
+    toc: true                # İçindekiler tablosu oluşturur
+    toc_depth: 3             # İçindekilerde 3 seviye derinlik gösterir
+    number_sections: true    # Bölümleri numaralandırır
+    highlight: tango         # Kod renklendirme teması
+    theme: united            # Belge görünüm teması
+---
+# 0. Temizlik
+```{r}
+if(!is.null(dev.list())) dev.off()
+cat("\014")
+rm(list=ls(all=TRUE)) 
+```
+
+
+```{r setup, include=FALSE}
+# ============================================================================
+# BÖLÜM 0: BAŞLANGIÇ AYARLARI - Bu bölüm sadece arka planda çalışır, görünmez
+# ============================================================================
+
+# knitr paketinin global ayarları yapılıyor
+# echo = TRUE: Kodlar çıktıda görünsün
+# warning = FALSE: Uyarı mesajları gizlensin
+# message = FALSE: Paket yüklenirken çıkan mesajlar gizlensin
+# fig.align = 'center': Grafikler ortada görünsün
+
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.align = 'center')
+```
+
+# 1. GİRİŞ: FİNANSAL EKONOMETRİYE HAZIRLIK
+
+Bu ders notlarında BİST100 endeksi üzerinden finansal ekonometrinin temel kavramlarını öğreneceğiz. 
+Amaçlarımız:
+
+📊 Yahoo Finance'ten canlı veri çekmek
+📐 Getiri hesaplamalarını öğrenmek
+📈 Betimsel istatistikleri yorumlamak
+🔍 Logaritmik ve basit getiri arasındaki ilişkiyi anlamak
+# 2. PAKET KURULUMU VE YÜKLENMESİ
+
+## 2.1 Paketlerin Kurulumu
+
+```{r}
+# ============================================================================
+# KOD BLOĞU 1: PAKET KURULUMU
+# ============================================================================
+
+# NOT: Bu kodları bilgisayarınızda SADECE BİR KEZ çalıştırmanız yeterlidir.
+# Eğer paketler zaten yüklüyse, bu adımı atlayabilirsiniz.
+
+# install.packages() fonksiyonu: R'a yeni paketler ekler.
+# Tırnak içinde yazılan paket isimleri CRAN'dan indirilir.
+
+install.packages("tidyverse")    
+# tidyverse: Veri bilimi için 8 paketin birleşimi (dplyr, ggplot2, tidyr, etc.)
+# dplyr: veri manipülasyonu (filtrele, grupla, özetle)
+# ggplot2: profesyonel grafikler çizmek için
+
+install.packages("quantmod")      
+# quantmod: Quantitative Financial Modelling
+# Yahoo Finance, Google Finance gibi kaynaklardan finansal veri indirir
+# getSymbols() fonksiyonu bu paketin en önemli fonksiyonudur
+
+install.packages("psych")         
+# psych: Psychological Research Tools
+# describe() fonksiyonu ile detaylı betimsel istatistikler hesaplar
+# mean, sd, median, skew, kurtosis gibi 20+ istatistiği tek seferde verir
+
+install.packages("PerformanceAnalytics")  
+# PerformanceAnalytics: Portföy performans ve risk analizi
+# table.Stats(), table.AnnualizedReturns(), maxDrawdown() gibi fonksiyonlar içerir
+# Finansal varlıkların risk ölçütlerini hesaplamak için kullanılır
+
+install.packages("moments")       
+# moments: İstatistiksel moment hesaplamaları
+# skewness() (çarpıklık), kurtosis() (basıklık) hesaplar
+# Jarque-Bera normallik testi için jarque.test() fonksiyonunu içerir
+
+install.packages("gridExtra")     
+# gridExtra: Grafik düzenleme
+# grid.arrange() ile birden fazla grafiği yan yana veya alt alta dizer
+
+install.packages("knitr")         
+# knitr: R Markdown raporlama
+# R kodu ile LaTeX ve metni birleştirerek profesyonel raporlar hazırlar
+install.packages("conflicted")     
+# conflicted: Paket çakışmalarını yönetmek için kullanılır
+# Aynı isimli fonksiyonlar (örneğin select, filter) birden fazla pakette varsa
+# R hangisini kullanacağını otomatik seçer ve bu hata üretebilir.
+# conflicted paketi bu durumu kontrol etmenizi sağlar.
+# conflict_prefer("select", "dplyr") gibi komutlarla
+# hangi paketin öncelikli olacağını siz belirlersiniz.
+# Özellikle tidyverse ve MASS birlikte kullanıldığında önerilir.
+install.packages("kableExtra")     
+# kableExtra: Tablo görselleştirme paketi
+# knitr::kable() ile oluşturulan tabloları daha estetik hale getirir
+# HTML ve PDF çıktılarında profesyonel tablo formatı sağlar
+# kable_styling(): tabloya tema ve stil ekler
+# row_spec(), column_spec(): satır ve sütun biçimlendirme yapar
+# striped, hover, condensed gibi hazır tablo stilleri sunar
+# Akademik rapor, tez ve makale çıktıları için önerilir
+
+```
+
+## 2.2 Paketlerin Yüklenmesi
+
+```{r}
+# ============================================================================
+# KOD BLOĞU 2: PAKETLERİ AKTİF ETME
+# ============================================================================
+
+# library() fonksiyonu: Kurulu paketleri hafızaya yükler.
+# Her R oturumunda (session) bir kez çalıştırılmalıdır.
+
+library(tidyverse)                # tidyverse paketini yükle
+# Çakışma uyarısı: filter() ve lag() gibi fonksiyonlar birden çok pakette var
+# Bu durumda en son yüklenen paketin fonksiyonu önceliklidir
+
+library(quantmod)                 # quantmod paketini yükle
+# getSymbols() artık kullanıma hazır
+
+library(psych)                    # psych paketini yükle
+# describe() fonksiyonu geldi
+
+library(PerformanceAnalytics)     # PerformanceAnalytics paketini yükle
+# Finansal risk ölçümleri için gerekli fonksiyonlar eklendi
+
+library(moments)                  # moments paketini yükle
+# skewness, kurtosis, jarque.test() eklendi
+
+library(gridExtra)                # gridExtra paketini yükle
+# grid.arrange() eklendi
+```
+
+# 3. VERİ İNDİRME: YAHOO FINANCE'DEN BİST100 ÇEKMEK
+
+## 3.1 Veri İndirme ve İlk Kontroller
+
+```{r}
+# ============================================================================
+# BİST100 VERİSİNİ YAHOO FİNANCE'TEN ÇEKME
+# ============================================================================
+
+bist <- getSymbols("XU100.IS", 
+                   src = "yahoo", 
+                   from = "2021-01-01", 
+                   to = Sys.Date(),
+                   auto.assign = FALSE)
+colnames(bist) <- c("Open", "High", "Low", "Close", "Volume", "Adjusted")
+
+# ----------------------------------------------------------------------------
+# KOD AÇIKLAMALARI:
+# ----------------------------------------------------------------------------
+
+# getSymbols()                  : quantmod paketinden finansal veri indirme fonksiyonu
+#                              - Yahoo Finance, Google Finance vb. kaynaklardan veri çeker
+#                              - xts (zaman serisi) formatında veri döndürür
+
+# "XU100.IS"                   : BİST100 endeksinin Yahoo Finance'teki sembolü
+#                              - XU100: BİST100 endeks kodu
+#                              - .IS  : Borsa İstanbul (Istanbul Stock Exchange) uzantısı
+#                              - NOT: Eski kod "^XU100" ÇALIŞMAZ, doğrusu "XU100.IS"
+
+# src = "yahoo"                : Veri kaynağı (source)
+#                              - "yahoo" : Yahoo Finance (varsayılan)
+#                              - "google": Google Finance (kullanım dışı)
+#                              - "oanda" : Döviz kurları için
+#                              - "fred"  : ABD ekonomik verileri için
+
+# from = "2021-01-01"          : Başlangıç tarihi
+#                              - Format: YYYY-MM-DD (yıl-ay-gün)
+#                              - 1 Ocak 2021'den itibaren tüm verileri getir
+
+# to = Sys.Date()              : Bitiş tarihi
+#                              - Sys.Date() = bugünün tarihi (otomatik güncellenir)
+#                              - Örnek: 2024-01-15 gibi
+#                              - Manüel tarih de verilebilir: to = "2024-12-31"
+
+# ----------------------------------------------------------------------------
+# ÇALIŞTIRMA SONRASI:
+# ----------------------------------------------------------------------------
+
+# Veri başarıyla indirildiğinde otomatik olarak "XU100.IS" adlı bir değişken oluşur
+# Bu değişken xts (zaman serisi) formatındadır ve 6 sütun içerir:
+
+# XU100.IS.Open   : Günlük açılış fiyatı
+# XU100.IS.High   : Günlük en yüksek fiyat
+# XU100.IS.Low    : Günlük en düşük fiyat
+# XU100.IS.Close  : Günlük kapanış fiyatı
+# XU100.IS.Volume : Günlük işlem hacmi
+# XU100.IS.Adjusted : Splits ve temettü düzeltilmiş kapanış
+
+# ----------------------------------------------------------------------------
+# VERİYİ KONTROL ETME:
+# ----------------------------------------------------------------------------
+
+head(bist)    # İlk 6 satırı göster
+tail(bist)    # Son 6 satırı göster
+str(bist)     # Veri yapısını göster
+summary(bist) # Özet istatistikler
+
+# ----------------------------------------------------------------------------
+# ALTERNATİF KULLANIMLAR:
+# ----------------------------------------------------------------------------
+
+# Farklı tarih aralığı:
+# getSymbols("XU100.IS", from = "2020-01-01", to = "2023-12-31")
+
+# Farklı BIST hisseleri:
+# getSymbols("THYAO.IS", from = "2021-01-01", to = Sys.Date())  # THY
+# getSymbols("AKBNK.IS", from = "2021-01-01", to = Sys.Date())  # Akbank
+# getSymbols("GARAN.IS", from = "2021-01-01", to = Sys.Date())  # Garanti
+```
+
+
+## 4.1 Getiri Türlerinin Matematiksel Tanımı
+
+Finansal ekonometride iki temel getiri kavramı vardır:
+
+### 4.1.1 Basit Getiri (Simple Return)
+
+$$
+R_t = \frac{P_t - P_{t-1}}{P_{t-1}} = \frac{P_t}{P_{t-1}} - 1
+$$
+
+### 4.1.2 Logaritmik Getiri (Log Return)
+
+$$
+\begin{aligned}
+r_t &= \ln\left(\frac{P_t}{P_{t-1}}\right)
+     = \ln(P_t) - \ln(P_{t-1}) \\[6pt]
+
+P_t      &:\; t \text{ zamanındaki fiyat} \\
+P_{t-1}  &:\; \text{bir önceki dönem fiyat} \\
+\ln      &:\; \text{doğal logaritma}
+\end{aligned}
+
+$$
+
+## 4.2 R'da Getiri Hesaplama
+
+```{r}
+# ============================================================================
+# KOD BLOĞU 5: GETİRİ HESAPLAMA
+# ============================================================================
+
+# prices: fiyat vektörü
+fiyat <- bist$Close
+
+# diff() fonksiyonu: ardışık elemanlar arasındaki farkı alır
+# Örnek: diff(c(10, 12, 15)) = c(2, 3)
+# Yani: 12-10=2, 15-12=3
+
+# Delt() fonksiyonu: Yüzde değişim hesaplar
+# (Pt - Pt-1) / Pt-1
+
+# BASİT GETİRİ: (Pt - Pt-1) / Pt-1
+bist$Basit_Getiri <- Delt(fiyat)
+
+# LOGARİTMİK GETİRİ: ln(Pt) - ln(Pt-1)
+bist$Log_Getiri <- diff(log(fiyat))
+
+# NA değerlerini kontrol et
+cat("İlk 5 gözlem:\n")
+head(bist[, c("Close", "Basit_Getiri", "Log_Getiri")], 5) %>% 
+  round(digits = 5)
+
+cat("\nSon 5 gözlem:\n")
+tail(bist[, c("Close", "Basit_Getiri", "Log_Getiri")], 5) %>% 
+  round(digits = 5)
+
+```
+## 5.1 Teorik İspat (Taylor Serisi)
+
+Bir fonksiyonun $a$ noktası etrafındaki Taylor açılımı:
+
+$$
+\text{Bir fonksiyonun a noktası etrafındaki Taylor açılımı:} \\
+f(x) \approx f(a) + f'(a)(x-a) + \frac{f''(a)}{2!}(x-a)^2 
++ \frac{f^{(3)}(a)}{3!}(x-a)^3 + \cdots
+$$
+
+Logaritmik getiri ile basit getiri arasındaki ilişkiyi göstermek için:
+
+fonksiyonunun $R=0$ etrafındaki Taylor açılımını inceleyelim.
+
+---
+
+### Türevler
+
+
+$$
+\text{Taylor Serisi}\\
+\text{Bir fonksiyonun belirli bir nokta etrafındaki Taylor serisi açılımı:}\\
+\begin{aligned}
+f(0) &= \ln(1) = 0 \\
+
+f'(R) &= \frac{1}{1+R} \Rightarrow f'(0) = 1 \\
+
+f''(R) &= -\frac{1}{(1+R)^2} \Rightarrow f''(0) = -1 \\
+
+f^{(3)}(R) &= \frac{2}{(1+R)^3} \Rightarrow f^{(3)}(0) = 2 \\[8pt]
+
+\text{Yerine koyarsak:} \\
+
+\ln(1+R) &= 0 + R - \frac{1}{2}R^2 + \frac{1}{3}R^3 - \frac{1}{4}R^4 + \cdots \\[6pt]
+
+\text{Dolayısıyla:} \\
+
+\ln(1+R) &= R - \frac{R^2}{2} + \frac{R^3}{3} - \frac{R^4}{4} + \cdots \\[6pt]
+
+\text{Eğer } |R| < 0.1, \text{ ise} \quad 
+\ln(1+R) &\approx R \\
+\end{aligned} \\
+\text{Yani küçük getiriler için logaritmik getiri yaklaşık olarak basit getiriye eşittir.
+}
+$$
+```{r}
+# ============================================================================
+# KOD BLOĞU 6: SAYISAL İSPAT
+# ============================================================================
+
+# ------------------------------------------------------------
+# Örnek 1: Küçük Getiri (%1)
+# ------------------------------------------------------------
+
+R_kucuk <- 0.01                   
+# %1 = 0.01 (ondalık sayı olarak)
+
+r_log <- log(1 + R_kucuk)         
+# ln(1 + 0.01) hesapla
+
+# round() fonksiyonu: sayıyı yuvarlar
+# round(x, digits = 4): x'i 4 ondalık basamağa yuvarla
+# Örnek: round(0.012345, 2) = 0.01
+
+hata_mutlak <- abs(R_kucuk - r_log)  
+# |0.01 - log(1.01)| mutlak fark
+# abs(): mutlak değer alır
+
+hata_yuzde <- (hata_mutlak / R_kucuk) * 100  
+# Yüzdesel hata = (mutlak hata / gerçek değer) * 100
+
+# data.frame(): tablo oluşturur
+ispat_tablo1 <- data.frame(
+  Getiri_Turu = c("Basit Getiri (R)", 
+                  "Logaritmik Getiri (r)", 
+                  "Mutlak Fark", 
+                  "Yüzdesel Hata"),
+  Deger = c(R_kucuk, 
+            round(r_log, 6),        # log değerini 6 basamak yuvarla
+            round(hata_mutlak, 6),   # hatayı 6 basamak yuvarla
+            round(hata_yuzde, 4))    # yüzdeyi 4 basamak yuvarla
+)
+
+kable(ispat_tablo1, 
+      caption = "Tablo 3: %1 Getiri için Karşılaştırma", 
+      digits = 6)
+
+# ------------------------------------------------------------
+# Örnek 2: Büyük Getiri (%20)
+# ------------------------------------------------------------
+
+R_buyuk <- 0.20                    
+# %20 = 0.20
+
+r_log_buyuk <- log(1 + R_buyuk)    
+# ln(1.20) hesapla
+
+hata_buyuk <- abs(R_buyuk - r_log_buyuk)
+
+ispat_tablo2 <- data.frame(
+  Getiri_Turu = c("Basit Getiri (R)", 
+                  "Logaritmik Getiri (r)", 
+                  "Mutlak Fark"),
+  Deger = c(R_buyuk, 
+            round(r_log_buyuk, 6), 
+            round(hata_buyuk, 6))
+)
+
+kable(ispat_tablo2, 
+      caption = "Tablo 4: %20 Getiri için Karşılaştırma", 
+      digits = 6)
+
+# ------------------------------------------------------------
+# Grafiksel Gösterim
+# ------------------------------------------------------------
+
+# seq(): dizi oluşturur
+# from = -0.3: -%30'dan başla
+# to = 0.3: %30'a kadar
+# by = 0.01: 0.01'lik adımlarla
+R_values <- seq(-0.3, 0.3, by = 0.01)
+
+# log(1+R) hesapla (her R değeri için)
+log_returns <- log(1 + R_values)
+
+# data.frame ile grafik verisi oluştur
+plot_data <- data.frame(
+  R = R_values,
+  LogReturn = log_returns,
+  Esitlik = R_values  # 45 derece çizgisi için (y=x)
+)
+
+# ggplot: grafik çizim paketi
+# aes(): aesthetic - x ve y eksenlerini tanımla
+ggplot(plot_data, aes(x = R)) +
+  
+  # geom_line(): çizgi grafiği
+  # aes(y = LogReturn, color = "..."): y ekseni, renk tanımı
+  # size: çizgi kalınlığı
+  geom_line(aes(y = LogReturn, color = "Logaritmik Getiri"), size = 1.2) +
+  
+  # geom_line(): ikinci çizgi (kesikli)
+  # linetype = "dashed": kesikli çizgi
+  geom_line(aes(y = Esitlik, color = "Basit Getiri"), 
+            linetype = "dashed", size = 1) +
+  
+  # labs(): başlık ve etiketler
+  labs(title = "Grafik 1: Logaritmik ve Basit Getiri Karşılaştırması",
+       subtitle = "Küçük getirilerde iki eğri çakışır",
+       x = "Basit Getiri (R)",
+       y = "Getiri Değeri",
+       color = "Getiri Türü:") +
+  
+  # theme_minimal(): minimalist tema
+  theme_minimal() +
+  
+  # scale_color_manual(): renkleri manuel ayarla
+  scale_color_manual(values = c("Logaritmik Getiri" = "darkblue", 
+                                 "Basit Getiri" = "darkred")) +
+  
+  # annotate(): grafik üzerine not ekle
+  annotate("text", x = 0.15, y = 0.13, 
+           label = "Küçük R'lerde fark azalır\n(çizgiler çakışır)", 
+           size = 4, color = "gray30")
+```
+
+
+```{r}
+# ============================================================================
+# KOD BLOĞU 7: BETİMSEL İSTATİSTİKLER
+# ============================================================================
+
+# ------------------------------------------------------------
+# Veriyi Hazırlama
+# ------------------------------------------------------------
+
+# filter(!is.na(...)): NA (boş) olmayan satırları filtrele
+# !is.na(): NA değilse TRUE döner
+# is.na(): NA ise TRUE döner
+conflict_prefer("select", "dplyr")
+conflict_prefer("filter", "dplyr")
+bist <- as.data.frame(bist)
+returns_data <- bist %>%
+  filter(!is.na(Basit_Getiri)) %>%     # NA'ları çıkar
+  select(Basit_Getiri, Log_Getiri)      # sadece getiri sütunlarını seç
+
+# ------------------------------------------------------------
+# psych::describe() Kullanımı
+# ------------------------------------------------------------
+
+# describe() fonksiyonun parametreleri:
+# - interp = FALSE: aralık tahmini yapma
+# - skew = TRUE: çarpıklık hesapla
+# - ranges = TRUE: min-max değerlerini göster
+# - quant = c(0.25, 0.75): 1. ve 3. çeyreklik
+# - IQR = TRUE: çeyrekler arası açıklık
+# - fast = FALSE: tüm istatistikleri hesapla
+
+desc_stats <- psych::describe(returns_data, 
+                              interp = FALSE,
+                              skew = TRUE,
+                              ranges = TRUE,
+                              quant = c(0.25, 0.75),
+                              IQR = TRUE,
+                              fast = FALSE)
+
+# ------------------------------------------------------------
+# İstatistiklerin Anlamları:
+# ------------------------------------------------------------
+# n        : gözlem sayısı (geçerli veri sayısı)
+# mean     : aritmetik ortalama (toplam/gözlem sayısı)
+# sd       : standart sapma (sqrt(varyans)) - risk ölçütü
+# median   : ortanca (sıralanmış verinin ortasındaki değer)
+# min      : minimum değer (en düşük getiri)
+# max      : maksimum değer (en yüksek getiri)
+# range    : max - min (değişim aralığı)
+# skew     : çarpıklık (simetriden sapma)
+#           = 0: simetrik, >0: sağa çarpık, <0: sola çarpık
+# kurtosis : basıklık (uç değer yoğunluğu)
+#           = 3: normal, >3: sivri (kalın kuyruk), <3: basık
+# se       : standart hata (sd/sqrt(n))
+
+desc_table <- desc_stats %>%
+  as.data.frame() %>%
+  select(vars, n, mean, sd, median, min, max, range, skew, kurtosis, se)
+
+kable(desc_table, 
+      caption = "Tablo 5: BİST100 Getirileri Betimsel İstatistikleri", 
+      digits = 4)
+# digits = 4: tüm sayıları 4 ondalık basamakla göster
+print(desc_stats)
+```
+
+## 6.2 Normallik Testi (Jarque-Bera)
+
+```{r}
+# ============================================================================
+# KOD BLOĞU 8: JARQUE-BERA NORMALLİK TESTİ
+# ============================================================================
+
+# ------------------------------------------------------------
+# Jarque-Bera Testi Hesaplaması
+# ------------------------------------------------------------
+
+# jarque.test(): Jarque-Bera normallik testi yapar
+# Hipotezler:
+# H0: Veri normal dağılımdan gelir
+# H1: Veri normal dağılımdan gelmez (red)
+# Test istatistiği: JB = n/6 * (S^2 + (K-3)^2/4)
+# n: gözlem sayısı, S: çarpıklık, K: basıklık
+
+jarque_bera_basit <- jarque.test(returns_data$Basit_Getiri)
+jarque_bera_log <- jarque.test(returns_data$Log_Getiri)
+
+# ------------------------------------------------------------
+# Sonuçları Düzenleme
+# ------------------------------------------------------------
+
+# $ işareti: listeden eleman çekme
+# statistic: test istatistiği değeri
+# p.value: p-değeri (anlamlılık düzeyi)
+
+normallik_sonuc <- data.frame(
+  Getiri_Turu = c("Basit Getiri", "Logaritmik Getiri"),
+  JB_Istatistigi = c(round(jarque_bera_basit$statistic, 4), 
+                     round(jarque_bera_log$statistic, 4)),
+  p_degeri = c(round(jarque_bera_basit$p.value, 6), 
+               round(jarque_bera_log$p.value, 6)),
+  Karar = c(ifelse(jarque_bera_basit$p.value < 0.05, 
+                   "Normal Değil (RED)", 
+                   "Normal (KABUL)"),
+            ifelse(jarque_bera_log$p.value < 0.05, 
+                   "Normal Değil (RED)", 
+                   "Normal (KABUL)"))
+)
+
+# ifelse(test, doğruysa, yanlışsa): koşullu işlem
+# p < 0.05 ise %95 güvenle normal değil deriz
+
+kable(normallik_sonuc, 
+      caption = "Tablo 6: Jarque-Bera Normallik Testi Sonuçları", 
+      digits = 4) %>% 
+  kable_styling(position = "center", full_width = FALSE)
+```
+
+
+
+
+
+
+```{r}
+knitr::kable(desc_table, digits = 4) %>%
+  kable_styling(position = "center", full_width = FALSE)
+```
+
+
+
+
+
+
+
+
+
+
+
+
