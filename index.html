@@ -341,6 +341,25 @@ a:hover{ text-decoration: none; }
       color: var(--muted);
       margin-top: 4px;
     }
+    
+    /* Stat Link - Tıklanabilir stat kartı */
+    .stat-link {
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .stat-link:hover {
+      box-shadow: 0 0 0 4px rgba(94,234,212,.12);
+      border-color: rgba(94,234,212,.5);
+      transform: translateY(-2px);
+      background: rgba(94,234,212,.08);
+    }
+    .stat-link:hover .n {
+      color: #5eead4;
+    }
+    .stat-link:hover .t {
+      color: rgba(255,255,255,.85);
+    }
 
     /* Profile side */
     .profile{
@@ -714,10 +733,10 @@ a:hover{ text-decoration: none; }
               <div class="n">Ekonometri</div>
               <div class="t">Araştırma odağı</div>
             </div>
-            <div class="stat">
+            <a href="./r_python.html" class="stat stat-link">
               <div class="n">R & Python</div>
               <div class="t">Uygulamalı içerikler</div>
-            </div>
+            </a>
             <div class="stat">
               <div class="n">Açık Kaynak</div>
               <div class="t">Notlar & materyaller</div>
