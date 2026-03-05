@@ -1,0 +1,57 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+```{r}
+# =============================================================================
+# PANEL VERİ EKONOMETRİSİ İÇİN VERİ SETİ HAZIRLIĞI
+# Hazırlayan: Doç.Dr.Erkan Ağaslan
+# Tarih: Mart 2026
+# =============================================================================
+# Amaç: Panel veri analizi için gerekli olan veri hazırlığı ile kod hazırlığını yapmak. Tüm kodların linkleri paylaşılacaktır. 
+# =============================================================================
+
+# Gerekli paketler
+if (!require("plm")) install.packages("plm", repos = "https://cloud.r-project.org")
+if (!require("lmtest")) install.packages("lmtest", repos = "https://cloud.r-project.org")
+if (!require("readxl")) install.packages("readxl", repos = "https://cloud.r-project.org")
+if (!require("xlsx")) install.packages("xlsx", repos = "https://cloud.r-project.org")
+
+library(plm)
+library(lmtest)
+library(readxl)
+library(xlsx)
+library(dplyr)
+```
+
+```{r}
+panel_veri <- read_excel("panel_veri.xlsx")                              # excelden veriyi yükledim.
+panel_veri                                                               # yüklediğim veriye önizleme yaptım
+id <- rep(1:25, each = 168)                                              # id isimli firmaların kodlarını oluşturdum.
+df <- bind_cols(id, panel_veri)
+names(df)[1] <- "id"
+eko <- pdata.frame(df, index = c("id", "tarih"))
+plot(eko$roa)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
