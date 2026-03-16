@@ -1,0 +1,127 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+```{r}
+# =============================================================================
+# PANEL VERİ EKONOMETRİSİ İÇİN VERİ SETİ HAZIRLIĞI
+# Hazırlayan: Doç.Dr.Erkan Ağaslan
+# Tarih: Mart 2026
+# =============================================================================
+# Amaç: Panel veri analizi için gerekli olan veri hazırlığı ile kod hazırlığını yapmak. Tüm kodların linkleri paylaşılacaktır. 
+# =============================================================================
+
+# Gerekli paketler
+if (!require("plm")) install.packages("plm")
+if (!require("lmtest")) install.packages("lmtest")
+if (!require("readxl")) install.packages("readxl")
+if (!require("xlsx")) install.packages("xlsx")
+# Paketlerin aktif hale getirilmesi
+library(plm)
+library(lmtest)
+library(readxl)
+library(xlsx)
+library(dplyr)
+```
+
+
+```{r}
+panel_veri <- read_excel("panel_veri.xlsx")               # excelden veriyi yükledim.
+panel_veri                                                # yüklediğim veriye önizleme yaptım
+id <- rep(1:25, each = 168)                               # id isimli firmaların kodlarını oluşturdum.
+df <- bind_cols(id, panel_veri)
+names(df)[1] <- "id"
+eko <- pdata.frame(df, index = c("id", "tarih"))
+plot(eko$roa)
+```
+
+
+# =============================================================================
+# PANEL VERİ EKONOMETRİSİ: BİRİM KÖK TESTLERİ
+# Hazırlayan: Doç. Dr. Erkan Ağaslan
+# Kütahya Dumlupınar Üniversitesi - Ekonometri Bölümü
+# Tarih: Mart 2026
+# =============================================================================
+# Amaç: Panel birim kök testlerinin tam uygulaması
+#        Pesaran CD → 1. Nesil → 2. Nesil → Birinci Fark
+# =============================================================================
+
+
+
+## ADIM 1: Yatay Kesit Bağımlılık Testi (Pesaran CD)
+
+**Amaç:**  
+Birimler (ülkeler, firmalar, bankalar vb.) arasında ortak şoklar, yayılma etkileri veya gözlenemeyen ortak faktörler nedeniyle yatay kesit bağımlılığı olup olmadığını test etmek.
+
+$$
+H_0: \:\text{Yatay kesit bağımsızlığı vardır. (Yatay kesit bağımlılığı yoktur.)}
+$$
+
+$$
+H_1: \:\text{Yatay kesit bağımsızlığı yoktur. (Yatay kesit bağımlılığı vardır.)}
+$$
+
+Önce modelin hata terimleri veya kalıntıları elde edilir.  
+Daha sonra her iki birim çifti için korelasyon katsayıları hesaplanır.  
+Pesaran CD testi, bu ikili korelasyonların ortalamasına dayanır.
+
+Test istatistiği:
+
+$$
+CD =
+\sqrt{\frac{2T}{N(N-1)}}
+\sum_{i=1}^{N-1}\sum_{j=i+1}^{N}\hat{\rho}_{ij}
+$$
+
+Burada:
+
+$$N: \:\text{ yatay kesit birim sayısı} $$
+- $$T: \: \text{zaman boyutu}$$:
+- $$\hat{\rho}_{ij}: \: i \; \text{ve}\; j \; \text{birimlerine ait kalıntılar arasındaki korelasyon katsayısı} $$
+
+Bu istatistik asimptotik olarak şu dağılıma uyar:
+
+$$
+CD \sim N(0,1)
+$$
+
+**Yorum:**  
+$$
+\text{p-değeri anlamlılık düzeyinden küçükse } H_0 \text{ reddedilir.}
+\\
+\text{Bu durumda birimler arasında yatay kesit bağımlılığı vardır ve genellikle ikinci nesil panel testlerine geçilir.}
+$$
+
+
+Pesaran CD testi aslında bir regresyon modelinin kalıntılarına uygulanan testtir.  Test, "birimler arasında hata terimleri korelasyonlu mu?" sorusunu sorar. Bunun için önce bir model tahmin edip kalıntıları elde etmemiz gerekir.
+roa ~ 1 yazdığımızda R'a şunu söylüyoruz: "Bağımlı değişken ROA, açıklayıcı değişken yok, sadece sabit terim var." Bu, her firma için ROA'nın ortalamasını hesaplayıp sapmaları (kalıntıları) elde etmek demektir. model = "pooling" ise tüm firmaları tek bir havuzda değerlendirmesini söyler.
+Elde edilen bu kalıntılar üzerinden Pesaran CD istatistiği, her firma çiftinin kalıntıları arasındaki korelasyonu hesaplar ve "Bu korelasyonlar toplu olarak sıfırdan farklı mı?" sorusunu cevaplar.
+Doğrudan pcdtest(eko$roa) yazdığımızda da R arka planda benzer bir işlem yapar, ama biz modeli açıkça belirtmemiş oluruz. Akademik çalışmalarda hangi modelin kalıntılarını test ettiğimizi göstermek önemli olduğu için plm() ile yazmak daha şeffaf ve metodolojik olarak daha doğrudur.
+
+```{r}
+cd_test <- pcdtest(plm(eko$roa ~ 1, 
+                       data = eko, 
+                       model = "pooling"))
+model <- plm(eko$roa ~ 1, 
+    data = eko,
+    model = "pooling")
+pcdtest(model)
+print(cd_test)
+
+# Sonucu yorumlayalım:
+cat("\n========== PESARAN CD TEST SONUCU ==========\n")
+cat("CD istatistiği :", cd_test$statistic, "\n")
+cat("p-değeri        :", cd_test$p.value, "\n")
+
+# Eğer bu karar sürecini kodla yaparsak hata riskini minimize etmiş oluruz.
+if (cd_test$p.value < 0.05) {
+  cat("KARAR: H0 RED --> Yatay kesit BAĞIMLILIĞI VAR!\n")
+  cat("       2. Nesil birim kök testleri kullanılmalıdır.\n")
+  cat("       (CIPS, CADF)\n")
+} else {
+  cat("KARAR: H0 KABUL --> Yatay kesit bağımsızlığı var.\n")
+  cat("       1. Nesil birim kök testleri yeterlidir.\n")
+  cat("       (LLC, IPS, Fisher)\n")
+}
+cat("=============================================\n")
+```
