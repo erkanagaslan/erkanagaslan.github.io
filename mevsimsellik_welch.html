@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mevsimsellik & Welch Testi — OLS Sahte Regresyon</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --blue:#185FA5; --blue-light:#E6F1FB; --blue-dark:#0C447C;
+    --red:#E24B4A;  --red-light:#FCEBEB;  --red-dark:#791F1F;
+    --green:#3B6D11;--green-light:#EAF3DE;--green-dark:#27500A;
+    --amber:#BA7517;--amber-light:#FAEEDA;--amber-dark:#633806;
+    --purple:#6B3FA0;--purple-light:#F0EBF8;
+    --text:#1a1a1a; --text2:#5F5E5A;
+    --border:rgba(0,0,0,0.11); --bg:#ffffff; --bg2:#F8F7F4;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    background:var(--bg2);color:var(--text);
+    padding:16px;max-width:1380px;margin:0 auto;
+  }
+  h1{font-size:18px;font-weight:700;margin-bottom:3px;}
+  .subtitle{font-size:13px;color:var(--text2);margin-bottom:16px;}
+
+  /* LAYOUT */
+  .page-layout{display:grid;grid-template-columns:370px 1fr;gap:14px;align-items:start;}
+  @media(max-width:860px){.page-layout{grid-template-columns:1fr;}}
+  .col-right{position:sticky;top:12px;min-width:0;}
+  @media(max-width:860px){.col-right{position:static;}}
+
+  .card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:12px;}
+  .sec{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.55px;margin-bottom:10px;}
+
+  /* SLIDER */
+  .sr{display:flex;align-items:center;gap:10px;margin-bottom:9px;}
+  .sl{font-size:12.5px;color:var(--text2);min-width:115px;line-height:1.3;}
+  input[type=range]{flex:1;height:4px;accent-color:var(--blue);-webkit-appearance:none;appearance:none;background:var(--border);border-radius:2px;outline:none;}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;background:var(--blue);border-radius:50%;cursor:pointer;}
+  .sv{font-size:13px;font-weight:700;min-width:40px;text-align:right;color:var(--text);}
+
+  /* TOGGLE */
+  .toggle-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+  .toggle-lbl{font-size:12.5px;color:var(--text2);min-width:115px;}
+  .tog-opts{display:flex;gap:5px;flex-wrap:wrap;}
+  .tog-btn{padding:4px 11px;font-size:12px;border-radius:999px;border:0.5px solid var(--border);cursor:pointer;background:var(--bg2);color:var(--text2);transition:all .2s;}
+  .tog-btn.active{background:var(--blue-light);color:var(--blue-dark);border-color:#85B7EB;}
+
+  /* BUTTON */
+  .btn{display:block;width:100%;padding:11px;background:var(--blue);color:white;border:none;border-radius:var(--radius);font-size:13px;font-weight:600;cursor:pointer;margin-bottom:10px;}
+  .btn:active{opacity:.85;}
+
+  /* METRIC */
+  .metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+  .metric{background:var(--bg2);border-radius:8px;padding:9px 12px;text-align:center;}
+  .metric-lbl{font-size:10.5px;color:var(--text2);margin-bottom:2px;line-height:1.3;}
+  .metric-val{font-size:17px;font-weight:700;color:var(--text);transition:color .3s;}
+  .metric-val.up{color:var(--green);}
+  .metric-val.down{color:var(--red-dark);}
+
+  /* PILL */
+  .pill{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:999px;font-size:11.5px;font-weight:700;border:1px solid;transition:all .3s;}
+  .pill-red{background:var(--red-light);border-color:#F09595;color:var(--red-dark);}
+  .pill-grn{background:var(--green-light);border-color:#C0DD97;color:var(--green-dark);}
+  .pill-amber{background:var(--amber-light);border-color:#E8C97A;color:var(--amber-dark);}
+  .pill-purple{background:var(--purple-light);border-color:#C9A8E8;color:var(--purple);}
+
+  /* BAR */
+  .bar-wrap{height:5px;background:rgba(0,0,0,.07);border-radius:3px;overflow:hidden;margin:4px 0 10px;}
+  .bar{height:100%;border-radius:3px;transition:width .5s,background .5s;}
+
+  /* WELCH PANEL */
+  .welch-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:8px;}
+  @media(max-width:500px){.welch-grid{grid-template-columns:1fr 1fr;}}
+  .wm{background:var(--bg2);border-radius:8px;padding:8px 10px;text-align:center;}
+  .wm-lbl{font-size:10px;color:var(--text2);margin-bottom:2px;line-height:1.3;}
+  .wm-val{font-size:15px;font-weight:700;}
+
+  /* COMPARE TABLE */
+  .cmp-table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px;}
+  .cmp-table th{background:var(--bg2);padding:7px 10px;text-align:left;font-weight:600;border-bottom:1px solid var(--border);}
+  .cmp-table td{padding:7px 10px;border-bottom:0.5px solid var(--border);vertical-align:top;}
+  .cmp-table tr:last-child td{border-bottom:none;}
+  .val-bad{color:var(--red-dark);font-weight:700;}
+  .val-ok{color:var(--green-dark);font-weight:700;}
+
+  /* INFO BOXES */
+  .info-box{background:var(--blue-light);border-left:3px solid var(--blue);border-radius:0 var(--radius) var(--radius) 0;padding:10px 14px;font-size:12.5px;color:#0C447C;line-height:1.65;margin-top:6px;}
+  .warn-box{background:var(--amber-light);border-left:3px solid var(--amber);border-radius:0 var(--radius) var(--radius) 0;padding:10px 14px;font-size:12.5px;color:var(--amber-dark);line-height:1.65;margin-bottom:10px;}
+  .danger-box{background:var(--red-light);border-left:3px solid var(--red);border-radius:0 var(--radius) var(--radius) 0;padding:10px 14px;font-size:12.5px;color:var(--red-dark);line-height:1.65;margin-bottom:10px;}
+
+  /* TABS */
+  .tabs{display:flex;gap:4px;margin-bottom:10px;flex-wrap:wrap;}
+  .tab{padding:5px 14px;font-size:12px;border-radius:999px;border:0.5px solid var(--border);cursor:pointer;background:var(--bg2);color:var(--text2);transition:all .2s;font-weight:500;}
+  .tab.active{background:var(--blue);color:white;border-color:var(--blue);}
+
+  /* CHART CANVAS */
+  canvas{display:block;width:100%!important;}
+
+  /* DIVIDER */
+  hr{border:none;border-top:0.5px solid var(--border);margin:12px 0;}
+
+  /* MEVSIM BADGE */
+  .season-badges{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0;}
+  .sbadge{padding:3px 9px;border-radius:5px;font-size:11px;font-weight:600;}
+  .sbadge-0{background:#DBEAFE;color:#1E40AF;}
+  .sbadge-1{background:#D1FAE5;color:#065F46;}
+  .sbadge-2{background:#FEF3C7;color:#92400E;}
+  .sbadge-3{background:#FCE7F3;color:#9D174D;}
+
+  /* TRAMO */
+  .tramo-split{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  @media(max-width:600px){.tramo-split{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<h1>Mevsimsellik, Welch Testi & Sahte Regresyon</h1>
+<p class="subtitle">Doç. Dr. Erkan Ağaslan — Kütahya Dumlupınar Üniversitesi &nbsp;·&nbsp; Finansal Ekonometri</p>
+
+<div class="page-layout">
+<!-- ===== SOL SÜTUN: KONTROLLER ===== -->
+<div class="col-left">
+
+  <div class="card">
+    <div class="sec">Seri Tasarımı</div>
+
+    <div class="toggle-row">
+      <span class="toggle-lbl">Frekans</span>
+      <div class="tog-opts" id="freq-opts">
+        <button class="tog-btn" data-val="12" onclick="setFreq(this)">Aylık (12)</button>
+        <button class="tog-btn active" data-val="4" onclick="setFreq(this)">Çeyreklik (4)</button>
+        <button class="tog-btn" data-val="2" onclick="setFreq(this)">Yarı-yıllık (2)</button>
+      </div>
+    </div>
+
+    <div class="sr">
+      <span class="sl">Gözlem sayısı (T)</span>
+      <input type="range" id="sl-T" min="24" max="120" step="12" value="60">
+      <span class="sv" id="lbl-T">60</span>
+    </div>
+
+    <hr>
+    <div class="sec">Seri X — Mevsimsel Yapı</div>
+
+    <div class="sr">
+      <span class="sl">Trend (β₁<sub>X</sub>)</span>
+      <input type="range" id="sl-bx" min="0" max="0.3" step="0.01" value="0.05">
+      <span class="sv" id="lbl-bx">0.05</span>
+    </div>
+    <div class="sr">
+      <span class="sl" style="color:var(--blue-dark);font-weight:600;">Mevsimsellik A<sub>X</sub></span>
+      <input type="range" id="sl-ax" min="0" max="5" step="0.1" value="2" style="accent-color:var(--blue);">
+      <span class="sv" id="lbl-ax" style="color:var(--blue-dark);">2.0</span>
+    </div>
+    <div class="sr">
+      <span class="sl">Gürültü σ<sub>X</sub></span>
+      <input type="range" id="sl-sx" min="0.1" max="3" step="0.1" value="0.8">
+      <span class="sv" id="lbl-sx">0.8</span>
+    </div>
+
+    <hr>
+    <div class="sec">Seri Y — Mevsimsel Yapı</div>
+
+    <div class="sr">
+      <span class="sl">Trend (β₁<sub>Y</sub>)</span>
+      <input type="range" id="sl-by" min="0" max="0.3" step="0.01" value="0.08">
+      <span class="sv" id="lbl-by">0.08</span>
+    </div>
+    <div class="sr">
+      <span class="sl" style="color:var(--amber-dark);font-weight:600;">Mevsimsellik A<sub>Y</sub></span>
+      <input type="range" id="sl-ay" min="0" max="5" step="0.1" value="2.5" style="accent-color:var(--amber);">
+      <span class="sv" id="lbl-ay" style="color:var(--amber-dark);">2.5</span>
+    </div>
+    <div class="sr">
+      <span class="sl">Faz kayması (δ)</span>
+      <input type="range" id="sl-phase" min="0" max="6" step="0.1" value="1.0">
+      <span class="sv" id="lbl-phase">1.0</span>
+    </div>
+    <div class="sr">
+      <span class="sl">Gürültü σ<sub>Y</sub></span>
+      <input type="range" id="sl-sy" min="0.1" max="3" step="0.1" value="0.8">
+      <span class="sv" id="lbl-sy">0.8</span>
+    </div>
+
+    <hr>
+    <div class="warn-box" id="gerçek-ilişki-kutu">
+      <strong>Gerçek ilişki:</strong> X ve Y arasında <em>doğrudan nedensel bağ yok</em>. İkisi de ortak mevsimsel döngüye sahip bağımsız süreçler. OLS'nin bulacağı her şey <strong>sahte (spurious)</strong>.
+    </div>
+
+    <button class="btn" onclick="newData()">🔀 Yeni veri üret</button>
+  </div>
+
+</div><!-- col-left -->
+
+<!-- ===== SAĞ SÜTUN: SONUÇLAR ===== -->
+<div class="col-right">
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('tab-series','this',this)">📈 Seriler</button>
+    <button class="tab" onclick="showTab('tab-welch','this',this)">📊 Welch Testi</button>
+    <button class="tab" onclick="showTab('tab-ols','this',this)">📉 Sahte OLS</button>
+    <button class="tab" onclick="showTab('tab-tramo','this',this)">🔬 TRAMO-SEATS</button>
+  </div>
+
+  <!-- TAB 1: SERİLER -->
+  <div id="tab-series">
+    <div class="card">
+      <div class="sec">Ham seriler — X (mavi) ve Y (amber)</div>
+      <div style="position:relative;width:100%;"><canvas id="ch-raw"></canvas></div>
+      <div class="info-box" style="margin-top:8px;" id="raw-info">
+        Her iki seri de benzer mevsimsel döngü içeriyor. Görsel benzerlik güçlü bir ilişki olduğu izlenimini verir — OLS bunu sahte olarak yakalar.
+      </div>
+    </div>
+    <div class="card">
+      <div class="sec">Mevsim dilimleri — dönemlere göre ortalama</div>
+      <div id="season-badges-x" class="season-badges"></div>
+      <div style="position:relative;width:100%;"><canvas id="ch-season"></canvas></div>
+    </div>
+  </div>
+
+  <!-- TAB 2: WELCH TESTİ -->
+  <div id="tab-welch" style="display:none;">
+    <div class="card">
+      <div class="sec">Welch ANOVA (oneway.test, var.equal = FALSE)</div>
+
+      <div class="danger-box" id="welch-banner">—</div>
+
+      <div class="welch-grid" id="welch-metrics-x">
+        <!-- X serisinin mevsim dönem ortalamaları ve varyansları -->
+      </div>
+
+      <hr>
+      <div class="sec" style="margin-bottom:6px;">Test istatistikleri — Seri X</div>
+      <div class="metric-grid">
+        <div class="metric"><div class="metric-lbl">F* (Welch)</div><div class="metric-val" id="w-f-x">—</div></div>
+        <div class="metric"><div class="metric-lbl">p-değeri</div><div class="metric-val" id="w-p-x">—</div></div>
+        <div class="metric"><div class="metric-lbl">df₁ (gruplar)</div><div class="metric-val" id="w-df1-x">—</div></div>
+        <div class="metric"><div class="metric-lbl">df₂ (Welch)</div><div class="metric-val" id="w-df2-x">—</div></div>
+      </div>
+      <div id="welch-karar-x" class="pill pill-amber" style="margin-bottom:10px;">—</div>
+      <div class="bar-wrap"><div class="bar" id="w-bar-x"></div></div>
+
+      <hr>
+      <div class="sec" style="margin-bottom:6px;">Test istatistikleri — Seri Y</div>
+      <div class="metric-grid">
+        <div class="metric"><div class="metric-lbl">F* (Welch)</div><div class="metric-val" id="w-f-y">—</div></div>
+        <div class="metric"><div class="metric-lbl">p-değeri</div><div class="metric-val" id="w-p-y">—</div></div>
+        <div class="metric"><div class="metric-lbl">df₁ (gruplar)</div><div class="metric-val" id="w-df1-y">—</div></div>
+        <div class="metric"><div class="metric-lbl">df₂ (Welch)</div><div class="metric-val" id="w-df2-y">—</div></div>
+      </div>
+      <div id="welch-karar-y" class="pill pill-amber" style="margin-bottom:10px;">—</div>
+      <div class="bar-wrap"><div class="bar" id="w-bar-y"></div></div>
+
+      <div class="info-box">
+        <strong>Welch ANOVA</strong>, dönemler arası grup varyanslarının eşitsiz olduğunu varsayar (klasik ANOVA'nın aksine). R'daki <code>seastests::welch_oss()</code> fonksiyonu <code>oneway.test(..., var.equal = FALSE)</code> tabanlıdır. H₀: Tüm mevsim dönemlerinin ortalamaları eşittir. H₀ reddedilirse <strong>mevsimsellik vardır</strong>.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sec">Dönem kutu grafikleri — seri X</div>
+      <div style="position:relative;width:100%;"><canvas id="ch-box-x"></canvas></div>
+    </div>
+  </div>
+
+  <!-- TAB 3: SAHTE OLS -->
+  <div id="tab-ols" style="display:none;">
+    <div class="card">
+      <div class="sec">OLS: Y = α + βX + ε (ham, arındırılmamış seriler)</div>
+
+      <div class="danger-box" id="ols-banner">
+        Ham mevsimsel seriler üzerinde OLS — <strong>sahte sonuçlar</strong> bekleniyor.
+      </div>
+
+      <div class="metric-grid">
+        <div class="metric"><div class="metric-lbl">β̂ (eğim)</div><div class="metric-val" id="ols-b">—</div></div>
+        <div class="metric"><div class="metric-lbl">α̂ (sabit)</div><div class="metric-val" id="ols-a">—</div></div>
+        <div class="metric"><div class="metric-lbl">R² — <span style="color:var(--red-dark)">SAHTELİK</span></div><div class="metric-val val-bad" id="ols-r2">—</div></div>
+        <div class="metric"><div class="metric-lbl">t istatistiği (β̂)</div><div class="metric-val" id="ols-t">—</div></div>
+        <div class="metric"><div class="metric-lbl">p-değeri (β̂)</div><div class="metric-val" id="ols-p">—</div></div>
+        <div class="metric"><div class="metric-lbl">DW istatistiği</div><div class="metric-val" id="ols-dw">—</div></div>
+      </div>
+
+      <div id="ols-karar" class="pill" style="margin-bottom:8px;">—</div>
+
+      <div class="bar-wrap"><div class="bar" id="ols-bar"></div></div>
+
+      <div id="ols-yorum" class="danger-box" style="margin-top:4px;"></div>
+
+      <canvas id="ch-scatter" style="margin-top:10px;"></canvas>
+    </div>
+
+    <div class="card">
+      <div class="sec">OLS kalıntıları — otokorelasyon işareti</div>
+      <canvas id="ch-resid"></canvas>
+      <div class="info-box" style="margin-top:8px;" id="dw-info">
+        Durbin-Watson &lt; 1.5 → güçlü pozitif otokorelasyon → mevsimsel yapı kalıntılara sızmış.
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 4: TRAMO-SEATS -->
+  <div id="tab-tramo" style="display:none;">
+    <div class="card">
+      <div class="sec">TRAMO-SEATS mevsim arındırma simülasyonu</div>
+
+      <div class="info-box" style="margin-bottom:12px;">
+        <strong>TRAMO-SEATS</strong> (Time Series Regression with ARIMA noise, Missing values and Outliers — Signal Extraction in ARIMA Time Series), Eurostat'ın resmi mevsim arındırma yöntemidir. R'da <code>RJDemetra</code> paketiyle uygulanır. Burada tahmin edilen mevsimsel bileşen seriden çıkarılarak arındırılmış seri simüle edilmektedir.
+      </div>
+
+      <div class="tramo-split">
+        <div>
+          <div class="sec">Seri X — ham vs. arındırılmış</div>
+          <canvas id="ch-sa-x"></canvas>
+        </div>
+        <div>
+          <div class="sec">Seri Y — ham vs. arındırılmış</div>
+          <canvas id="ch-sa-y"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sec">OLS karşılaştırması: Ham ↔ Mevsim Arındırılmış</div>
+      <table class="cmp-table" id="cmp-table">
+        <thead>
+          <tr>
+            <th>İstatistik</th>
+            <th>Ham OLS (sahte)</th>
+            <th>Arındırılmış OLS</th>
+          </tr>
+        </thead>
+        <tbody id="cmp-body">
+          <tr><td colspan="3" style="text-align:center;color:var(--text2);padding:20px;">Veri yükleniyor…</td></tr>
+        </tbody>
+      </table>
+
+      <div id="tramo-yorum" class="info-box" style="margin-top:10px;"></div>
+    </div>
+
+    <div class="card">
+      <div class="sec">Mevsimsel bileşenler (tahmin edilen)</div>
+      <canvas id="ch-comp"></canvas>
+    </div>
+  </div>
+
+</div><!-- col-right -->
+</div><!-- page-layout -->
+
+<script>
+// =====================================================================
+// GLOBAL STATE
+// =====================================================================
+let freq = 4, T = 60;
+let bxT=0.05, axT=2.0, sxT=0.8;
+let byT=0.08, ayT=2.5, syT=0.8, phaseT=1.0;
+
+// charts
+let chRaw=null, chSeason=null, chBoxX=null, chScatter=null, chResid=null;
+let chSaX=null, chSaY=null, chComp=null;
+
+// data
+let X=[], Y=[], SA_X=[], SA_Y=[], SEASON_X=[], SEASON_Y=[];
+
+// =====================================================================
+// UTILS
+// =====================================================================
+function randn(){
+  let u=0,v=0;
+  while(u===0) u=Math.random();
+  while(v===0) v=Math.random();
+  return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);
+}
+
+function gammaCDF(x, a, b){ /* Welch df₂ kullanımı için F-CDF approx */ return 0; }
+
+// Normal CDF approx (Abramowitz & Stegun)
+function normCDF(z){
+  const t=1/(1+0.2316419*Math.abs(z));
+  const poly=t*(0.319381530+t*(-0.356563782+t*(1.781477937+t*(-1.821255978+t*1.330274429))));
+  const p=1-0.3989422803*Math.exp(-z*z/2)*poly;
+  return z>=0?p:1-p;
+}
+
+// F-distribution p-value via incomplete beta (simple Abramowitz approx)
+function fPval(F, d1, d2){
+  if(F<=0||isNaN(F)) return 1;
+  // p = P(F_{d1,d2} > F)
+  // Use relationship to beta distribution
+  const x = d2/(d2+d1*F);
+  return incompleteBeta(x, d2/2, d1/2);
+}
+
+function incompleteBeta(x, a, b){
+  if(x<=0) return 0;
+  if(x>=1) return 1;
+  // Continued fraction via Lentz
+  const lbeta = lgamma(a)+lgamma(b)-lgamma(a+b);
+  if(x < (a+1)/(a+b+2)){
+    return Math.exp(a*Math.log(x)+b*Math.log(1-x)-lbeta) * betaCF(x,a,b) / a;
+  } else {
+    return 1 - Math.exp(b*Math.log(1-x)+a*Math.log(x)-lbeta) * betaCF(1-x,b,a) / b;
+  }
+}
+
+function betaCF(x,a,b){
+  const ITMAX=200, EPS=3e-7, FPMIN=1e-30;
+  const qab=a+b, qap=a+1, qam=a-1;
+  let c=1, d=1-qab*x/qap; if(Math.abs(d)<FPMIN) d=FPMIN; d=1/d;
+  let h=d;
+  for(let m=1;m<=ITMAX;m++){
+    const m2=2*m;
+    let aa=m*(b-m)*x/((qam+m2)*(a+m2));
+    d=1+aa*d; if(Math.abs(d)<FPMIN)d=FPMIN;
+    c=1+aa/c; if(Math.abs(c)<FPMIN)c=FPMIN;
+    d=1/d; h*=d*c;
+    aa=-(a+m)*(qab+m)*x/((a+m2)*(qap+m2));
+    d=1+aa*d; if(Math.abs(d)<FPMIN)d=FPMIN;
+    c=1+aa/c; if(Math.abs(c)<FPMIN)c=FPMIN;
+    d=1/d; const del=d*c; h*=del;
+    if(Math.abs(del-1)<EPS) break;
+  }
+  return h;
+}
+
+function lgamma(x){
+  // Stirling approx
+  const c=[76.18009172947146,-86.50532032941677,24.01409824083091,
+           -1.231739572450155,0.1208650973866179e-2,-0.5395239384953e-5];
+  let y=x, tmp=x+5.5;
+  tmp -= (x+0.5)*Math.log(tmp);
+  let ser=1.000000000190015;
+  for(let j=0;j<6;j++) ser+=c[j]/(++y);
+  return -tmp+Math.log(2.5066282746310005*ser/x);
+}
+
+// t-distribution p-value (two-tailed)
+function tPval(t, df){
+  const x = df/(df+t*t);
+  const p = incompleteBeta(x, df/2, 0.5);
+  return Math.min(1, p); // two-tailed
+}
+
+// OLS
+function ols(x, y){
+  const n=x.length;
+  const mx=x.reduce((s,v)=>s+v,0)/n;
+  const my=y.reduce((s,v)=>s+v,0)/n;
+  const sxy=x.reduce((s,v,i)=>s+(v-mx)*(y[i]-my),0);
+  const sxx=x.reduce((s,v)=>s+(v-mx)**2,0);
+  const b=sxy/sxx, a=my-b*mx;
+  const yhat=x.map(v=>a+b*v);
+  const rss=y.reduce((s,v,i)=>s+(v-yhat[i])**2,0);
+  const tss=y.reduce((s,v)=>s+(v-my)**2,0);
+  const r2=1-rss/tss;
+  const s2=rss/(n-2);
+  const se_b=Math.sqrt(s2/sxx);
+  const tStat=b/se_b;
+  // DW
+  const resids=y.map((v,i)=>v-yhat[i]);
+  let num=0;
+  for(let i=1;i<n;i++) num+=(resids[i]-resids[i-1])**2;
+  const dw=num/rss;
+  const pval=tPval(Math.abs(tStat), n-2);
+  return{a,b,r2,tStat,pval,rss,s2,se_b,resids,yhat,dw};
+}
+
+// Welch ANOVA (oneway.test var.equal=FALSE)
+function welchTest(series, freq){
+  const groups=[];
+  for(let g=0;g<freq;g++) groups.push([]);
+  series.forEach((v,i)=>groups[i%freq].push(v));
+
+  const k=freq;
+  const ni=groups.map(g=>g.length);
+  const mi=groups.map(g=>g.reduce((s,v)=>s+v,0)/g.length);
+  const vi=groups.map((g,j)=>{
+    const m=mi[j];
+    return g.reduce((s,v)=>s+(v-m)**2,0)/(g.length-1);
+  });
+
+  // wi = ni/vi
+  const wi=ni.map((n,j)=>n/vi[j]);
+  const W=wi.reduce((s,v)=>s+v,0);
+  const xbar=wi.reduce((s,w,j)=>s+w*mi[j],0)/W;
+
+  // F* numerator
+  const num=wi.reduce((s,w,j)=>s+w*(mi[j]-xbar)**2,0)/(k-1);
+
+  // Lambda denominator correction
+  const lam = wi.reduce((s,w,j)=>s+(1-w/W)**2/(ni[j]-1),0) * (3/(k*k-1));
+
+  const Fstar=num/(1+2*(k-2)*lam/3);
+
+  // df2 Satterthwaite-Brown
+  const df2 = (k*k-1)/(3*wi.reduce((s,w,j)=>s+(1-w/W)**2/(ni[j]-1),0));
+  const df1 = k-1;
+
+  const pval=fPval(Fstar, df1, df2);
+  return{F:Fstar, df1, df2, pval, groups, mi, vi, ni};
+}
+
+// =====================================================================
+// DATA GENERATION
+// =====================================================================
+function generateSeries(){
+  X=[]; Y=[];
+  const omega = 2*Math.PI/freq; // mevsimsel frekans
+  for(let t=0;t<T;t++){
+    const xv = bxT*t + axT*Math.sin(omega*t) + axT*0.4*Math.sin(2*omega*t) + sxT*randn();
+    const yv = byT*t + ayT*Math.sin(omega*t+phaseT) + ayT*0.3*Math.sin(2*omega*t+phaseT) + syT*randn();
+    X.push(xv);
+    Y.push(yv);
+  }
+
+  // TRAMO-SEATS simülasyonu: mevsimsel bileşeni tahmin et ve çıkar
+  // Basit moving-average tabanlı mevsimsel bileşen tahmini (lowpass filter)
+  SA_X = seasonalAdj(X, freq);
+  SA_Y = seasonalAdj(Y, freq);
+
+  // Teorik mevsimsel bileşenler
+  SEASON_X = Array.from({length:T}, (_,t)=>axT*Math.sin(omega*t)+axT*0.4*Math.sin(2*omega*t));
+  SEASON_Y = Array.from({length:T}, (_,t)=>ayT*Math.sin(omega*t+phaseT)+ayT*0.3*Math.sin(2*omega*t+phaseT));
+}
+
+function seasonalAdj(series, freq){
+  // Adım 1: Trend MA(freq) ile trend çıkar
+  const trend = movingAvg(series, freq);
+  // Adım 2: Gözlem - trend = mevsim + artık
+  const detrended = series.map((v,i)=>trend[i]!==null?v-trend[i]:null);
+  // Adım 3: Her mevsim dönemi için ortalama al (mevsimsel faktör)
+  const sfact = new Array(freq).fill(0);
+  const scount = new Array(freq).fill(0);
+  detrended.forEach((v,i)=>{
+    if(v!==null){ sfact[i%freq]+=v; scount[i%freq]++; }
+  });
+  sfact.forEach((_,j)=>{ sfact[j]/=scount[j]; });
+  // Normalize
+  const sfMean = sfact.reduce((s,v)=>s+v,0)/freq;
+  sfact.forEach((_,j)=>{ sfact[j]-=sfMean; });
+  // Adım 4: Arındırılmış = orijinal - mevsimsel faktör
+  return series.map((v,i)=>v-sfact[i%freq]);
+}
+
+function movingAvg(series, freq){
+  const res=new Array(series.length).fill(null);
+  const half=Math.floor(freq/2);
+  for(let i=half;i<series.length-half;i++){
+    let sum=0;
+    for(let j=i-half;j<=i+half;j++) sum+=series[j];
+    res[i]=sum/freq;
+  }
+  return res;
+}
+
+// =====================================================================
+// WELCH TEST
+// =====================================================================
+function runWelch(){
+  const wx = welchTest(X, freq);
+  const wy = welchTest(Y, freq);
+
+  // Banner
+  const anyMev = wx.pval<0.05 || wy.pval<0.05;
+  const bothMev = wx.pval<0.05 && wy.pval<0.05;
+  const b=document.getElementById('welch-banner');
+  if(bothMev){
+    b.className='danger-box';
+    b.innerHTML='⚠️ <strong>Her iki seri de mevsimseldir</strong> (p&lt;0.05). Ham serilerle OLS yapılırsa sahte regresyon riski çok yüksektir. TRAMO-SEATS arındırması gereklidir.';
+  } else if(anyMev){
+    b.className='warn-box';
+    b.innerHTML='⚠️ <strong>Serilerden biri mevsimseldir</strong>. OLS hâlâ yanıltıcı sonuçlar üretebilir.';
+  } else {
+    b.className='info-box';
+    b.innerHTML='ℹ️ Mevsimsellik tespit edilmedi (p≥0.05). Mevcut ayarlarla seriler büyük ölçüde düzdür.';
+  }
+
+  // X metrikleri
+  fillWelch('x', wx);
+  fillWelch('y', wy);
+
+  // Dönem ortalama kutuları
+  buildGroupMetrics(wx.groups, wx.mi);
+}
+
+function fillWelch(tag, w){
+  document.getElementById('w-f-'+tag).textContent=w.F.toFixed(3);
+  document.getElementById('w-p-'+tag).textContent=w.pval<0.0001?'<0.0001':w.pval.toFixed(4);
+  document.getElementById('w-df1-'+tag).textContent=w.df1;
+  document.getElementById('w-df2-'+tag).textContent=w.df2.toFixed(1);
+
+  const reject=w.pval<0.05;
+  const kEl=document.getElementById('welch-karar-'+tag);
+  kEl.className='pill '+(reject?'pill-red':'pill-grn');
+  kEl.textContent=reject?'H₀ RED — Mevsimsellik VAR (p<0.05)':'H₀ KABUL — Mevsimsellik yok (p≥0.05)';
+
+  const barPct=Math.min(100,(w.F/Math.max(w.F,10))*100);
+  const bar=document.getElementById('w-bar-'+tag);
+  bar.style.width=barPct.toFixed(1)+'%';
+  bar.style.background=reject?'#E24B4A':'#3B6D11';
+}
+
+function buildGroupMetrics(groups, mi){
+  const el=document.getElementById('welch-metrics-x');
+  const labels = freq===12
+    ? ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara']
+    : freq===4 ? ['Ç1','Ç2','Ç3','Ç4']
+    : ['Y-Ö1','Y-Ö2'];
+  const colors=['sbadge-0','sbadge-1','sbadge-2','sbadge-3'];
+
+  el.innerHTML = groups.map((g,j)=>`
+    <div class="wm">
+      <div class="wm-lbl"><span class="sbadge ${colors[j%4]}">${labels[j]}</span></div>
+      <div class="wm-val">${mi[j].toFixed(2)}</div>
+      <div style="font-size:10px;color:var(--text2)">n=${g.length}</div>
+    </div>
+  `).join('');
+}
+
+// =====================================================================
+// OLS
+// =====================================================================
+function runOLS(){
+  const r = ols(X, Y);
+  document.getElementById('ols-b').textContent=r.b.toFixed(4);
+  document.getElementById('ols-a').textContent=r.a.toFixed(4);
+  document.getElementById('ols-r2').textContent=r.r2.toFixed(4);
+  document.getElementById('ols-t').textContent=r.tStat.toFixed(3);
+  const pStr=r.pval<0.0001?'<0.0001':r.pval.toFixed(4);
+  document.getElementById('ols-p').textContent=pStr;
+  document.getElementById('ols-dw').textContent=r.dw.toFixed(3);
+
+  // Karar
+  const reject=r.pval<0.05;
+  const kEl=document.getElementById('ols-karar');
+  kEl.className='pill '+(reject?'pill-red':'pill-grn');
+  kEl.textContent=reject?'β̂ anlamlı görünüyor — SAHTE! (p<0.05)':'β̂ anlamsız';
+
+  const barPct=Math.min(100,Math.abs(r.tStat)/5*100);
+  const bar=document.getElementById('ols-bar');
+  bar.style.width=barPct.toFixed(1)+'%';
+  bar.style.background=reject?'#E24B4A':'#3B6D11';
+
+  // Yorum
+  const dw=document.getElementById('ols-dw');
+  const dwVal=r.dw;
+  let yorumTxt='';
+  if(reject && r.r2>0.5){
+    yorumTxt=`<strong>Sahte regresyon:</strong> R²=${r.r2.toFixed(3)}, t=${r.tStat.toFixed(2)}, p${r.pval<0.0001?'<0.0001':'='+r.pval.toFixed(4)} — ilişki yüksek görünüyor. Ancak X ve Y arasında gerçek nedensel bağ yoktur; ortak mevsimsel trend bu ilişkiyi yapay olarak üretmektedir. Durbin-Watson=${dwVal.toFixed(3)} ${dwVal<1.5?'(ciddi otokorelasyon!)':'(normal aralıkta)'}`;
+  } else {
+    yorumTxt=`R²=${r.r2.toFixed(3)}, DW=${dwVal.toFixed(3)}. Mevcut parametrelerle sahtelik sinyali zayıf — mevsimsellik genliklerini (A<sub>X</sub>, A<sub>Y</sub>) artırarak güçlendirebilirsiniz.`;
+  }
+  document.getElementById('ols-yorum').innerHTML=yorumTxt;
+  dw.style.color=dwVal<1.5?'var(--red-dark)':dwVal>2.5?'var(--amber-dark)':'var(--green-dark)';
+
+  // DW bilgi kutusu
+  document.getElementById('dw-info').innerHTML=
+    `Durbin-Watson = <strong>${dwVal.toFixed(3)}</strong> — ${dwVal<1.5?'⚠️ Güçlü pozitif otokorelasyon. Mevsimsel yapı kalıntılara sızmış — bu testin en önemli uyarı işaretidir.':dwVal>2.5?'Negatif otokorelasyon işareti.':'Normal aralık (1.5–2.5).'}`;
+
+  return r;
+}
+
+// =====================================================================
+// TRAMO KARŞILAŞTIRMA
+// =====================================================================
+function runTRAMO(){
+  const rHam = ols(X, Y);
+  const rSA  = ols(SA_X, SA_Y);
+
+  const tbody = document.getElementById('cmp-body');
+  const rows=[
+    ['β̂ (eğim)', rHam.b.toFixed(4), rSA.b.toFixed(4), true, 'beta'],
+    ['α̂ (sabit)', rHam.a.toFixed(4), rSA.a.toFixed(4), false, ''],
+    ['R²', rHam.r2.toFixed(4), rSA.r2.toFixed(4), true, 'r2'],
+    ['t(β̂)', rHam.tStat.toFixed(3), rSA.tStat.toFixed(3), true, 't'],
+    ['p(β̂)', rHam.pval<0.0001?'<0.0001':rHam.pval.toFixed(4), rSA.pval<0.0001?'<0.0001':rSA.pval.toFixed(4), true, 'p'],
+    ['Durbin-Watson', rHam.dw.toFixed(3), rSA.dw.toFixed(3), false, 'dw'],
+  ];
+
+  tbody.innerHTML=rows.map(([lbl,hv,sv])=>{
+    const hammeBad = lbl==='R²' && parseFloat(hv)>0.5;
+    const saGood   = lbl==='R²' && parseFloat(sv)<0.3;
+    const tBad = lbl==='t(β̂)' && Math.abs(parseFloat(hv))>2;
+    const tGood= lbl==='t(β̂)' && Math.abs(parseFloat(sv))<2;
+    const pBad = lbl==='p(β̂)' && (hv==='<0.0001'||parseFloat(hv)<0.05);
+    const pGood= lbl==='p(β̂)' && (sv!=='<0.0001'&&parseFloat(sv)>=0.05);
+    const dwBad= lbl==='Durbin-Watson' && parseFloat(hv)<1.5;
+    const dwGood=lbl==='Durbin-Watson' && parseFloat(sv)>=1.5 && parseFloat(sv)<=2.5;
+    return `<tr>
+      <td><strong>${lbl}</strong></td>
+      <td class="${hammeBad||tBad||pBad||dwBad?'val-bad':''}">${hv}</td>
+      <td class="${saGood||tGood||pGood||dwGood?'val-ok':''}">${sv}</td>
+    </tr>`;
+  }).join('');
+
+  // Yorum
+  const r2drop=(rHam.r2-rSA.r2).toFixed(3);
+  const doc=document.getElementById('tramo-yorum');
+  if(rHam.r2-rSA.r2>0.15){
+    doc.className='danger-box';
+    doc.innerHTML=`<strong>Sahte regresyon kanıtlandı:</strong> TRAMO-SEATS arındırması sonrası R² ${rHam.r2.toFixed(3)} → ${rSA.r2.toFixed(3)} düşmüştür (Δ = ${r2drop}). Ham R²'nin büyük kısmı mevsimsel döngüden kaynaklanıyordu; gerçek ilişki çok daha zayıf ya da anlamsızdır.`;
+  } else {
+    doc.className='info-box';
+    doc.innerHTML=`R² değişimi: ${r2drop}. Mevsimsellik genliklerini (A<sub>X</sub>, A<sub>Y</sub>) artırarak sahte regresyonu daha belirgin kılabilirsiniz.`;
+  }
+}
+
+// =====================================================================
+// CHART HELPERS
+// =====================================================================
+function mkChart(id, cfg){
+  const canvas=document.getElementById(id);
+  if(!canvas) return null;
+  const ctx=canvas.getContext('2d');
+  return new Chart(ctx, cfg);
+}
+
+function destroyAndMake(ref, id, cfg){
+  if(ref) ref.destroy();
+  return mkChart(id, cfg);
+}
+
+const THIN={pointRadius:0,tension:0.3,showLine:true,fill:false};
+const labels_arr=()=>Array.from({length:T},(_,i)=>i+1);
+
+function drawRaw(){
+  const lbls=labels_arr();
+  const cfg={
+    type:'line',
+    data:{
+      labels:lbls,
+      datasets:[
+        {...THIN, label:'X (mavi)', data:X, borderColor:'#185FA5', borderWidth:1.8},
+        {...THIN, label:'Y (amber)', data:Y, borderColor:'#BA7517', borderWidth:1.8},
+      ]
+    },
+    options:{
+      responsive:true,animation:{duration:200},
+      plugins:{legend:{labels:{font:{size:11}}}},
+      scales:{x:{ticks:{maxTicksLimit:12,font:{size:10}},grid:{color:'rgba(0,0,0,.04)'}},
+              y:{ticks:{font:{size:10}},grid:{color:'rgba(0,0,0,.04)'}}}
+    }
+  };
+  chRaw=destroyAndMake(chRaw,'ch-raw',cfg);
+}
+
+function drawSeason(){
+  const labels = freq===12
+    ? ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara']
+    : freq===4 ? ['Ç1','Ç2','Ç3','Ç4'] : ['Y-Ö1','Y-Ö2'];
+
+  // Dönem ortalamaları
+  const sumX=new Array(freq).fill(0), cntX=new Array(freq).fill(0);
+  const sumY=new Array(freq).fill(0), cntY=new Array(freq).fill(0);
+  X.forEach((v,i)=>{ sumX[i%freq]+=v; cntX[i%freq]++; });
+  Y.forEach((v,i)=>{ sumY[i%freq]+=v; cntY[i%freq]++; });
+  const mx=sumX.map((s,j)=>s/cntX[j]);
+  const my=sumY.map((s,j)=>s/cntY[j]);
+
+  const cfg={
+    type:'bar',
+    data:{
+      labels,
+      datasets:[
+        {label:'X dönem ort.', data:mx, backgroundColor:'rgba(24,95,165,0.7)', borderColor:'#185FA5', borderWidth:1},
+        {label:'Y dönem ort.', data:my, backgroundColor:'rgba(186,117,23,0.7)', borderColor:'#BA7517', borderWidth:1},
+      ]
+    },
+    options:{responsive:true,animation:{duration:200},
+      plugins:{legend:{labels:{font:{size:11}}}},
+      scales:{x:{ticks:{font:{size:11}}},y:{ticks:{font:{size:10}}}}}
+  };
+  chSeason=destroyAndMake(chSeason,'ch-season',cfg);
+
+  // badges
+  const colors=['sbadge-0','sbadge-1','sbadge-2','sbadge-3'];
+  document.getElementById('season-badges-x').innerHTML =
+    labels.map((l,j)=>`<span class="sbadge ${colors[j%4]}">${l}: X̄=${mx[j].toFixed(2)}</span>`).join('');
+}
+
+function drawBoxX(){
+  const wx=welchTest(X, freq);
+  const labels = freq===12
+    ? ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara']
+    : freq===4 ? ['Ç1','Ç2','Ç3','Ç4'] : ['Y-Ö1','Y-Ö2'];
+  // Simulate box with min/q1/median/q3/max bars using scatter
+  // Use mean ± std as a simplified "box"
+  const means=wx.mi;
+  const stds=wx.vi.map(v=>Math.sqrt(v));
+  const cfg={
+    type:'bar',
+    data:{
+      labels,
+      datasets:[
+        {label:'Dönem ortalaması (X)', data:means,
+         backgroundColor:means.map(m=>`rgba(24,95,165,${0.4+0.1*(m-Math.min(...means))/(Math.max(...means)-Math.min(...means)||1)})`),
+         borderColor:'#185FA5',borderWidth:1},
+      ]
+    },
+    options:{responsive:true,animation:{duration:200},
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{label:(ctx)=>{
+          const j=ctx.dataIndex;
+          return [`Ort: ${means[j].toFixed(3)}`, `Std: ${stds[j].toFixed(3)}`, `n: ${wx.ni[j]}`];
+        }}}
+      },
+      scales:{
+        x:{ticks:{font:{size:11}}},
+        y:{ticks:{font:{size:10}},title:{display:true,text:'X değerleri',font:{size:10}}}
+      }
+    }
+  };
+  chBoxX=destroyAndMake(chBoxX,'ch-box-x',cfg);
+}
+
+function drawScatter(){
+  const data=X.map((x,i)=>({x,y:Y[i]}));
+  const r=ols(X,Y);
+  const xmn=Math.min(...X), xmx=Math.max(...X);
+  const cfg={
+    type:'scatter',
+    data:{datasets:[
+      {label:'(X,Y)', data, backgroundColor:'rgba(24,95,165,0.18)', borderColor:'#185FA5', borderWidth:1, pointRadius:4},
+      {type:'line', label:'OLS doğrusu', data:[{x:xmn,y:r.a+r.b*xmn},{x:xmx,y:r.a+r.b*xmx}],
+       borderColor:'#E24B4A',borderWidth:2,pointRadius:0,tension:0,fill:false},
+    ]},
+    options:{responsive:true,animation:{duration:200},
+      plugins:{legend:{labels:{font:{size:11}}}},
+      scales:{
+        x:{ticks:{font:{size:10}},title:{display:true,text:'X',font:{size:11}}},
+        y:{ticks:{font:{size:10}},title:{display:true,text:'Y',font:{size:11}}}
+      }}
+  };
+  chScatter=destroyAndMake(chScatter,'ch-scatter',cfg);
+}
+
+function drawResid(){
+  const r=ols(X,Y);
+  const lbls=labels_arr();
+  const cfg={
+    type:'line',
+    data:{labels:lbls, datasets:[
+      {label:'Kalıntılar ε̂', data:r.resids, ...THIN, borderColor:'#E24B4A', borderWidth:1.5},
+      {type:'line', label:'Sıfır', data:lbls.map(()=>0), borderColor:'rgba(0,0,0,0.2)',borderWidth:1,pointRadius:0,tension:0,fill:false,borderDash:[4,3]},
+    ]},
+    options:{responsive:true,animation:{duration:200},
+      plugins:{legend:{labels:{font:{size:11}}}},
+      scales:{x:{ticks:{maxTicksLimit:12,font:{size:10}}},y:{ticks:{font:{size:10}}}}}
+  };
+  chResid=destroyAndMake(chResid,'ch-resid',cfg);
+}
+
+function drawSACharts(){
+  const lbls=labels_arr();
+  const makeSA=(id,raw,sa,color,ref)=>{
+    const cfg={type:'line',data:{labels:lbls,datasets:[
+      {...THIN,label:'Ham',data:raw,borderColor:color,borderWidth:1.5,borderDash:[4,3]},
+      {...THIN,label:'Arındırılmış',data:sa,borderColor:color,borderWidth:2.5},
+    ]},options:{responsive:true,animation:{duration:200},
+      plugins:{legend:{labels:{font:{size:11}}}},
+      scales:{x:{ticks:{maxTicksLimit:12,font:{size:10}}},y:{ticks:{font:{size:10}}}}}};
+    return destroyAndMake(ref,id,cfg);
+  };
+  chSaX=makeSA('ch-sa-x',X,SA_X,'#185FA5',chSaX);
+  chSaY=makeSA('ch-sa-y',Y,SA_Y,'#BA7517',chSaY);
+}
+
+function drawComponents(){
+  const lbls=labels_arr();
+  const cfg={type:'line',data:{labels:lbls,datasets:[
+    {...THIN,label:'Mevsimsel bileşen X',data:SEASON_X,borderColor:'#185FA5',borderWidth:1.8},
+    {...THIN,label:'Mevsimsel bileşen Y',data:SEASON_Y,borderColor:'#BA7517',borderWidth:1.8},
+  ]},options:{responsive:true,animation:{duration:200},
+    plugins:{legend:{labels:{font:{size:11}}}},
+    scales:{x:{ticks:{maxTicksLimit:12,font:{size:10}}},y:{ticks:{font:{size:10}},title:{display:true,text:'Teorik mevsimsel bileşen',font:{size:10}}}}}};
+  chComp=destroyAndMake(chComp,'ch-comp',cfg);
+}
+
+// =====================================================================
+// MAIN RENDER
+// =====================================================================
+function render(){
+  generateSeries();
+  drawRaw();
+  drawSeason();
+  runWelch();
+  drawBoxX();
+  runOLS();
+  drawScatter();
+  drawResid();
+  runTRAMO();
+  drawSACharts();
+  drawComponents();
+}
+
+function newData(){ render(); }
+
+// =====================================================================
+// TABS
+// =====================================================================
+function showTab(id, _, btn){
+  ['tab-series','tab-welch','tab-ols','tab-tramo'].forEach(t=>{
+    document.getElementById(t).style.display='none';
+  });
+  document.getElementById(id).style.display='block';
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// =====================================================================
+// FREQ TOGGLE
+// =====================================================================
+function setFreq(btn){
+  document.querySelectorAll('#freq-opts .tog-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  freq=parseInt(btn.dataset.val);
+  render();
+}
+
+// =====================================================================
+// SLIDER LISTENERS
+// =====================================================================
+function bindSlider(id, lblId, setter, decimals){
+  const el=document.getElementById(id);
+  const lbl=document.getElementById(lblId);
+  el.addEventListener('input',function(){
+    const v=parseFloat(this.value);
+    lbl.textContent=v.toFixed(decimals);
+    setter(v);
+    render();
+  });
+}
+
+bindSlider('sl-T','lbl-T',v=>{T=Math.round(v);},0);
+bindSlider('sl-bx','lbl-bx',v=>{bxT=v;},2);
+bindSlider('sl-ax','lbl-ax',v=>{axT=v;},1);
+bindSlider('sl-sx','lbl-sx',v=>{sxT=v;},1);
+bindSlider('sl-by','lbl-by',v=>{byT=v;},2);
+bindSlider('sl-ay','lbl-ay',v=>{ayT=v;},1);
+bindSlider('sl-sy','lbl-sy',v=>{syT=v;},1);
+bindSlider('sl-phase','lbl-phase',v=>{phaseT=v;},1);
+
+// =====================================================================
+// INIT
+// =====================================================================
+render();
+</script>
+</body>
+</html>
