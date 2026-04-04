@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tanısal Testler — Sapmasızlık, Değişen Varyans ve Otokorelasyon</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --blue:#185FA5; --blue-light:#E6F1FB; --blue-dark:#0C447C;
+    --red:#E24B4A; --red-light:#FCEBEB; --red-dark:#791F1F;
+    --green:#3B6D11; --green-light:#EAF3DE; --green-dark:#27500A;
+    --amber:#BA7517; --amber-light:#FAEEDA; --amber-dark:#633806;
+    --purple:#6B3FA0; --purple-light:#F0EAFA; --purple-dark:#3E1F6B;
+    --text:#1a1a1a; --text2:#5F5E5A;
+    --border:rgba(0,0,0,0.12); --bg:#ffffff; --bg2:#F8F7F4;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    background:var(--bg2);color:var(--text);
+    padding:16px;max-width:1380px;margin:0 auto;
+  }
+  h1{font-size:18px;font-weight:700;margin-bottom:4px}
+  .subtitle{font-size:13px;color:var(--text2);margin-bottom:16px}
+  .page-layout{display:grid;grid-template-columns:360px 1fr;gap:14px;align-items:start}
+  @media(max-width:860px){.page-layout{grid-template-columns:1fr}}
+  .col-right{position:sticky;top:12px;min-width:0}
+  @media(max-width:860px){.col-right{position:static}}
+  .card{background:var(--bg);border:.5px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:12px}
+  .sec{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.55px;margin-bottom:10px}
+  .sr{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+  .sl{font-size:12.5px;color:var(--text2);min-width:132px;line-height:1.3}
+  input[type=range]{flex:1;height:4px;accent-color:var(--blue);-webkit-appearance:none;appearance:none;background:var(--border);border-radius:2px;outline:none}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;background:var(--blue);border-radius:50%;cursor:pointer}
+  .sv{font-size:13px;font-weight:700;min-width:48px;text-align:right;color:var(--text)}
+  .btn{display:block;width:100%;padding:11px;background:var(--blue);color:#fff;border:none;border-radius:var(--radius);font-size:13px;font-weight:600;cursor:pointer;margin-top:4px}
+  .btn:active{opacity:.88}
+  hr{border:none;border-top:.5px solid var(--border);margin:12px 0}
+  .metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+  .metric-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px}
+  @media(max-width:560px){.metric-grid-3{grid-template-columns:1fr 1fr}}
+  .metric{background:var(--bg2);border-radius:8px;padding:9px 12px;text-align:center}
+  .metric-lbl{font-size:10.5px;color:var(--text2);margin-bottom:2px;line-height:1.35}
+  .metric-val{font-size:17px;font-weight:700;color:var(--text)}
+  .pill{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:999px;font-size:11.5px;font-weight:700;border:1px solid;transition:all .3s}
+  .pill-red{background:var(--red-light);border-color:#F09595;color:var(--red-dark)}
+  .pill-grn{background:var(--green-light);border-color:#C0DD97;color:var(--green-dark)}
+  .pill-amber{background:var(--amber-light);border-color:#E8C97A;color:var(--amber-dark)}
+  .pill-purple{background:var(--purple-light);border-color:#C9A8E8;color:var(--purple-dark)}
+  .bar-wrap{height:5px;background:rgba(0,0,0,.07);border-radius:3px;overflow:hidden;margin:4px 0 10px}
+  .bar{height:100%;border-radius:3px;transition:width .5s,background .5s}
+  .info-box,.warn-box,.danger-box,.success-box,.note-box{
+    border-left:3px solid;border-radius:0 var(--radius) var(--radius) 0;padding:10px 14px;font-size:12.5px;line-height:1.65;margin-top:6px
+  }
+  .info-box{background:var(--blue-light);border-left-color:var(--blue);color:var(--blue-dark)}
+  .warn-box{background:var(--amber-light);border-left-color:var(--amber);color:var(--amber-dark)}
+  .danger-box{background:var(--red-light);border-left-color:var(--red);color:var(--red-dark)}
+  .success-box{background:var(--green-light);border-left-color:var(--green);color:var(--green-dark)}
+  .note-box{background:var(--bg2);border-left-color:var(--text2);color:var(--text2)}
+  .chart-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+  @media(max-width:760px){.chart-row{grid-template-columns:1fr}}
+  .legend{display:flex;gap:14px;font-size:11px;color:var(--text2);margin-top:6px;flex-wrap:wrap}
+  .leg-item{display:flex;align-items:center;gap:5px}
+  .leg-line{width:16px;height:2.5px;display:inline-block}
+  .step-list{display:flex;flex-direction:column;gap:10px}
+  .step{display:flex;gap:10px;align-items:flex-start}
+  .step-num{min-width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--blue);color:#fff;font-size:12px;font-weight:700;margin-top:1px}
+  .step-txt{font-size:12.5px;color:var(--text2);line-height:1.65}
+  .formula{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--bg2);padding:2px 6px;border-radius:6px;color:var(--blue-dark)}
+  table{width:100%;border-collapse:collapse;font-size:12.5px}
+  th{background:var(--bg2);padding:7px 10px;text-align:left;font-weight:600;border-bottom:1px solid var(--border)}
+  td{padding:7px 10px;border-bottom:.5px solid var(--border);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  .center{text-align:center}
+  .val-bad{color:var(--red-dark);font-weight:700}
+  .val-ok{color:var(--green-dark);font-weight:700}
+</style>
+</head>
+<body>
+<h1>Tanısal testler — sapmasızlık, değişen varyans ve otokorelasyon</h1>
+<p class="subtitle">Doç. Dr. Erkan Ağaslan — Kütahya Dumlupınar Üniversitesi · Simülasyonla OLS varsayımları ve sapmasızlık</p>
+
+<div class="page-layout">
+  <div class="col-left">
+    <div class="card">
+      <div class="sec">Regresyon ve veri üretim parametreleri</div>
+      <div class="sr"><span class="sl">Gözlem sayısı n</span><input type="range" id="sl-n" min="40" max="220" step="10" value="120"><span class="sv" id="lbl-n">120</span></div>
+      <div class="sr"><span class="sl">β₀ sabit</span><input type="range" id="sl-b0" min="-5" max="8" step="0.5" value="2"><span class="sv" id="lbl-b0">2.0</span></div>
+      <div class="sr"><span class="sl">β₁ eğim</span><input type="range" id="sl-b1" min="0.2" max="3.5" step="0.1" value="1.2"><span class="sv" id="lbl-b1">1.2</span></div>
+      <div class="sr"><span class="sl">Hata σ</span><input type="range" id="sl-s0" min="0.2" max="4" step="0.1" value="0.8"><span class="sv" id="lbl-s0">0.8</span></div>
+      <div class="sr"><span class="sl">Değişen Varyans Gücü</span><input type="range" id="sl-h" min="0" max="4" step="0.1" value="2.2"><span class="sv" id="lbl-h">2.2</span></div>
+      <div class="sr"><span class="sl">Otokorelasyon Gücü (AR(1))</span><input type="range" id="sl-rho" min="0" max="0.95" step="0.05" value="0.65"><span class="sv" id="lbl-rho">0.65</span></div>
+      <hr>
+      <div class="warn-box">
+        <strong>R mantığıyla veri üretimi:</strong> önce <span class="formula">X &lt;- rnorm(n)</span> üretilir. Sonra <span class="formula">u_t</span> terimi değişen varyanslı kurulur, ardından <span class="formula">e_t = ρe_{t-1}+u_t</span> ile otokorelasyon eklenir. Son adımda <span class="formula">y_t = β₀ + β₁x_t + e_t</span> elde edilir. Böylece <strong>iki seri</strong> baştan üretilir ve başlangıçta belirlenen <strong>gerçek parametreler</strong> sonda OLS ile tahmin edilir.
+      </div>
+      <div class="info-box">
+        <strong>Sapmasızlık notu:</strong> değişen varyans ve otokorelasyon eklense bile, burada hata terimi ile <span class="formula">x</span> bağımsız kurulduğu için <span class="formula">β̂₁</span>'in beklenen değeri yine <span class="formula">β₁</span>'e yakındır. Yani sorun esas olarak <strong>standart hata</strong>, <strong>test</strong> ve <strong>çıkarım</strong> tarafında ortaya çıkar; katsayının beklenen değeri kaybolmaz.
+      </div>
+      <button class="btn" onclick="regenerate()">🔄 Yeni simülasyon üret</button>
+    </div>
+
+    <div class="card">
+      <div class="sec">Hipotez testlerinin mantığı</div>
+      <div class="step-list">
+        <div class="step"><div class="step-num">1</div><div class="step-txt">Önce <span class="formula">x &lt;- rnorm(n)</span> ile açıklayıcı değişken üretilir. Sonra <span class="formula">yₜ = β₀ + β₁xₜ + eₜ</span> modeli kurulup <strong>OLS artıklar</strong> elde edilir.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-txt"><strong>Breusch–Pagan testi:</strong> <span class="formula">H₀: Var(eₜ|xₜ)=σ²</span>. Yardımcı regresyonda <span class="formula">êₜ²</span> x üzerine regrese edilir, <span class="formula">LM = n·R²</span>.</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-txt"><strong>Breusch–Godfrey testi:</strong> <span class="formula">H₀: otokorelasyon yok</span>. Yardımcı regresyonda <span class="formula">êₜ</span>, x ve gecikmeli <span class="formula">êₜ₋₁</span> üzerine regrese edilir, yine <span class="formula">LM = n·R²</span>.</div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-txt">p-değeri %5'ten küçükse H₀ reddedilir. Böylece sorun görsel olarak değil, <strong>hipotez testiyle</strong> gösterilmiş olur.</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sec">Kısa yorum</div>
+      <div id="main-comment" class="info-box">—</div>
+    </div>
+  </div>
+
+  <div class="col-right">
+    <div class="card">
+      <div class="sec">Sapmasızlık göstergesi</div>
+      <div class="metric-grid-3">
+        <div class="metric"><div class="metric-lbl">Gerçek β₁</div><div class="metric-val" id="m-b1true">—</div></div>
+        <div class="metric"><div class="metric-lbl">Bu örneklemde β̂₁</div><div class="metric-val" id="m-b1sample">—</div></div>
+        <div class="metric"><div class="metric-lbl">Monte Carlo ort. β̂₁</div><div class="metric-val" id="m-b1mc">—</div></div>
+      </div>
+      <div class="note-box" id="unbiased-note">—</div>
+    </div>
+
+    <div class="card">
+      <div class="sec">Tahmin edilen regresyon çıktısı</div>
+      <div class="metric-grid-3">
+        <div class="metric"><div class="metric-lbl">β̂₀</div><div class="metric-val" id="m-b0hat">—</div></div>
+        <div class="metric"><div class="metric-lbl">β̂₁</div><div class="metric-val" id="m-b1hat">—</div></div>
+        <div class="metric"><div class="metric-lbl">R²</div><div class="metric-val" id="m-r2">—</div></div>
+        <div class="metric"><div class="metric-lbl">SSE</div><div class="metric-val" id="m-sse">—</div></div>
+        <div class="metric"><div class="metric-lbl">σ̂²</div><div class="metric-val" id="m-s2">—</div></div>
+        <div class="metric"><div class="metric-lbl">DW</div><div class="metric-val" id="m-dw">—</div></div>
+      </div>
+      <div class="info-box">DW istatistiği yaklaşık <strong>2</strong> ise ciddi otokorelasyon sinyali yoktur. Değer <strong>2'nin belirgin biçimde altına</strong> indikçe pozitif otokorelasyon kuvvetlenir.</div>
+    </div>
+
+    <div class="chart-row">
+      <div class="card">
+        <div class="sec">Seri ve tahmin doğrusu</div>
+        <canvas id="ch-fit"></canvas>
+        <div class="legend">
+          <div class="leg-item"><span class="leg-line" style="background:var(--blue)"></span>Gözlenen y</div>
+          <div class="leg-item"><span class="leg-line" style="background:var(--amber)"></span>OLS tahmini</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="sec">Artıklar (êₜ)</div>
+        <canvas id="ch-res"></canvas>
+        <div class="legend">
+          <div class="leg-item"><span class="leg-line" style="background:var(--red)"></span>Kalıntılar</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-row">
+      <div class="card">
+        <div class="sec">|êₜ| ve artan varyans</div>
+        <canvas id="ch-abs"></canvas>
+        <div class="note-box">Sağa gittikçe yayılım büyüyorsa bu, değişen varyansın görsel sinyalidir.</div>
+      </div>
+      <div class="card">
+        <div class="sec">Ardışık artıklar — êₜ ve êₜ₋₁</div>
+        <canvas id="ch-lag"></canvas>
+        <div class="note-box">Ardışık artıklar birlikte hareket ediyorsa pozitif otokorelasyon vardır.</div>
+      </div>
+    </div>
+
+    <div class="chart-row">
+      <div class="card">
+        <div class="sec">Breusch–Pagan testi</div>
+        <div class="metric-grid">
+          <div class="metric"><div class="metric-lbl">LM = n·R²</div><div class="metric-val" id="bp-lm">—</div></div>
+          <div class="metric"><div class="metric-lbl">p-değeri</div><div class="metric-val" id="bp-p">—</div></div>
+          <div class="metric"><div class="metric-lbl">Yardımcı R²</div><div class="metric-val" id="bp-r2">—</div></div>
+          <div class="metric"><div class="metric-lbl">Kritik χ²(1), %5</div><div class="metric-val">3.84</div></div>
+        </div>
+        <div id="bp-pill" class="pill pill-amber">—</div>
+        <div class="bar-wrap"><div id="bp-bar" class="bar"></div></div>
+        <div id="bp-box" class="info-box">—</div>
+      </div>
+
+      <div class="card">
+        <div class="sec">Breusch–Godfrey testi (1. derece)</div>
+        <div class="metric-grid">
+          <div class="metric"><div class="metric-lbl">LM = n·R²</div><div class="metric-val" id="bg-lm">—</div></div>
+          <div class="metric"><div class="metric-lbl">p-değeri</div><div class="metric-val" id="bg-p">—</div></div>
+          <div class="metric"><div class="metric-lbl">Yardımcı R²</div><div class="metric-val" id="bg-r2">—</div></div>
+          <div class="metric"><div class="metric-lbl">Kritik χ²(1), %5</div><div class="metric-val">3.84</div></div>
+        </div>
+        <div id="bg-pill" class="pill pill-amber">—</div>
+        <div class="bar-wrap"><div id="bg-bar" class="bar"></div></div>
+        <div id="bg-box" class="info-box">—</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sec">Sonuç tablosu</div>
+      <table>
+        <thead>
+          <tr><th>Test</th><th>H₀</th><th class="center">İstatistik</th><th class="center">p</th><th>Karar</th></tr>
+        </thead>
+        <tbody id="summary-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+let N=120, b0=2, b1=1.2, s0=0.8, h=2.2, rho=0.65;
+let x=[], y=[], e=[], yhat=[], ehat=[], absE=[];
+let fitChart=null, resChart=null, absChart=null, lagChart=null;
+
+
+function randn(){
+  const u1=Math.random()||1e-12, u2=Math.random();
+  return Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2);
+}
+function seedBase(){}
+function mean(a){return a.reduce((s,v)=>s+v,0)/a.length;}
+function sum(a){return a.reduce((s,v)=>s+v,0);}
+function erf(x){
+  const sign = x < 0 ? -1 : 1;
+  x = Math.abs(x);
+  const a1=0.254829592,a2=-0.284496736,a3=1.421413741,a4=-1.453152027,a5=1.061405429,p=0.3275911;
+  const t=1/(1+p*x);
+  const y=1-(((((a5*t+a4)*t)+a3)*t+a2)*t+a1)*t*Math.exp(-x*x);
+  return sign*y;
+}
+function erfc(x){return 1-erf(x);}
+function chiSq1Pvalue(stat){ return Math.max(0, Math.min(1, erfc(Math.sqrt(Math.max(stat,0)/2)))); }
+function fmt(v,d=3){ return Number(v).toFixed(d); }
+
+function olsSimple(x,y){
+  const n=x.length, xb=mean(x), yb=mean(y);
+  let sxx=0,sxy=0,syy=0;
+  for(let i=0;i<n;i++){
+    const dx=x[i]-xb, dy=y[i]-yb;
+    sxx+=dx*dx; sxy+=dx*dy; syy+=dy*dy;
+  }
+  const b1h=sxy/sxx, b0h=yb-b1h*xb;
+  const yh=x.map(v=>b0h+b1h*v);
+  const eh=y.map((v,i)=>v-yh[i]);
+  const sse=sum(eh.map(v=>v*v));
+  const r2 = syy===0 ? 1 : 1 - sse/syy;
+  return {b0:b0h,b1:b1h,yhat:yh,ehat:eh,sse,r2,xb,sxx};
+}
+function olsMatrix(X,y){
+  const n=X.length, k=X[0].length;
+  const XtX=Array.from({length:k},()=>Array(k).fill(0));
+  const Xty=Array(k).fill(0);
+  for(let i=0;i<n;i++){
+    for(let a=0;a<k;a++){
+      Xty[a]+=X[i][a]*y[i];
+      for(let b=0;b<k;b++) XtX[a][b]+=X[i][a]*X[i][b];
+    }
+  }
+  const A=XtX.map((row,i)=>row.concat([Xty[i]]));
+  for(let c=0;c<k;c++){
+    let piv=c;
+    for(let r=c+1;r<k;r++) if(Math.abs(A[r][c])>Math.abs(A[piv][c])) piv=r;
+    [A[c],A[piv]]=[A[piv],A[c]];
+    let div=A[c][c]; if(Math.abs(div)<1e-12) div=1e-12;
+    for(let j=c;j<=k;j++) A[c][j]/=div;
+    for(let r=0;r<k;r++) if(r!==c){
+      const f=A[r][c];
+      for(let j=c;j<=k;j++) A[r][j]-=f*A[c][j];
+    }
+  }
+  const beta=A.map(r=>r[k]);
+  const yhat=X.map(row=>row.reduce((s,v,j)=>s+v*beta[j],0));
+  const resid=y.map((v,i)=>v-yhat[i]);
+  const yb=mean(y);
+  const sse=sum(resid.map(v=>v*v));
+  const tss=sum(y.map(v=>(v-yb)*(v-yb)));
+  const r2=tss===0?1:1-sse/tss;
+  return {beta,yhat,resid,sse,r2};
+}
+function durbinWatson(res){
+  let num=0, den=0;
+  for(let i=0;i<res.length;i++){
+    den+=res[i]*res[i];
+    if(i>0){ const d=res[i]-res[i-1]; num+=d*d; }
+  }
+  return num/den;
+}
+function simulateOnce(n,b0v,b1v,s0v,hv,rhov){
+  const xs=[], ys=[], es=[];
+  for(let i=0;i<n;i++) xs.push(randn());
+
+  const xmin=Math.min(...xs), xmax=Math.max(...xs);
+  const xrng=Math.max(xmax-xmin,1e-8);
+  const z = xs.map(v => (v-xmin)/xrng);
+
+  const innov = z.map(zz=>{
+    const sigt = s0v*(1 + hv*zz);
+    return sigt * randn();
+  });
+
+  es[0]=innov[0]/Math.sqrt(Math.max(1-rhov*rhov,0.05));
+  for(let t=1;t<n;t++) es[t]=rhov*es[t-1]+innov[t];
+
+  for(let i=0;i<n;i++) ys[i]=b0v + b1v*xs[i] + es[i];
+  return {x:xs,y:ys,e:es};
+}
+function generateData(){
+  const sim = simulateOnce(N,b0,b1,s0,h,rho);
+  x=sim.x; y=sim.y; e=sim.e; absE=e.map(v=>Math.abs(v));
+}
+function monteCarloMeanB1(reps=250){
+  let total=0;
+  for(let r=0;r<reps;r++){
+    const sim=simulateOnce(N,b0,b1,s0,h,rho);
+    total += olsSimple(sim.x,sim.y).b1;
+  }
+  return total/reps;
+}
+function runTests(){
+  const fit=olsSimple(x,y);
+  yhat=fit.yhat; ehat=fit.ehat;
+  const n=x.length;
+  const sigma2hat = fit.sse/(n-2);
+  const dw = durbinWatson(ehat);
+
+  const bpAux=olsSimple(x, ehat.map(v=>v*v));
+  const bpLM=n*bpAux.r2;
+  const bpP=chiSq1Pvalue(bpLM);
+
+  const yBG=ehat.slice(1);
+  const XBG=[];
+  for(let t=1;t<n;t++) XBG.push([1, x[t], ehat[t-1]]);
+  const bgAux=olsMatrix(XBG, yBG);
+  const bgLM=(n-1)*bgAux.r2;
+  const bgP=chiSq1Pvalue(bgLM);
+
+  return {
+    fit, sigma2hat, dw,
+    bp:{lm:bpLM,p:bpP,r2:bpAux.r2},
+    bg:{lm:bgLM,p:bgP,r2:bgAux.r2},
+  };
+}
+
+function updateMetrics(out){
+  document.getElementById('m-b1true').textContent=fmt(b1,3);
+  document.getElementById('m-b1sample').textContent=fmt(out.fit.b1,3);
+  document.getElementById('m-b1mc').textContent=fmt(out.mcB1,3);
+  document.getElementById('unbiased-note').innerHTML =
+    `<strong>Yorum:</strong> Bu örneklemde β̂₁ = <strong>${fmt(out.fit.b1,3)}</strong> çıktı; ancak Monte Carlo ortalaması <strong>${fmt(out.mcB1,3)}</strong> olup gerçek β₁ = <strong>${fmt(b1,3)}</strong> değerine çok yakındır. Bu, heteroskedastisite ve otokorelasyon eklenmesine rağmen <strong>sapmasızlığın kaybolmadığını</strong>, esas problemin çıkarım tarafında olduğunu gösterir.`;
+  document.getElementById('m-b0hat').textContent=fmt(out.fit.b0,3);
+  document.getElementById('m-b1hat').textContent=fmt(out.fit.b1,3);
+  document.getElementById('m-r2').textContent=fmt(out.fit.r2,3);
+  document.getElementById('m-sse').textContent=fmt(out.fit.sse,2);
+  document.getElementById('m-s2').textContent=fmt(out.sigma2hat,3);
+  const dwEl=document.getElementById('m-dw');
+  dwEl.textContent=fmt(out.dw,3);
+  dwEl.style.color = out.dw<1.5 ? 'var(--red-dark)' : out.dw>2.5 ? 'var(--amber-dark)' : 'var(--green-dark)';
+
+  document.getElementById('bp-lm').textContent=fmt(out.bp.lm,3);
+  document.getElementById('bp-p').textContent=out.bp.p<0.0001?'<0.0001':fmt(out.bp.p,4);
+  document.getElementById('bp-r2').textContent=fmt(out.bp.r2,3);
+  const bpReject=out.bp.p<0.05;
+  const bpPill=document.getElementById('bp-pill');
+  bpPill.className='pill '+(bpReject?'pill-red':'pill-grn');
+  bpPill.textContent=bpReject?'H₀ reddedilir — değişen varyans var':'H₀ reddedilemez — homoskedastik görünüm';
+  const bpBar=document.getElementById('bp-bar');
+  bpBar.style.width=Math.min(100, out.bp.lm/7*100)+'%';
+  bpBar.style.background=bpReject?'var(--red)':'var(--green)';
+  document.getElementById('bp-box').className=(bpReject?'danger-box':'success-box');
+  document.getElementById('bp-box').innerHTML=
+    `<strong>Breusch–Pagan:</strong> p = <strong>${out.bp.p<0.0001?'<0.0001':fmt(out.bp.p,4)}</strong>. `+
+    (bpReject
+      ? `H₀: sabit varyans varsayımı reddedilir. Yani artıkların varyansı x boyunca sistematik biçimde değişmektedir.`
+      : `H₀ reddedilemedi. Mevcut parametrelerle güçlü bir heteroskedastisite kanıtı oluşmadı.`);
+
+  document.getElementById('bg-lm').textContent=fmt(out.bg.lm,3);
+  document.getElementById('bg-p').textContent=out.bg.p<0.0001?'<0.0001':fmt(out.bg.p,4);
+  document.getElementById('bg-r2').textContent=fmt(out.bg.r2,3);
+  const bgReject=out.bg.p<0.05;
+  const bgPill=document.getElementById('bg-pill');
+  bgPill.className='pill '+(bgReject?'pill-red':'pill-grn');
+  bgPill.textContent=bgReject?'H₀ reddedilir — otokorelasyon var':'H₀ reddedilemez — otokorelasyon zayıf';
+  const bgBar=document.getElementById('bg-bar');
+  bgBar.style.width=Math.min(100, out.bg.lm/7*100)+'%';
+  bgBar.style.background=bgReject?'var(--red)':'var(--green)';
+  document.getElementById('bg-box').className=(bgReject?'danger-box':'success-box');
+  document.getElementById('bg-box').innerHTML=
+    `<strong>Breusch–Godfrey:</strong> p = <strong>${out.bg.p<0.0001?'<0.0001':fmt(out.bg.p,4)}</strong>. `+
+    (bgReject
+      ? `H₀: seri korelasyon yoktur varsayımı reddedilir. Artıklar ardışık olarak birbirini takip etmektedir.`
+      : `H₀ reddedilemedi. Mevcut parametrelerle güçlü bir seri korelasyon kanıtı oluşmadı.`);
+
+  const body=document.getElementById('summary-body');
+  body.innerHTML=`
+    <tr>
+      <td>Breusch–Pagan</td>
+      <td>H₀: sabit varyans</td>
+      <td class="center">${fmt(out.bp.lm,3)}</td>
+      <td class="center">${out.bp.p<0.0001?'<0.0001':fmt(out.bp.p,4)}</td>
+      <td class="${bpReject?'val-bad':'val-ok'}">${bpReject?'Reddet → heteroskedastisite var':'Reddetme → sabit varyans reddedilemedi'}</td>
+    </tr>
+    <tr>
+      <td>Breusch–Godfrey(1)</td>
+      <td>H₀: otokorelasyon yok</td>
+      <td class="center">${fmt(out.bg.lm,3)}</td>
+      <td class="center">${out.bg.p<0.0001?'<0.0001':fmt(out.bg.p,4)}</td>
+      <td class="${bgReject?'val-bad':'val-ok'}">${bgReject?'Reddet → otokorelasyon var':'Reddetme → seri korelasyon reddedilemedi'}</td>
+    </tr>
+    <tr>
+      <td>Durbin–Watson</td>
+      <td>Yaklaşık 2 → sorun zayıf</td>
+      <td class="center">${fmt(out.dw,3)}</td>
+      <td class="center">—</td>
+      <td class="${out.dw<1.5?'val-bad':'val-ok'}">${out.dw<1.5?'Düşük → pozitif otokorelasyon işareti':'Normal aralıkta veya zayıf sinyal'}</td>
+    </tr>`;
+
+  const txt=[];
+  if(bpReject && bgReject) txt.push('Bu simülasyonda artıklar hem değişen varyanslı hem de otokorelasyonludur; iki tanısal test de H₀ hipotezlerini reddetmektedir. Buna rağmen β̂₁’in beklenen değeri β₁ etrafında kalır.');
+  else if(bpReject) txt.push('Bu simülasyonda heteroskedastisite güçlüdür; fakat otokorelasyon kanıtı daha zayıftır.');
+  else if(bgReject) txt.push('Bu simülasyonda otokorelasyon güçlüdür; fakat değişen varyans kanıtı daha zayıftır.');
+  else txt.push('Mevcut ayarlarda iki problem de testler tarafından güçlü biçimde doğrulanmamıştır; h veya ρ artırılabilir.');
+  txt.push(`DW = ${fmt(out.dw,3)} olduğundan artıkların ardışık bağımlılığı ${out.dw<1.5?'yüksektir':'sınırlıdır'}.`);
+  document.getElementById('main-comment').innerHTML=txt.join(' ');
+}
+
+function makeLineChart(canvas, labels, datasets, yTitle=''){
+  return new Chart(document.getElementById(canvas), {
+    type:'line',
+    data:{labels,datasets},
+    options:{
+      responsive:true,
+      maintainAspectRatio:true,
+      interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{ticks:{maxTicksLimit:8,color:'#5F5E5A'},grid:{display:false}},
+        y:{ticks:{color:'#5F5E5A'},title:{display:!!yTitle,text:yTitle,color:'#5F5E5A'},grid:{color:'rgba(0,0,0,0.05)'}}
+      },
+      elements:{point:{radius:0},line:{borderWidth:2,tension:0.15}}
+    }
+  });
+}
+function makeScatterChart(canvas, points){
+  return new Chart(document.getElementById(canvas), {
+    type:'scatter',
+    data:{datasets:[{data:points, borderColor:'#6B3FA0', backgroundColor:'rgba(107,63,160,0.15)', pointRadius:3}]},
+    options:{
+      responsive:true, maintainAspectRatio:true,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{title:{display:true,text:'êₜ₋₁',color:'#5F5E5A'},ticks:{color:'#5F5E5A'},grid:{color:'rgba(0,0,0,0.05)'}},
+        y:{title:{display:true,text:'êₜ',color:'#5F5E5A'},ticks:{color:'#5F5E5A'},grid:{color:'rgba(0,0,0,0.05)'}}
+      }
+    }
+  });
+}
+function updateCharts(){
+  const labels=Array.from({length:x.length}, (_,i)=>i+1);
+  const fitDs=[
+    {label:'Gözlenen y', data:y, borderColor:'#185FA5', backgroundColor:'transparent'},
+    {label:'OLS tahmini', data:yhat, borderColor:'#BA7517', backgroundColor:'transparent'}
+  ];
+  const resDs=[{label:'Artık', data:ehat, borderColor:'#E24B4A', backgroundColor:'transparent'}];
+  const absDs=[{label:'|ê|', data:ehat.map(v=>Math.abs(v)), borderColor:'#3B6D11', backgroundColor:'transparent'}];
+  const lagPts=[]; for(let t=1;t<ehat.length;t++) lagPts.push({x:ehat[t-1],y:ehat[t]});
+  if(fitChart) fitChart.destroy();
+  if(resChart) resChart.destroy();
+  if(absChart) absChart.destroy();
+  if(lagChart) lagChart.destroy();
+  fitChart=makeLineChart('ch-fit', labels, fitDs, 'y');
+  resChart=makeLineChart('ch-res', labels, resDs, 'ê');
+  absChart=makeLineChart('ch-abs', labels, absDs, '|ê|');
+  lagChart=makeScatterChart('ch-lag', lagPts);
+}
+
+function readInputs(){
+  N=+document.getElementById('sl-n').value;
+  b0=+document.getElementById('sl-b0').value;
+  b1=+document.getElementById('sl-b1').value;
+  s0=+document.getElementById('sl-s0').value;
+  h=+document.getElementById('sl-h').value;
+  rho=+document.getElementById('sl-rho').value;
+  document.getElementById('lbl-n').textContent=N;
+  document.getElementById('lbl-b0').textContent=b0.toFixed(1);
+  document.getElementById('lbl-b1').textContent=b1.toFixed(1);
+  document.getElementById('lbl-s0').textContent=s0.toFixed(1);
+  document.getElementById('lbl-h').textContent=h.toFixed(1);
+  document.getElementById('lbl-rho').textContent=rho.toFixed(2);
+}
+function runAll(){
+  readInputs();
+  generateData();
+  const out=runTests();
+  out.mcB1 = monteCarloMeanB1(250);
+  updateMetrics(out);
+  updateCharts();
+}
+function regenerate(){ seedBase(); runAll(); }
+
+['sl-n','sl-b0','sl-b1','sl-s0','sl-h','sl-rho'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', runAll);
+});
+seedBase();
+runAll();
+</script>
+</body>
+</html>
