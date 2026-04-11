@@ -18,214 +18,99 @@
     --radius:10px;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
-  body{
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    background:var(--bg2);color:var(--text);
-    padding:16px;max-width:1350px;margin:0 auto;
-  }
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg2);color:var(--text);padding:16px;max-width:1350px;margin:0 auto;}
+  .topbar-lang{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;}
+  .lang-btn{padding:6px 14px;border-radius:999px;border:1px solid var(--border);background:var(--bg);color:var(--text2);font-size:12.5px;cursor:pointer;transition:all 0.2s;}
+  .lang-btn:hover{background:var(--blue-light);border-color:var(--blue);color:var(--blue);}
   h1{font-size:18px;font-weight:600;margin-bottom:4px;}
   .subtitle{font-size:13px;color:var(--text2);margin-bottom:16px;}
-
-  /* TABS */
-  .tab-bar{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
-  .tab-btn{
-    padding:6px 16px;font-size:12px;font-weight:600;
-    border-radius:999px;border:0.5px solid var(--border);
-    cursor:pointer;background:var(--bg);color:var(--text2);
-    transition:all .2s;
-  }
-  .tab-btn.active{background:var(--blue);color:#fff;border-color:var(--blue);}
-
-  /* PAGE LAYOUT */
-  .page-layout{
-    display:grid;
-    grid-template-columns:320px 1fr;
-    gap:14px;align-items:start;
-  }
+  .scenario-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;}
+  @media(max-width:700px){.scenario-grid{grid-template-columns:1fr;}}
+  .scenario-card{border:1.5px solid var(--border);border-radius:var(--radius);padding:10px 12px;cursor:pointer;transition:all .2s;background:var(--bg);}
+  .scenario-card:hover{border-color:#85B7EB;background:var(--blue-light);}
+  .scenario-card.active{border-color:var(--blue);background:var(--blue-light);}
+  .sc-title{font-size:13px;font-weight:600;margin-bottom:4px;}
+  .sc-desc{font-size:11px;color:var(--text2);line-height:1.5;}
+  .page-layout{display:grid;grid-template-columns:320px 1fr;gap:14px;align-items:start;}
   @media(max-width:800px){.page-layout{grid-template-columns:1fr;}}
   .col-right{min-width:0;}
-
-  .card{
-    background:var(--bg);border:0.5px solid var(--border);
-    border-radius:var(--radius);padding:14px 16px;margin-bottom:12px;
-  }
-  .sec{
-    font-size:12px;font-weight:600;color:var(--text2);
-    text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;
-  }
-
-  /* SLIDERS */
+  .card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:12px;}
+  .sec{font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;}
   .sr{display:flex;align-items:center;gap:10px;margin-bottom:9px;}
   .sl{font-size:13px;color:var(--text2);min-width:130px;}
-  input[type=range]{
-    flex:1;height:4px;accent-color:var(--blue);
-    -webkit-appearance:none;appearance:none;
-    background:var(--border);border-radius:2px;outline:none;
-  }
-  input[type=range]::-webkit-slider-thumb{
-    -webkit-appearance:none;width:20px;height:20px;
-    background:var(--blue);border-radius:50%;cursor:pointer;
-  }
+  input[type=range]{flex:1;height:4px;accent-color:var(--blue);-webkit-appearance:none;appearance:none;background:var(--border);border-radius:2px;outline:none;}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;background:var(--blue);border-radius:50%;cursor:pointer;}
   .sv{font-size:13px;font-weight:600;min-width:42px;text-align:right;color:var(--text);}
-
-  /* TOGGLE */
-  .toggle-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
-  .toggle-lbl{font-size:13px;color:var(--text2);min-width:130px;}
-  .tog-opts{display:flex;gap:6px;flex-wrap:wrap;}
-  .tog-btn{
-    padding:4px 10px;font-size:12px;border-radius:999px;
-    border:0.5px solid var(--border);cursor:pointer;
-    background:var(--bg2);color:var(--text2);transition:all .2s;
-  }
-  .tog-btn.active{background:var(--blue-light);color:var(--blue-dark);border-color:#85B7EB;}
-
   .divider{border:none;border-top:0.5px solid var(--border);margin:12px 0;}
-
-  .btn{
-    display:block;width:100%;padding:11px;background:var(--blue);color:white;
-    border:none;border-radius:var(--radius);font-size:13px;font-weight:500;
-    cursor:pointer;margin-bottom:10px;
-  }
+  .btn{display:block;width:100%;padding:11px;background:var(--blue);color:white;border:none;border-radius:var(--radius);font-size:13px;font-weight:500;cursor:pointer;margin-bottom:10px;}
   .btn:active{opacity:.85;}
-
-  /* METRIC GRID */
   .metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
   .metric-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px;}
   .metric{background:var(--bg2);border-radius:8px;padding:9px 12px;text-align:center;}
   .metric-lbl{font-size:11px;color:var(--text2);margin-bottom:2px;}
   .metric-val{font-size:17px;font-weight:600;color:var(--text);}
-
-  /* RESULT PILL */
-  .result-pill{
-    display:inline-flex;align-items:center;
-    padding:5px 14px;border-radius:999px;
-    font-size:12px;font-weight:700;border:1px solid;
-    transition:all .3s;margin-bottom:8px;
-  }
+  .result-pill{display:inline-flex;align-items:center;padding:5px 14px;border-radius:999px;font-size:12px;font-weight:700;border:1px solid;transition:all .3s;margin-bottom:8px;}
   .pill-red{background:var(--red-light);border-color:#F09595;color:var(--red-dark);}
   .pill-grn{background:var(--green-light);border-color:#C0DD97;color:var(--green-dark);}
   .pill-amb{background:var(--amber-light);border-color:#E8C77A;color:var(--amber-dark);}
   .pill-pur{background:var(--purple-light);border-color:#C2A0E8;color:var(--purple-dark);}
-
-  /* INFO BOX */
-  .info-box{
-    border-left:3px solid var(--blue);border-radius:0 var(--radius) var(--radius) 0;
-    background:var(--blue-light);color:var(--blue-dark);
-    padding:10px 12px;font-size:12px;line-height:1.7;margin-top:8px;
-  }
-  .warn-box{
-    border-left:3px solid var(--amber);border-radius:0 var(--radius) var(--radius) 0;
-    background:var(--amber-light);color:var(--amber-dark);
-    padding:10px 12px;font-size:12px;line-height:1.7;margin-top:8px;
-  }
-  .success-box{
-    border-left:3px solid var(--green);border-radius:0 var(--radius) var(--radius) 0;
-    background:var(--green-light);color:var(--green-dark);
-    padding:10px 12px;font-size:12px;line-height:1.7;margin-top:8px;
-  }
-  .fail-box{
-    border-left:3px solid var(--red);border-radius:0 var(--radius) var(--radius) 0;
-    background:var(--red-light);color:var(--red-dark);
-    padding:10px 12px;font-size:12px;line-height:1.7;margin-top:8px;
-  }
-  .note-box{
-    border-left:3px solid var(--text2);border-radius:0 var(--radius) var(--radius) 0;
-    background:var(--bg2);color:var(--text2);
-    padding:8px 12px;font-size:12px;line-height:1.7;margin-top:6px;
-  }
-
-  /* CHART */
+  .info-box{border-left:3px solid var(--blue);border-radius:0 var(--radius) var(--radius) 0;background:var(--blue-light);color:var(--blue-dark);padding:10px 12px;font-size:12px;line-height:1.7;margin-top:8px;}
+  .warn-box{border-left:3px solid var(--amber);border-radius:0 var(--radius) var(--radius) 0;background:var(--amber-light);color:var(--amber-dark);padding:10px 12px;font-size:12px;line-height:1.7;margin-top:8px;}
+  .success-box{border-left:3px solid var(--green);border-radius:0 var(--radius) var(--radius) 0;background:var(--green-light);color:var(--green-dark);padding:10px 12px;font-size:12px;line-height:1.7;margin-top:8px;}
+  .fail-box{border-left:3px solid var(--red);border-radius:0 var(--radius) var(--radius) 0;background:var(--red-light);color:var(--red-dark);padding:10px 12px;font-size:12px;line-height:1.7;margin-top:8px;}
+  .note-box{border-left:3px solid var(--text2);border-radius:0 var(--radius) var(--radius) 0;background:var(--bg2);color:var(--text2);padding:8px 12px;font-size:12px;line-height:1.7;margin-top:6px;}
   .chart-wrap{position:relative;height:220px;margin-bottom:4px;}
-  .chart-wrap-tall{position:relative;height:260px;margin-bottom:4px;}
   .legend{display:flex;gap:14px;font-size:11px;color:var(--text2);margin-top:6px;flex-wrap:wrap;}
   .leg-item{display:flex;align-items:center;gap:5px;}
   .leg-dot{width:10px;height:10px;border-radius:50%;display:inline-block;}
   .leg-line{width:16px;height:2.5px;display:inline-block;}
-
-  /* TWO CHARTS SIDE BY SIDE */
   .chart-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
   @media(max-width:600px){.chart-row{grid-template-columns:1fr;}}
-
-  /* STEP ROW */
-  .step-list{counter-reset:step;}
-  .step-item{
-    display:flex;gap:10px;align-items:flex-start;
-    font-size:12px;line-height:1.6;color:var(--text2);
-    margin-bottom:6px;
-  }
-  .step-num{
-    min-width:20px;height:20px;border-radius:50%;
-    background:var(--blue);color:#fff;font-size:11px;font-weight:700;
-    display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;
-  }
-
-  /* CONDITION TABLE */
   .cond-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:6px;}
-  .cond-table th{
-    background:var(--bg2);color:var(--text2);font-weight:600;
-    padding:7px 10px;text-align:left;border-bottom:1px solid var(--border);
-  }
+  .cond-table th{background:var(--bg2);color:var(--text2);font-weight:600;padding:7px 10px;text-align:left;border-bottom:1px solid var(--border);}
   .cond-table td{padding:7px 10px;border-bottom:0.5px solid var(--border);vertical-align:middle;}
   .cond-table tr:last-child td{border-bottom:none;}
-
-  /* BADGE */
-  .badge{
-    display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600;
-  }
+  .badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600;}
   .badge-grn{background:var(--green-light);color:var(--green-dark);}
   .badge-red{background:var(--red-light);color:var(--red-dark);}
   .badge-amb{background:var(--amber-light);color:var(--amber-dark);}
   .badge-blue{background:var(--blue-light);color:var(--blue-dark);}
   .badge-pur{background:var(--purple-light);color:var(--purple-dark);}
-
-  /* SCENARIO CARDS */
-  .scenario-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;}
-  @media(max-width:700px){.scenario-grid{grid-template-columns:1fr;}}
-  .scenario-card{
-    border:1.5px solid var(--border);border-radius:var(--radius);
-    padding:10px 12px;cursor:pointer;transition:all .2s;background:var(--bg);
-  }
-  .scenario-card:hover{border-color:#85B7EB;background:var(--blue-light);}
-  .scenario-card.active{border-color:var(--blue);background:var(--blue-light);}
-  .sc-title{font-size:13px;font-weight:600;margin-bottom:4px;}
-  .sc-desc{font-size:11px;color:var(--text2);line-height:1.5;}
-
-  .hidden{display:none;}
-
-  /* Eq display */
-  .eq{font-family:monospace;background:var(--bg2);padding:3px 7px;border-radius:5px;font-size:12px;}
-
-  /* ADF sub-table */
   .adf-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
   .adf-card{background:var(--bg2);border-radius:8px;padding:10px 12px;}
   .adf-title{font-size:11px;font-weight:600;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.4px;}
   .adf-row{display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:4px;}
   .adf-lbl{color:var(--text2);}
   .adf-val{font-weight:600;}
-
-  /* bar */
   .bar-wrap{height:5px;background:rgba(0,0,0,.07);border-radius:3px;overflow:hidden;margin:2px 0 8px;}
   .bar{height:100%;border-radius:3px;transition:width .5s,background .5s;}
+  .eq{font-family:monospace;background:var(--bg2);padding:3px 7px;border-radius:5px;font-size:12px;}
+  .hidden{display:none;}
 </style>
 </head>
 <body>
 
-<h1>Eşbütünleşme Simülatörü: I(1) Seriler &amp; Engle-Granger Testi</h1>
-<p class="subtitle">Doç. Dr. Erkan Ağaslan — Kütahya Dumlupınar Üniversitesi</p>
+<div class="topbar-lang">
+  <div>
+    <h1 data-i18n="page_title">Eşbütünleşme Simülatörü: I(1) Seriler &amp; Engle-Granger Testi</h1>
+    <p class="subtitle" data-i18n="page_subtitle">Doç. Dr. Erkan Ağaslan — Kütahya Dumlupınar Üniversitesi</p>
+  </div>
+  <button class="lang-btn" id="langBtn">TR/EN</button>
+</div>
 
-<!-- SCENARIO TABS -->
+<!-- SENARYO KARTLARI -->
 <div class="scenario-grid" id="scenario-grid">
   <div class="scenario-card active" data-s="0" onclick="setScenario(0)">
-    <div class="sc-title">🔗 Senaryo 1 — Eşbütünleşik</div>
-    <div class="sc-desc">Her iki seri I(1). Aralarında uzun dönem denge ilişkisi var; hata terimi durağan I(0).</div>
+    <div class="sc-title" data-i18n="sc0_title">🔗 Senaryo 1 — Eşbütünleşik</div>
+    <div class="sc-desc" data-i18n="sc0_desc">Her iki seri I(1). Aralarında uzun dönem denge ilişkisi var; hata terimi durağan I(0).</div>
   </div>
   <div class="scenario-card" data-s="1" onclick="setScenario(1)">
-    <div class="sc-title">❌ Senaryo 2 — Eşbütünleşik Değil</div>
-    <div class="sc-desc">Her iki seri I(1) ama ortak trend yok; hata terimi de I(1) → sahte regresyon.</div>
+    <div class="sc-title" data-i18n="sc1_title">❌ Senaryo 2 — Eşbütünleşik Değil</div>
+    <div class="sc-desc" data-i18n="sc1_desc">Her iki seri I(1) ama ortak trend yok; hata terimi de I(1) → sahte regresyon.</div>
   </div>
   <div class="scenario-card" data-s="2" onclick="setScenario(2)">
-    <div class="sc-title">⚠️ Senaryo 3 — Farklı Bütünleşme</div>
-    <div class="sc-desc">Bir seri I(1), diğeri I(0) durağan. İlk koşul sağlanamaz; eşbütünleşme olamaz.</div>
+    <div class="sc-title" data-i18n="sc2_title">⚠️ Senaryo 3 — Farklı Bütünleşme</div>
+    <div class="sc-desc" data-i18n="sc2_desc">Bir seri I(1), diğeri I(0) durağan. İlk koşul sağlanamaz; eşbütünleşme olamaz.</div>
   </div>
 </div>
 
@@ -233,119 +118,101 @@
 
 <!-- ===== SOL PANEL ===== -->
 <div class="col-left">
-
-  <!-- PARAMETRELER -->
   <div class="card">
-    <div class="sec">Seri parametreleri</div>
-
+    <div class="sec" data-i18n="sec_params">Seri parametreleri</div>
     <div class="sr">
-      <span class="sl">Gözlem sayısı n</span>
+      <span class="sl" data-i18n="sl_n">Gözlem sayısı n</span>
       <input type="range" id="sl-n" min="60" max="300" step="10" value="120">
       <span class="sv" id="lbl-n">120</span>
     </div>
-
     <div class="sr">
-      <span class="sl">σ gürültü — X</span>
+      <span class="sl" data-i18n="sl_sx">σ gürültü — X</span>
       <input type="range" id="sl-sx" min="0.2" max="3" step="0.1" value="1">
       <span class="sv" id="lbl-sx">1.0</span>
     </div>
-
     <div class="sr" id="row-sy">
-      <span class="sl">σ gürültü — Y</span>
+      <span class="sl" data-i18n="sl_sy">σ gürültü — Y</span>
       <input type="range" id="sl-sy" min="0.2" max="3" step="0.1" value="1">
       <span class="sv" id="lbl-sy">1.0</span>
     </div>
-
     <div class="sr" id="row-beta">
-      <span class="sl">β katsayısı</span>
+      <span class="sl" data-i18n="sl_beta">β katsayısı</span>
       <input type="range" id="sl-beta" min="0.3" max="3" step="0.1" value="1.2">
       <span class="sv" id="lbl-beta">1.2</span>
     </div>
-
     <div class="sr" id="row-ec">
-      <span class="sl">Hata σ (ε)</span>
+      <span class="sl" data-i18n="sl_ec">Hata σ (ε)</span>
       <input type="range" id="sl-ec" min="0.1" max="4" step="0.1" value="0.5">
       <span class="sv" id="lbl-ec">0.5</span>
     </div>
-
     <div id="row-i0-note" class="hidden">
-      <div class="warn-box">⚠️ Bu senaryoda <strong>Y serisi durağan I(0)</strong> üretiliyor. X ise I(1) rassal yürüyüş.</div>
+      <div class="warn-box" data-i18n="warn_i0">⚠️ Bu senaryoda <strong>Y serisi durağan I(0)</strong> üretiliyor. X ise I(1) rassal yürüyüş.</div>
     </div>
-
     <hr class="divider">
-    <div class="sec" style="text-transform:none;font-size:11px;">ADF KRİTİK DEĞERLERİ (MacKinnon, 1991)</div>
+    <div class="sec" style="text-transform:none;font-size:11px;" data-i18n="sec_cv">ADF KRİTİK DEĞERLERİ (MacKinnon, 1991)</div>
     <div style="font-size:12px;color:var(--text2);line-height:1.9;">
-      %1 → <strong style="color:var(--red-dark);">−3.50</strong> &nbsp;|&nbsp;
-      %5 → <strong style="color:var(--amber-dark);">−2.89</strong> &nbsp;|&nbsp;
-      %10 → <strong>−2.58</strong>
+      <span data-i18n="cv_1pct">%1</span> → <strong style="color:var(--red-dark);">−3.50</strong> &nbsp;|&nbsp;
+      <span data-i18n="cv_5pct">%5</span> → <strong style="color:var(--amber-dark);">−2.89</strong> &nbsp;|&nbsp;
+      <span data-i18n="cv_10pct">%10</span> → <strong>−2.58</strong>
     </div>
-    <div style="font-size:11px;color:var(--text2);margin-top:4px;">EG artık testi için (MacKinnon, 1991): %1→−3.90 &nbsp;%5→−3.34</div>
-
+    <div style="font-size:11px;color:var(--text2);margin-top:4px;" data-i18n="cv_eg_note">EG artık testi için (MacKinnon, 1991): %1→−3.90 &nbsp;%5→−3.34</div>
     <hr class="divider">
-    <button class="btn" onclick="generate()">🔄 Yeni Simülasyon</button>
+    <button class="btn" onclick="generate()" data-i18n="btn_sim">🔄 Yeni Simülasyon</button>
   </div>
 
   <!-- ADIMLAR -->
   <div class="card" style="padding:16px;">
-    <div class="sec">Engle-Granger &mdash; 3 Ad&#305;m</div>
+    <div class="sec" data-i18n="sec_steps">Engle-Granger — 3 Adım</div>
     <div style="display:flex;flex-direction:column;gap:10px;">
 
       <div style="display:flex;gap:12px;align-items:flex-start;background:var(--blue-light);border:1px solid #b3d4f0;border-radius:10px;padding:11px 13px;">
         <div style="min-width:26px;height:26px;border-radius:50%;background:var(--blue);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">1</div>
         <div style="font-size:12.5px;line-height:1.7;color:var(--blue-dark);">
-          <strong style="font-size:13px;display:block;margin-bottom:3px;">Dura&#287;anl&#305;k derecesini kontrol et</strong>
-          X ve Y'nin <strong>ikisi de I(1)</strong> olmal&#305; &mdash;
-          <strong>ayn&#305; dereceden b&uuml;t&uuml;nle&#351;ik</strong> olma &ouml;n ko&#351;uldur.
-          ADF testinde <em>d&uuml;zeyde birim k&ouml;k var</em>, <em>birinci farkta yok</em>.
+          <strong style="font-size:13px;display:block;margin-bottom:3px;" data-i18n="step1_title">Durağanlık derecesini kontrol et</strong>
+          <span data-i18n="step1_body">X ve Y'nin <strong>ikisi de I(1)</strong> olmalı — <strong>aynı dereceden bütünleşik</strong> olma ön koşuldur. ADF testinde <em>düzeyde birim kök var</em>, <em>birinci farkta yok</em>.</span>
         </div>
       </div>
 
       <div style="display:flex;gap:12px;align-items:flex-start;background:var(--purple-light);border:1px solid #c9aff0;border-radius:10px;padding:11px 13px;">
         <div style="min-width:26px;height:26px;border-radius:50%;background:var(--purple);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">2</div>
         <div style="font-size:12.5px;line-height:1.7;color:var(--purple-dark);">
-          <strong style="font-size:13px;display:block;margin-bottom:3px;">Uzun d&ouml;nem regresyonu kur</strong>
-          <span class="eq" style="font-size:13px;">Y = &alpha; + &beta;&middot;X + &epsilon;</span> &nbsp;&rarr;&nbsp;
-          <strong>OLS art&#305;klar&#305;n&#305; (&ucirc;) kaydet.</strong><br>
-          &beta; katsay&#305;s&#305; <em>e&#351;b&uuml;t&uuml;nle&#351;me vekt&ouml;r&uuml;n&uuml;</em> temsil eder.
+          <strong style="font-size:13px;display:block;margin-bottom:3px;" data-i18n="step2_title">Uzun dönem regresyonu kur</strong>
+          <span class="eq" style="font-size:13px;">Y = α + β·X + ε</span> &nbsp;→&nbsp;
+          <span data-i18n="step2_body"><strong>OLS artıklarını (û) kaydet.</strong><br>β katsayısı <em>eşbütünleşme vektörünü</em> temsil eder.</span>
         </div>
       </div>
 
       <div style="display:flex;gap:12px;align-items:flex-start;background:var(--teal-light);border:1px solid #9dd5cf;border-radius:10px;padding:11px 13px;">
         <div style="min-width:26px;height:26px;border-radius:50%;background:var(--teal);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;">3</div>
         <div style="font-size:12.5px;line-height:1.7;color:var(--teal-dark);">
-          <strong style="font-size:13px;display:block;margin-bottom:3px;">Art&#305;klara birim k&ouml;k testi uygula</strong>
-          <strong>&ucirc; ~ I(0)</strong> ise &rarr; iki I(1) serinin <strong>do&#287;rusal kombinasyonu dura&#287;and&#305;r</strong>
-          &rarr; <strong style="color:var(--green-dark);">e&#351;b&uuml;t&uuml;nle&#351;me var.</strong><br>
-          <strong>&ucirc; ~ I(1)</strong> ise &rarr; ortak trend yok
-          &rarr; <strong style="color:var(--red-dark);">sahte regresyon.</strong>
+          <strong style="font-size:13px;display:block;margin-bottom:3px;" data-i18n="step3_title">Artıklara birim kök testi uygula</strong>
+          <span data-i18n="step3_body"><strong>û ~ I(0)</strong> ise → iki I(1) serinin <strong>doğrusal kombinasyonu durağandır</strong> → <strong style="color:var(--green-dark);">eşbütünleşme var.</strong><br><strong>û ~ I(1)</strong> ise → ortak trend yok → <strong style="color:var(--red-dark);">sahte regresyon.</strong></span>
         </div>
       </div>
 
     </div>
   </div>
-
-</div><!-- /col-left -->
+</div>
 
 <!-- ===== SAĞ PANEL ===== -->
 <div class="col-right">
 
-  <!-- ÖN KOŞUL: DURAĞANLIK DERECELERİ -->
   <div class="card">
-    <div class="sec">Adım 1 — Durağanlık dereceleri (ADF)</div>
+    <div class="sec" data-i18n="sec_step1_result">Adım 1 — Durağanlık dereceleri (ADF)</div>
     <div class="adf-grid">
       <div class="adf-card" id="adf-x-card">
-        <div class="adf-title" style="color:var(--blue-dark);">Seri X</div>
-        <div class="adf-row"><span class="adf-lbl">Düzey ADF τ</span><span class="adf-val" id="adf-x-lev">—</span></div>
+        <div class="adf-title" style="color:var(--blue-dark);" data-i18n="series_x">Seri X</div>
+        <div class="adf-row"><span class="adf-lbl" data-i18n="lbl_level_adf">Düzey ADF τ</span><span class="adf-val" id="adf-x-lev">—</span></div>
         <div class="bar-wrap"><div class="bar" id="bar-x-lev" style="width:0%;background:var(--red)"></div></div>
-        <div class="adf-row"><span class="adf-lbl">1. Fark ADF τ</span><span class="adf-val" id="adf-x-dif">—</span></div>
+        <div class="adf-row"><span class="adf-lbl" data-i18n="lbl_diff_adf">1. Fark ADF τ</span><span class="adf-val" id="adf-x-dif">—</span></div>
         <div class="bar-wrap"><div class="bar" id="bar-x-dif" style="width:0%;background:var(--green)"></div></div>
         <div style="margin-top:4px;" id="verdict-x"></div>
       </div>
       <div class="adf-card" id="adf-y-card">
-        <div class="adf-title" style="color:var(--purple-dark);">Seri Y</div>
-        <div class="adf-row"><span class="adf-lbl">Düzey ADF τ</span><span class="adf-val" id="adf-y-lev">—</span></div>
+        <div class="adf-title" style="color:var(--purple-dark);" data-i18n="series_y">Seri Y</div>
+        <div class="adf-row"><span class="adf-lbl" data-i18n="lbl_level_adf">Düzey ADF τ</span><span class="adf-val" id="adf-y-lev">—</span></div>
         <div class="bar-wrap"><div class="bar" id="bar-y-lev" style="width:0%;background:var(--red)"></div></div>
-        <div class="adf-row"><span class="adf-lbl">1. Fark ADF τ</span><span class="adf-val" id="adf-y-dif">—</span></div>
+        <div class="adf-row"><span class="adf-lbl" data-i18n="lbl_diff_adf">1. Fark ADF τ</span><span class="adf-val" id="adf-y-dif">—</span></div>
         <div class="bar-wrap"><div class="bar" id="bar-y-dif" style="width:0%;background:var(--green)"></div></div>
         <div style="margin-top:4px;" id="verdict-y"></div>
       </div>
@@ -353,21 +220,19 @@
     <div id="prereq-result"></div>
   </div>
 
-  <!-- SERİ GRAFİKLERİ -->
   <div class="card">
-    <div class="sec">Seri grafikleri — Düzey değerler</div>
+    <div class="sec" data-i18n="sec_series_chart">Seri grafikleri — Düzey değerler</div>
     <div class="chart-wrap">
       <canvas id="chart-series"></canvas>
     </div>
     <div class="legend">
-      <div class="leg-item"><span class="leg-line" style="background:var(--blue);"></span> X serisi (I(1))</div>
-      <div class="leg-item"><span class="leg-line" style="background:var(--purple);"></span> <span id="leg-y-label">Y serisi (I(1))</span></div>
+      <div class="leg-item"><span class="leg-line" style="background:var(--blue);"></span> <span data-i18n="leg_x">X serisi (I(1))</span></div>
+      <div class="leg-item"><span class="leg-line" style="background:var(--purple);"></span> <span id="leg-y-label" data-i18n="leg_y_i1">Y serisi (I(1))</span></div>
     </div>
   </div>
 
-  <!-- FARK GRAFİKLERİ -->
   <div class="card">
-    <div class="sec">1. Fark serileri — ΔX ve ΔY</div>
+    <div class="sec" data-i18n="sec_diff_chart">1. Fark serileri — ΔX ve ΔY</div>
     <div class="chart-row">
       <div>
         <div style="font-size:11px;font-weight:600;color:var(--blue-dark);margin-bottom:4px;">ΔX</div>
@@ -378,19 +243,18 @@
         <div class="chart-wrap" style="height:140px;"><canvas id="chart-dy"></canvas></div>
       </div>
     </div>
-    <div class="note-box">1. fark alındığında her iki seri de sıfır etrafında dalgalanan durağan bir görünüm kazanır (I(0)).</div>
+    <div class="note-box" data-i18n="note_diff">1. fark alındığında her iki seri de sıfır etrafında dalgalanan durağan bir görünüm kazanır (I(0)).</div>
   </div>
 
-  <!-- ADIM 2 + ADIM 3 -->
   <div class="card">
-    <div class="sec">Adım 2 — Uzun dönem regresyonu &amp; Adım 3 — Artık testi</div>
+    <div class="sec" data-i18n="sec_ols_eg">Adım 2 — Uzun dönem regresyonu &amp; Adım 3 — Artık testi</div>
     <div class="metric-grid">
       <div class="metric">
-        <div class="metric-lbl">OLS α̂ (kesişim)</div>
+        <div class="metric-lbl" data-i18n="lbl_alpha">OLS α̂ (kesişim)</div>
         <div class="metric-val" id="m-alpha">—</div>
       </div>
       <div class="metric">
-        <div class="metric-lbl">OLS β̂ (eğim)</div>
+        <div class="metric-lbl" data-i18n="lbl_beta_hat">OLS β̂ (eğim)</div>
         <div class="metric-val" id="m-beta">—</div>
       </div>
     </div>
@@ -398,61 +262,58 @@
       <canvas id="chart-resid"></canvas>
     </div>
     <div class="legend" style="margin-bottom:8px;">
-      <div class="leg-item"><span class="leg-line" style="background:var(--teal);"></span> OLS artıkları û</div>
-      <div class="leg-item"><span class="leg-line" style="background:var(--border);border-top:1.5px dashed #aaa;background:none;"></span> Sıfır çizgisi</div>
+      <div class="leg-item"><span class="leg-line" style="background:var(--teal);"></span> <span data-i18n="leg_resid">OLS artıkları û</span></div>
+      <div class="leg-item"><span class="leg-line" style="background:none;border-top:1.5px dashed #aaa;"></span> <span data-i18n="leg_zero">Sıfır çizgisi</span></div>
     </div>
-
     <div class="metric-grid-3">
       <div class="metric">
-        <div class="metric-lbl">Artık ADF τ</div>
+        <div class="metric-lbl" data-i18n="lbl_eg_tau">Artık ADF τ</div>
         <div class="metric-val" id="m-eg-tau">—</div>
       </div>
       <div class="metric">
-        <div class="metric-lbl">EG %5 kritik</div>
+        <div class="metric-lbl" data-i18n="lbl_eg_cv5">EG %5 kritik</div>
         <div class="metric-val" style="color:var(--amber-dark);">−3.34</div>
       </div>
       <div class="metric">
-        <div class="metric-lbl">Artık σ</div>
+        <div class="metric-lbl" data-i18n="lbl_resid_sd">Artık σ</div>
         <div class="metric-val" id="m-resid-sd">—</div>
       </div>
     </div>
-
     <div id="eg-result-box"></div>
   </div>
 
-  <!-- ÖZET TABLO -->
   <div class="card">
-    <div class="sec">Sonuç özeti</div>
+    <div class="sec" data-i18n="sec_summary">Sonuç özeti</div>
     <table class="cond-table">
       <thead>
         <tr>
-          <th>Koşul</th>
-          <th>Gerekli</th>
-          <th>Bu simülasyon</th>
-          <th>Sonuç</th>
+          <th data-i18n="tbl_condition">Koşul</th>
+          <th data-i18n="tbl_required">Gerekli</th>
+          <th data-i18n="tbl_this_sim">Bu simülasyon</th>
+          <th data-i18n="tbl_result">Sonuç</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td>X durağanlık derecesi</td>
+          <td data-i18n="tbl_x_order">X durağanlık derecesi</td>
           <td>I(1)</td>
           <td id="tbl-x-ord">—</td>
           <td id="tbl-x-ok">—</td>
         </tr>
         <tr>
-          <td>Y durağanlık derecesi</td>
+          <td data-i18n="tbl_y_order">Y durağanlık derecesi</td>
           <td>I(1)</td>
           <td id="tbl-y-ord">—</td>
           <td id="tbl-y-ok">—</td>
         </tr>
         <tr>
-          <td>Artık û durağanlık</td>
+          <td data-i18n="tbl_resid_order">Artık û durağanlık</td>
           <td>I(0)</td>
           <td id="tbl-res-ord">—</td>
           <td id="tbl-res-ok">—</td>
         </tr>
         <tr>
-          <td colspan="2"><strong>Eşbütünleşme kararı</strong></td>
+          <td colspan="2"><strong data-i18n="tbl_final_label">Eşbütünleşme kararı</strong></td>
           <td colspan="2" id="tbl-final">—</td>
         </tr>
       </tbody>
@@ -460,13 +321,194 @@
     <div id="interpretation-box"></div>
   </div>
 
-</div><!-- /col-right -->
-</div><!-- /page-layout -->
+</div>
+</div>
 
 <script>
-/* ===================== YARDIMCI FONKSİYONLAR ===================== */
+// ─── i18n ────────────────────────────────────────────────────────────────────
+const dict = {
+  tr: {
+    page_title:     "Eşbütünleşme Simülatörü: I(1) Seriler &amp; Engle-Granger Testi",
+    page_subtitle:  "Doç. Dr. Erkan Ağaslan — Kütahya Dumlupınar Üniversitesi",
+    sc0_title:      "🔗 Senaryo 1 — Eşbütünleşik",
+    sc0_desc:       "Her iki seri I(1). Aralarında uzun dönem denge ilişkisi var; hata terimi durağan I(0).",
+    sc1_title:      "❌ Senaryo 2 — Eşbütünleşik Değil",
+    sc1_desc:       "Her iki seri I(1) ama ortak trend yok; hata terimi de I(1) → sahte regresyon.",
+    sc2_title:      "⚠️ Senaryo 3 — Farklı Bütünleşme",
+    sc2_desc:       "Bir seri I(1), diğeri I(0) durağan. İlk koşul sağlanamaz; eşbütünleşme olamaz.",
+    sec_params:     "Seri parametreleri",
+    sl_n:           "Gözlem sayısı n",
+    sl_sx:          "σ gürültü — X",
+    sl_sy:          "σ gürültü — Y",
+    sl_beta:        "β katsayısı",
+    sl_ec:          "Hata σ (ε)",
+    warn_i0:        "⚠️ Bu senaryoda <strong>Y serisi durağan I(0)</strong> üretiliyor. X ise I(1) rassal yürüyüş.",
+    sec_cv:         "ADF KRİTİK DEĞERLERİ (MacKinnon, 1991)",
+    cv_1pct:        "%1",
+    cv_5pct:        "%5",
+    cv_10pct:       "%10",
+    cv_eg_note:     "EG artık testi için (MacKinnon, 1991): %1→−3.90 &nbsp;%5→−3.34",
+    btn_sim:        "🔄 Yeni Simülasyon",
+    sec_steps:      "Engle-Granger — 3 Adım",
+    step1_title:    "Durağanlık derecesini kontrol et",
+    step1_body:     "X ve Y'nin <strong>ikisi de I(1)</strong> olmalı — <strong>aynı dereceden bütünleşik</strong> olma ön koşuldur. ADF testinde <em>düzeyde birim kök var</em>, <em>birinci farkta yok</em>.",
+    step2_title:    "Uzun dönem regresyonu kur",
+    step2_body:     "<strong>OLS artıklarını (û) kaydet.</strong><br>β katsayısı <em>eşbütünleşme vektörünü</em> temsil eder.",
+    step3_title:    "Artıklara birim kök testi uygula",
+    step3_body:     "<strong>û ~ I(0)</strong> ise → iki I(1) serinin <strong>doğrusal kombinasyonu durağandır</strong> → <strong style=\"color:var(--green-dark);\">eşbütünleşme var.</strong><br><strong>û ~ I(1)</strong> ise → ortak trend yok → <strong style=\"color:var(--red-dark);\">sahte regresyon.</strong>",
+    sec_step1_result:"Adım 1 — Durağanlık dereceleri (ADF)",
+    series_x:       "Seri X",
+    series_y:       "Seri Y",
+    lbl_level_adf:  "Düzey ADF τ",
+    lbl_diff_adf:   "1. Fark ADF τ",
+    sec_series_chart:"Seri grafikleri — Düzey değerler",
+    leg_x:          "X serisi (I(1))",
+    leg_y_i1:       "Y serisi (I(1))",
+    leg_y_i0:       "Y serisi (I(0))",
+    sec_diff_chart: "1. Fark serileri — ΔX ve ΔY",
+    note_diff:      "1. fark alındığında her iki seri de sıfır etrafında dalgalanan durağan bir görünüm kazanır (I(0)).",
+    sec_ols_eg:     "Adım 2 — Uzun dönem regresyonu &amp; Adım 3 — Artık testi",
+    lbl_alpha:      "OLS α̂ (kesişim)",
+    lbl_beta_hat:   "OLS β̂ (eğim)",
+    leg_resid:      "OLS artıkları û",
+    leg_zero:       "Sıfır çizgisi",
+    lbl_eg_tau:     "Artık ADF τ",
+    lbl_eg_cv5:     "EG %5 kritik",
+    lbl_resid_sd:   "Artık σ",
+    sec_summary:    "Sonuç özeti",
+    tbl_condition:  "Koşul",
+    tbl_required:   "Gerekli",
+    tbl_this_sim:   "Bu simülasyon",
+    tbl_result:     "Sonuç",
+    tbl_x_order:    "X durağanlık derecesi",
+    tbl_y_order:    "Y durağanlık derecesi",
+    tbl_resid_order:"Artık û durağanlık",
+    tbl_final_label:"Eşbütünleşme kararı",
+    // dynamic
+    badge_i0_stat:  "~ I(0) — zaten durağan",
+    badge_i1_ok:    "~ I(1) ✓",
+    badge_uncertain:"~ belirsiz",
+    prereq_fail:    "⛔ <strong>Ön koşul sağlanamıyor:</strong> X ~ I(1) iken Y ~ I(0). Farklı bütünleşme dereceleri — eşbütünleşme <em>tanım gereği</em> imkânsız. Regresyon anlamsız.",
+    prereq_ok:      "✅ <strong>Ön koşul sağlandı:</strong> Her iki seri de I(1). Engle-Granger testinin 2. adımına geçilebilir.",
+    prereq_warn:    "⚠️ ADF testleri beklenen sonucu vermedi (örneklem değişkenliği). Simülasyonu yenileyebilirsiniz.",
+    badge_satisfied:"✓ Sağlandı",
+    badge_failed:   "✗ Sağlanamadı",
+    eg_na:          "⛔ Ön koşul yerine gelmediğinden EG testi uygulanamaz. Artık ADF değeri ({tau}) yorumlanamaz.",
+    eg_coint:       "✅ Artık ADF τ = <strong>{tau}</strong> &lt; −3.34 (%5 kritik). <strong>H₀ reddedilir</strong> → û ~ I(0) → <strong>EŞBÜTÜNLEŞİM VAR</strong>. Seriler arasında uzun dönem denge ilişkisi mevcut.",
+    eg_no_coint:    "❌ Artık ADF τ = <strong>{tau}</strong> &gt; −3.34 (%5 kritik). <strong>H₀ reddedilemez</strong> → û ~ I(1) → <strong>EŞBÜTÜNLEŞİM YOK</strong>. Regresyon büyük olasılıkla sahte (spurious).",
+    final_yes:      "<strong><span style=\"color:var(--green-dark);\">✅ Eşbütünleşme VAR</span></strong>",
+    final_no:       "<strong><span style=\"color:var(--red-dark);\">❌ Eşbütünleşme YOK (sahte regresyon)</span></strong>",
+    final_na:       "<strong><span style=\"color:var(--red-dark);\">⛔ Test uygulanamaz (farklı derece)</span></strong>",
+    final_uncertain:"<strong><span style=\"color:var(--amber-dark);\">⚠️ Belirsiz</span></strong>",
+    interp0:        "💡 <strong>Yorum (Senaryo 1):</strong> X ve Y aynı stokastik trendi paylaşıyor. Düzey değerlerde tahmin ettiğimiz OLS regresyonu sahte değil; β katsayısı uzun dönem ilişkisini yansıtıyor. Hata düzeltme modeli (ECM) kurulabilir.",
+    interp1:        "⚠️ <strong>Yorum (Senaryo 2):</strong> İki bağımsız rassal yürüyüş. Yüksek R², düşük Durbin-Watson — klasik sahte regresyon belirtileri. Her iki seriyi de <em>birinci fark alarak</em> modellemek gerekir.",
+    interp2:        "⛔ <strong>Yorum (Senaryo 3):</strong> I(1) × I(0) kombinasyonu eşbütünleşme kuramıyla bağdaşmıyor. Y durağan olduğu için düzeyde modele girebilir; ancak X için fark almak gerekir. Karma entegrasyon problemi var.",
+  },
+  en: {
+    page_title:     "Cointegration Simulator: I(1) Series &amp; Engle-Granger Test",
+    page_subtitle:  "Assoc. Prof. Dr. Erkan Ağaslan — Kütahya Dumlupınar University",
+    sc0_title:      "🔗 Scenario 1 — Cointegrated",
+    sc0_desc:       "Both series are I(1). A long-run equilibrium relationship exists; the error term is stationary I(0).",
+    sc1_title:      "❌ Scenario 2 — Not Cointegrated",
+    sc1_desc:       "Both series are I(1) but share no common trend; the error term is also I(1) → spurious regression.",
+    sc2_title:      "⚠️ Scenario 3 — Different Integration Orders",
+    sc2_desc:       "One series is I(1), the other is I(0) stationary. The first condition cannot be met; cointegration is impossible.",
+    sec_params:     "Series parameters",
+    sl_n:           "Observations n",
+    sl_sx:          "σ noise — X",
+    sl_sy:          "σ noise — Y",
+    sl_beta:        "β coefficient",
+    sl_ec:          "Error σ (ε)",
+    warn_i0:        "⚠️ In this scenario <strong>series Y is generated as stationary I(0)</strong>. X is an I(1) random walk.",
+    sec_cv:         "ADF CRITICAL VALUES (MacKinnon, 1991)",
+    cv_1pct:        "1%",
+    cv_5pct:        "5%",
+    cv_10pct:       "10%",
+    cv_eg_note:     "For EG residual test (MacKinnon, 1991): 1%→−3.90 &nbsp;5%→−3.34",
+    btn_sim:        "🔄 New Simulation",
+    sec_steps:      "Engle-Granger — 3 Steps",
+    step1_title:    "Check integration orders",
+    step1_body:     "<strong>Both X and Y must be I(1)</strong> — being <strong>integrated of the same order</strong> is the prerequisite. ADF: <em>unit root present in levels</em>, <em>absent in first differences</em>.",
+    step2_title:    "Estimate the long-run regression",
+    step2_body:     "<strong>Save the OLS residuals (û).</strong><br>The β coefficient represents the <em>cointegrating vector</em>.",
+    step3_title:    "Apply a unit root test to the residuals",
+    step3_body:     "If <strong>û ~ I(0)</strong> → the <strong>linear combination of two I(1) series is stationary</strong> → <strong style=\"color:var(--green-dark);\">cointegration exists.</strong><br>If <strong>û ~ I(1)</strong> → no common trend → <strong style=\"color:var(--red-dark);\">spurious regression.</strong>",
+    sec_step1_result:"Step 1 — Integration orders (ADF)",
+    series_x:       "Series X",
+    series_y:       "Series Y",
+    lbl_level_adf:  "Level ADF τ",
+    lbl_diff_adf:   "1st Diff ADF τ",
+    sec_series_chart:"Series charts — Level values",
+    leg_x:          "Series X (I(1))",
+    leg_y_i1:       "Series Y (I(1))",
+    leg_y_i0:       "Series Y (I(0))",
+    sec_diff_chart: "1st difference series — ΔX and ΔY",
+    note_diff:      "After first differencing, both series fluctuate around zero — a stationary I(0) pattern.",
+    sec_ols_eg:     "Step 2 — Long-run regression &amp; Step 3 — Residual test",
+    lbl_alpha:      "OLS α̂ (intercept)",
+    lbl_beta_hat:   "OLS β̂ (slope)",
+    leg_resid:      "OLS residuals û",
+    leg_zero:       "Zero line",
+    lbl_eg_tau:     "Residual ADF τ",
+    lbl_eg_cv5:     "EG 5% critical",
+    lbl_resid_sd:   "Residual σ",
+    sec_summary:    "Results summary",
+    tbl_condition:  "Condition",
+    tbl_required:   "Required",
+    tbl_this_sim:   "This simulation",
+    tbl_result:     "Result",
+    tbl_x_order:    "X integration order",
+    tbl_y_order:    "Y integration order",
+    tbl_resid_order:"Residual û stationarity",
+    tbl_final_label:"Cointegration decision",
+    // dynamic
+    badge_i0_stat:  "~ I(0) — already stationary",
+    badge_i1_ok:    "~ I(1) ✓",
+    badge_uncertain:"~ uncertain",
+    prereq_fail:    "⛔ <strong>Prerequisite not met:</strong> X ~ I(1) while Y ~ I(0). Different integration orders — cointegration is <em>impossible by definition</em>. Regression is meaningless.",
+    prereq_ok:      "✅ <strong>Prerequisite satisfied:</strong> Both series are I(1). Proceed to Step 2 of the Engle-Granger procedure.",
+    prereq_warn:    "⚠️ ADF tests did not yield the expected result (sample variability). Try regenerating the simulation.",
+    badge_satisfied:"✓ Satisfied",
+    badge_failed:   "✗ Not satisfied",
+    eg_na:          "⛔ EG test cannot be applied because the prerequisite is not met. The residual ADF value ({tau}) is not interpretable.",
+    eg_coint:       "✅ Residual ADF τ = <strong>{tau}</strong> &lt; −3.34 (5% critical). <strong>Reject H₀</strong> → û ~ I(0) → <strong>COINTEGRATION EXISTS</strong>. A long-run equilibrium relationship between the series is present.",
+    eg_no_coint:    "❌ Residual ADF τ = <strong>{tau}</strong> &gt; −3.34 (5% critical). <strong>Fail to reject H₀</strong> → û ~ I(1) → <strong>NO COINTEGRATION</strong>. The regression is most likely spurious.",
+    final_yes:      "<strong><span style=\"color:var(--green-dark);\">✅ Cointegration EXISTS</span></strong>",
+    final_no:       "<strong><span style=\"color:var(--red-dark);\">❌ NO Cointegration (spurious regression)</span></strong>",
+    final_na:       "<strong><span style=\"color:var(--red-dark);\">⛔ Test not applicable (different orders)</span></strong>",
+    final_uncertain:"<strong><span style=\"color:var(--amber-dark);\">⚠️ Uncertain</span></strong>",
+    interp0:        "💡 <strong>Interpretation (Scenario 1):</strong> X and Y share the same stochastic trend. The OLS regression estimated in levels is not spurious; the β coefficient reflects the long-run relationship. An error-correction model (ECM) can be constructed.",
+    interp1:        "⚠️ <strong>Interpretation (Scenario 2):</strong> Two independent random walks. High R², low Durbin-Watson — classic signs of spurious regression. Both series should be modelled <em>in first differences</em>.",
+    interp2:        "⛔ <strong>Interpretation (Scenario 3):</strong> An I(1) × I(0) combination is incompatible with cointegration theory. Y, being stationary, can enter the model in levels; however, X requires differencing. Mixed integration order problem.",
+  }
+};
 
-// Basit LCG ile seed'li rastgele sayı (tekrarlanabilirlik)
+let currentLang = localStorage.getItem("site_lang") || "tr";
+function t(key){ return (dict[currentLang]||dict.tr)[key] || key; }
+
+function applyLang(){
+  document.documentElement.lang = currentLang === "en" ? "en" : "tr";
+  document.title = currentLang === "en"
+    ? "Cointegration — Engle-Granger Test"
+    : "Eşbütünleşme — Engle-Granger Testi";
+
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.getAttribute("data-i18n");
+    const val = t(key);
+    if(val !== undefined) el.innerHTML = val;
+  });
+
+  // Yeniden render — dinamik metinler için
+  if(typeof generate === "function" && series_X && series_X.length) renderUI();
+}
+
+document.getElementById("langBtn").addEventListener("click", () => {
+  currentLang = currentLang === "tr" ? "en" : "tr";
+  localStorage.setItem("site_lang", currentLang);
+  applyLang();
+});
+
+// ─── YARDIMCI FONKSİYONLAR ───────────────────────────────────────────────────
 let _seed = 42;
 function srand(s){ _seed = s >>> 0; }
 function rand(){
@@ -474,26 +516,19 @@ function rand(){
   return _seed / 4294967296;
 }
 function randn(){
-  // Box-Muller
   let u = rand(), v = rand();
   return Math.sqrt(-2*Math.log(u+1e-15))*Math.cos(2*Math.PI*v);
 }
-
-// Rassal yürüyüş üret — I(1)
 function rw(n, sigma, start=0){
   let x = [start];
   for(let i=1;i<n;i++) x.push(x[i-1] + sigma*randn());
   return x;
 }
-
-// Durağan AR(1) seri üret — I(0)
 function ar1(n, sigma, phi=0.5, start=0){
   let x = [start];
   for(let i=1;i<n;i++) x.push(phi*x[i-1] + sigma*randn());
   return x;
 }
-
-// OLS — basit doğrusal regresyon (intercept + slope)
 function ols(x, y){
   let n=x.length, sx=0, sy=0, sxx=0, sxy=0;
   for(let i=0;i<n;i++){sx+=x[i];sy+=y[i];sxx+=x[i]*x[i];sxy+=x[i]*y[i];}
@@ -502,36 +537,20 @@ function ols(x, y){
   let resid=x.map((_,i)=>y[i]-alpha-beta*x[i]);
   return {alpha, beta, resid};
 }
-
-// ADF test istatistiği (gecikme=1, sabit terimli, yaklaşık)
 function adfStat(series){
   let n=series.length;
-  let dy=[], y1=[], dy1=[];
+  let dy=[], y1=[];
   for(let i=1;i<n;i++) dy.push(series[i]-series[i-1]);
   for(let i=0;i<n-1;i++) y1.push(series[i]);
-  // Gecikme=1 ekle
+  let dy1=[];
   for(let i=1;i<n-1;i++) dy1.push(series[i]-series[i-1]);
-  let m=dy1.length; // n-2
-  // Bağımlı: dy[1..n-2], bağımsız: sabit, y[1..n-2], dy[0..n-3]
-  let yv=dy.slice(1);
-  let xv=y1.slice(1);
-  let dxv=dy1.slice(0,m);
-  // 3 parametre OLS: dy_t = a + rho*y_{t-1} + gamma*dy_{t-1}
-  // Normal denklemler (3x3) çöz
+  let m=dy1.length;
+  let yv=dy.slice(1), xv=y1.slice(1), dxv=dy1.slice(0,m);
   let N=yv.length;
-  let sumY=0,sumX=0,sumDX=0,sumYX=0,sumYDX=0,sumXDX=0,sumYY=0,sumXX=0,sumDXDX=0;
-  for(let i=0;i<N;i++){
-    sumY+=yv[i]; sumX+=xv[i]; sumDX+=dxv[i];
-    sumYX+=yv[i]*xv[i]; sumYDX+=yv[i]*dxv[i];
-    sumXDX+=xv[i]*dxv[i];
-    sumYY+=yv[i]*yv[i]; sumXX+=xv[i]*xv[i]; sumDXDX+=dxv[i]*dxv[i];
-  }
-  // Artık yoluyla ρ tahmini — iki adımlı parçalama (FWL)
-  // Önce sabit ve dx'i y ve x'ten temizle
+  let sumY=0,sumX=0,sumDX=0;
+  for(let i=0;i<N;i++){sumY+=yv[i];sumX+=xv[i];sumDX+=dxv[i];}
   let meanY=sumY/N, meanX=sumX/N, meanDX=sumDX/N;
-  // Demean
   let yd=yv.map(v=>v-meanY), xd=xv.map(v=>v-meanX), dxd=dxv.map(v=>v-meanDX);
-  // Partial out dx: regress yd on dxd and xd on dxd
   let sdxd2=dxd.reduce((a,v)=>a+v*v,0);
   let g1=(sdxd2>0)?dxd.reduce((a,v,i)=>a+v*yd[i],0)/sdxd2:0;
   let g2=(sdxd2>0)?dxd.reduce((a,v,i)=>a+v*xd[i],0)/sdxd2:0;
@@ -540,16 +559,12 @@ function adfStat(series){
   let num=xr.reduce((a,v,i)=>a+v*yr[i],0);
   let den=xr.reduce((a,v)=>a+v*v,0);
   let rho=(den>0)?num/den:0;
-  // SE
   let fitv=yv.map((_,i)=>meanY+g1*dxd[i]+rho*xr[i]);
   let sse=yv.reduce((a,v,i)=>a+(v-fitv[i])*(v-fitv[i]),0);
   let s2=sse/(N-3);
   let se=Math.sqrt(s2/den);
-  let tau=(se>0)?rho/se:0;
-  return tau;
+  return (se>0)?rho/se:0;
 }
-
-// Bar genişliği: τ değerini [−6,0] aralığına normalize et → %0–100
 function tauToBar(tau){
   let clamped=Math.min(0,Math.max(-6,tau));
   return ((clamped+6)/6*100).toFixed(1)+'%';
@@ -560,10 +575,9 @@ function tauBarColor(tau){
   return 'var(--red)';
 }
 
-/* ===================== CHART YÖNETİMİ ===================== */
+// ─── CHARTS ──────────────────────────────────────────────────────────────────
 let charts={};
 function destroyAll(){Object.values(charts).forEach(c=>{if(c)c.destroy();});charts={};}
-
 function mkChart(id,datasets,opts={}){
   let ctx=document.getElementById(id).getContext('2d');
   return new Chart(ctx,{
@@ -575,30 +589,24 @@ function mkChart(id,datasets,opts={}){
       plugins:{legend:{display:false},tooltip:{enabled:false}},
       scales:{
         x:{display:false,grid:{display:false}},
-        y:{
-          display:true,
-          grid:{color:'rgba(0,0,0,0.06)',lineWidth:.5},
-          ticks:{font:{size:10},color:'#aaa',maxTicksLimit:5},
-          ...opts.y
-        }
+        y:{display:true,grid:{color:'rgba(0,0,0,0.06)',lineWidth:.5},ticks:{font:{size:10},color:'#aaa',maxTicksLimit:5},...(opts.y||{})}
       },
       elements:{point:{radius:0},line:{borderWidth:1.5}},
-      ...opts.chart
+      ...(opts.chart||{})
     }
   });
 }
 
-/* ===================== ANA SİMÜLASYON ===================== */
+// ─── STATE ───────────────────────────────────────────────────────────────────
 let SCENARIO=0;
 const SEED_BASE=1000;
 let simCount=0;
+let series_X=[], series_Y=[], series_resid=[], series_dX=[], series_dY=[];
+let sim_tXlev, sim_tXdif, sim_tYlev, sim_tYdif, sim_tResid, sim_alpha, sim_beta, sim_residSD;
 
 function setScenario(s){
   SCENARIO=s;
-  document.querySelectorAll('.scenario-card').forEach((c,i)=>{
-    c.classList.toggle('active',i===s);
-  });
-  // Senaryo 3'te I(0) uyarısı
+  document.querySelectorAll('.scenario-card').forEach((c,i)=>c.classList.toggle('active',i===s));
   document.getElementById('row-i0-note').classList.toggle('hidden',s!==2);
   document.getElementById('row-beta').classList.toggle('hidden',s===2);
   document.getElementById('row-ec').classList.toggle('hidden',s===2);
@@ -608,177 +616,145 @@ function setScenario(s){
 function generate(){
   simCount++;
   srand(SEED_BASE + simCount*37);
-
   let n = +document.getElementById('sl-n').value;
   let sx= +document.getElementById('sl-sx').value;
   let sy= +document.getElementById('sl-sy').value;
   let beta=+document.getElementById('sl-beta').value;
   let sec= +document.getElementById('sl-ec').value;
-
   let X, Y;
-
   if(SCENARIO===0){
-    // Eşbütünleşik: Y = β·X + I(0) hata
     X = rw(n, sx);
-    let noise = ar1(n, sec, 0.6);  // durağan hata
+    let noise = ar1(n, sec, 0.6);
     Y = X.map((x,i)=> beta*x + noise[i]);
   } else if(SCENARIO===1){
-    // Eşbütünleşik değil: iki bağımsız rassal yürüyüş
     X = rw(n, sx);
     Y = rw(n, sy);
   } else {
-    // Farklı bütünleşme: X ~ I(1), Y ~ I(0)
     X = rw(n, sx);
     Y = ar1(n, sy, 0.55);
   }
-
-  let labels = Array.from({length:n},(_,i)=>i+1);
-
-  // ADF — düzey ve fark
-  let tXlev = adfStat(X);
-  let dX = X.slice(1).map((v,i)=>v-X[i]);
-  let tXdif = adfStat(dX);
-
-  let tYlev = adfStat(Y);
-  let dY = Y.slice(1).map((v,i)=>v-Y[i]);
-  let tYdif = adfStat(dY);
-
-  // OLS artık
+  series_X = X; series_Y = Y;
+  series_dX = X.slice(1).map((v,i)=>v-X[i]);
+  series_dY = Y.slice(1).map((v,i)=>v-Y[i]);
+  sim_tXlev = adfStat(X);
+  sim_tXdif = adfStat(series_dX);
+  sim_tYlev = adfStat(Y);
+  sim_tYdif = adfStat(series_dY);
   let reg = ols(X, Y);
-  let resid = reg.resid;
-  let tResid = adfStat(resid);
-  let residSD = Math.sqrt(resid.reduce((a,v)=>a+v*v,0)/resid.length);
+  series_resid = reg.resid;
+  sim_tResid = adfStat(series_resid);
+  sim_residSD = Math.sqrt(series_resid.reduce((a,v)=>a+v*v,0)/series_resid.length);
+  sim_alpha = reg.alpha;
+  sim_beta  = reg.beta;
+  renderUI();
+}
 
-  // ==================== UI GÜNCELLE ====================
-
+function renderUI(){
   // ADF metrikleri
-  document.getElementById('adf-x-lev').textContent = tXlev.toFixed(3);
-  document.getElementById('adf-x-dif').textContent = tXdif.toFixed(3);
-  document.getElementById('adf-y-lev').textContent = tYlev.toFixed(3);
-  document.getElementById('adf-y-dif').textContent = tYdif.toFixed(3);
+  document.getElementById('adf-x-lev').textContent = sim_tXlev.toFixed(3);
+  document.getElementById('adf-x-dif').textContent = sim_tXdif.toFixed(3);
+  document.getElementById('adf-y-lev').textContent = sim_tYlev.toFixed(3);
+  document.getElementById('adf-y-dif').textContent = sim_tYdif.toFixed(3);
 
-  // Barlar
   ['x-lev','x-dif','y-lev','y-dif'].forEach(k=>{
-    let tau={'x-lev':tXlev,'x-dif':tXdif,'y-lev':tYlev,'y-dif':tYdif}[k];
+    let tau={'x-lev':sim_tXlev,'x-dif':sim_tXdif,'y-lev':sim_tYlev,'y-dif':sim_tYdif}[k];
     let el=document.getElementById('bar-'+k);
     el.style.width=tauToBar(tau);
     el.style.background=tauBarColor(tau);
   });
 
-  // X/Y durağanlık derecesi kararı
-  let xIs1 = tXlev > -2.89 && tXdif < -2.89;
-  let xIs0 = tXlev < -2.89;
-  let yIs1 = tYlev > -2.89 && tYdif < -2.89;
-  let yIs0 = tYlev < -2.89;
-
+  let xIs1 = sim_tXlev > -2.89 && sim_tXdif < -2.89;
+  let xIs0 = sim_tXlev < -2.89;
+  let yIs1 = sim_tYlev > -2.89 && sim_tYdif < -2.89;
+  let yIs0 = sim_tYlev < -2.89;
   let xOrder = xIs0 ? 'I(0)' : (xIs1 ? 'I(1)' : 'I(?)');
   let yOrder = yIs0 ? 'I(0)' : (yIs1 ? 'I(1)' : 'I(?)');
 
   function verdictHtml(is1, is0, name){
-    if(is0) return `<span class="badge badge-amb">${name} ~ I(0) — zaten durağan</span>`;
-    if(is1) return `<span class="badge badge-blue">${name} ~ I(1) ✓</span>`;
-    return `<span class="badge badge-amb">${name} ~ belirsiz</span>`;
+    if(is0) return `<span class="badge badge-amb">${name} ${t("badge_i0_stat")}</span>`;
+    if(is1) return `<span class="badge badge-blue">${name} ${t("badge_i1_ok")}</span>`;
+    return `<span class="badge badge-amb">${name} ${t("badge_uncertain")}</span>`;
   }
   document.getElementById('verdict-x').innerHTML = verdictHtml(xIs1, xIs0, 'X');
   document.getElementById('verdict-y').innerHTML = verdictHtml(yIs1, yIs0, 'Y');
 
-  // Ön koşul kutusu
   let prereqOk = xIs1 && yIs1;
   let prereqEl = document.getElementById('prereq-result');
   if(SCENARIO===2){
-    prereqEl.innerHTML = `<div class="fail-box">⛔ <strong>Ön koşul sağlanamıyor:</strong> X ~ I(1) iken Y ~ I(0). Farklı bütünleşme dereceleri — eşbütünleşme <em>tanım gereği</em> imkânsız. Regresyon anlamsız.</div>`;
+    prereqEl.innerHTML = `<div class="fail-box">${t("prereq_fail")}</div>`;
   } else if(prereqOk){
-    prereqEl.innerHTML = `<div class="success-box">✅ <strong>Ön koşul sağlandı:</strong> Her iki seri de I(1). Engle-Granger testinin 2. adımına geçilebilir.</div>`;
+    prereqEl.innerHTML = `<div class="success-box">${t("prereq_ok")}</div>`;
   } else {
-    prereqEl.innerHTML = `<div class="warn-box">⚠️ ADF testleri beklenen sonucu vermedi (örneklem değişkenliği). Simülasyonu yenileyebilirsiniz.</div>`;
+    prereqEl.innerHTML = `<div class="warn-box">${t("prereq_warn")}</div>`;
   }
 
-  // Y legend güncelle
-  document.getElementById('leg-y-label').textContent = SCENARIO===2 ? 'Y serisi (I(0))' : 'Y serisi (I(1))';
+  // Y legend
+  const legY = document.getElementById('leg-y-label');
+  legY.setAttribute("data-i18n", SCENARIO===2 ? "leg_y_i0" : "leg_y_i1");
+  legY.textContent = SCENARIO===2 ? t("leg_y_i0") : t("leg_y_i1");
 
   // OLS metrikleri
-  document.getElementById('m-alpha').textContent = reg.alpha.toFixed(3);
-  document.getElementById('m-beta').textContent   = reg.beta.toFixed(3);
-  document.getElementById('m-eg-tau').textContent  = tResid.toFixed(3);
-  document.getElementById('m-resid-sd').textContent = residSD.toFixed(3);
+  document.getElementById('m-alpha').textContent = sim_alpha.toFixed(3);
+  document.getElementById('m-beta').textContent  = sim_beta.toFixed(3);
+  document.getElementById('m-eg-tau').textContent = sim_tResid.toFixed(3);
+  document.getElementById('m-resid-sd').textContent = sim_residSD.toFixed(3);
 
-  // EG karar kutusu
-  let residI0 = tResid < -3.34;
+  let residI0 = sim_tResid < -3.34;
   let egEl = document.getElementById('eg-result-box');
   if(SCENARIO===2){
-    egEl.innerHTML = `<div class="fail-box">⛔ Ön koşul yerine gelmediğinden EG testi uygulanamaz. Artık ADF değeri (${tResid.toFixed(3)}) yorumlanamaz.</div>`;
+    egEl.innerHTML = `<div class="fail-box">${t("eg_na").replace('{tau}', sim_tResid.toFixed(3))}</div>`;
   } else if(residI0){
-    egEl.innerHTML = `<div class="success-box">✅ Artık ADF τ = <strong>${tResid.toFixed(3)}</strong> &lt; −3.34 (%5 kritik). <strong>H₀ reddedilir</strong> → û ~ I(0) → <strong>EŞBÜTÜNLEŞİM VAR</strong>. Seriler arasında uzun dönem denge ilişkisi mevcut.</div>`;
+    egEl.innerHTML = `<div class="success-box">${t("eg_coint").replace('{tau}', sim_tResid.toFixed(3))}</div>`;
   } else {
-    egEl.innerHTML = `<div class="fail-box">❌ Artık ADF τ = <strong>${tResid.toFixed(3)}</strong> &gt; −3.34 (%5 kritik). <strong>H₀ reddedilemez</strong> → û ~ I(1) → <strong>EŞBÜTÜNLEŞİM YOK</strong>. Regresyon büyük olasılıkla sahte (spurious).</div>`;
+    egEl.innerHTML = `<div class="fail-box">${t("eg_no_coint").replace('{tau}', sim_tResid.toFixed(3))}</div>`;
   }
 
-  // Özet tablo
-  function badgeOk(cond){ return cond ? '<span class="badge badge-grn">✓ Sağlandı</span>' : '<span class="badge badge-red">✗ Sağlanamadı</span>'; }
+  function badgeOk(cond){ return cond ? `<span class="badge badge-grn">${t("badge_satisfied")}</span>` : `<span class="badge badge-red">${t("badge_failed")}</span>`; }
   document.getElementById('tbl-x-ord').innerHTML = `<span class="badge badge-blue">${xOrder}</span>`;
   document.getElementById('tbl-y-ord').innerHTML = `<span class="badge ${yIs0?'badge-amb':'badge-blue'}">${yOrder}</span>`;
   document.getElementById('tbl-x-ok').innerHTML  = badgeOk(xIs1);
   document.getElementById('tbl-y-ok').innerHTML  = badgeOk(yIs1);
-  document.getElementById('tbl-res-ord').innerHTML= residI0 && SCENARIO!==2
+  document.getElementById('tbl-res-ord').innerHTML = residI0 && SCENARIO!==2
     ? '<span class="badge badge-grn">I(0)</span>'
     : '<span class="badge badge-red">I(1)</span>';
   document.getElementById('tbl-res-ok').innerHTML = badgeOk(residI0 && SCENARIO!==2);
 
-  // Final karar
   let finalEl = document.getElementById('tbl-final');
   if(SCENARIO===0 && prereqOk && residI0){
-    finalEl.innerHTML = '<strong><span style="color:var(--green-dark);">✅ Eşbütünleşme VAR</span></strong>';
+    finalEl.innerHTML = t("final_yes");
   } else if(SCENARIO===1){
-    finalEl.innerHTML = '<strong><span style="color:var(--red-dark);">❌ Eşbütünleşme YOK (sahte regresyon)</span></strong>';
+    finalEl.innerHTML = t("final_no");
   } else if(SCENARIO===2){
-    finalEl.innerHTML = '<strong><span style="color:var(--red-dark);">⛔ Test uygulanamaz (farklı derece)</span></strong>';
+    finalEl.innerHTML = t("final_na");
   } else {
-    finalEl.innerHTML = '<strong><span style="color:var(--amber-dark);">⚠️ Belirsiz</span></strong>';
+    finalEl.innerHTML = t("final_uncertain");
   }
 
-  // Yorum kutusu
   let interpEl = document.getElementById('interpretation-box');
-  const interps = [
-    `<div class="info-box">💡 <strong>Yorum (Senaryo 1):</strong> X ve Y aynı stokastik trendi paylaşıyor. Düzey değerlerde tahmin ettiğimiz OLS regresyonu sahte değil; β katsayısı uzun dönem ilişkisini yansıtıyor. Hata düzeltme modeli (ECM) kurulabilir.</div>`,
-    `<div class="warn-box">⚠️ <strong>Yorum (Senaryo 2):</strong> İki bağımsız rassal yürüyüş. Yüksek R², düşük Durbin-Watson — klasik sahte regresyon belirtileri. Her iki seriyi de <em>birinci fark alarak</em> modellemek gerekir.</div>`,
-    `<div class="fail-box">⛔ <strong>Yorum (Senaryo 3):</strong> I(1) × I(0) kombinasyonu eşbütünleşme kuramıyla bağdaşmıyor. Y durağan olduğu için düzeyde modele girebilir; ancak X için fark almak gerekir. Karma entegrasyon problemi var.</div>`
-  ];
-  interpEl.innerHTML = interps[SCENARIO];
+  const interpClass = ['info-box','warn-box','fail-box'][SCENARIO];
+  interpEl.innerHTML = `<div class="${interpClass}">${t("interp"+SCENARIO)}</div>`;
 
-  // ==================== GRAFİKLER ====================
+  // Grafikler
   destroyAll();
-
-  let labs = labels;
-  let labsDiff = labels.slice(1);
-
-  // Renk paleti
   const CX='#185FA5', CY='#6B3FA0', CR='#1A7A6E';
   const CX2='rgba(24,95,165,0.15)', CY2='rgba(107,63,160,0.15)';
-
-  // Seri grafik
   charts.series = mkChart('chart-series',[
-    {data: X.map((v,i)=>({x:i,y:v})), borderColor: CX, backgroundColor: CX2, fill:false, tension:0.1},
-    {data: Y.map((v,i)=>({x:i,y:v})), borderColor: CY, backgroundColor: CY2, fill:false, tension:0.1}
+    {data:series_X.map((v,i)=>({x:i,y:v})),borderColor:CX,backgroundColor:CX2,fill:false,tension:0.1},
+    {data:series_Y.map((v,i)=>({x:i,y:v})),borderColor:CY,backgroundColor:CY2,fill:false,tension:0.1}
   ],{chart:{scales:{x:{type:'linear',display:false},y:{}}}});
-
-  // ΔX
   charts.dx = mkChart('chart-dx',[
-    {data: dX.map((v,i)=>({x:i,y:v})), borderColor: CX, fill:false, tension:0, borderWidth:1}
+    {data:series_dX.map((v,i)=>({x:i,y:v})),borderColor:CX,fill:false,tension:0,borderWidth:1}
   ],{chart:{scales:{x:{type:'linear',display:false}}}});
-
-  // ΔY
   charts.dy = mkChart('chart-dy',[
-    {data: dY.map((v,i)=>({x:i,y:v})), borderColor: CY, fill:false, tension:0, borderWidth:1}
+    {data:series_dY.map((v,i)=>({x:i,y:v})),borderColor:CY,fill:false,tension:0,borderWidth:1}
   ],{chart:{scales:{x:{type:'linear',display:false}}}});
-
-  // Artık
   charts.resid = mkChart('chart-resid',[
-    {data: resid.map((v,i)=>({x:i,y:v})), borderColor: CR, fill:false, tension:0.15, borderWidth:1.5},
-    {data: resid.map((_,i)=>({x:i,y:0})), borderColor:'rgba(0,0,0,0.2)', borderWidth:1, borderDash:[4,4], fill:false, pointRadius:0}
+    {data:series_resid.map((v,i)=>({x:i,y:v})),borderColor:CR,fill:false,tension:0.15,borderWidth:1.5},
+    {data:series_resid.map((_,i)=>({x:i,y:0})),borderColor:'rgba(0,0,0,0.2)',borderWidth:1,borderDash:[4,4],fill:false,pointRadius:0}
   ],{chart:{scales:{x:{type:'linear',display:false}}}});
 }
 
-/* ===================== SLIDER BAĞLAMA ===================== */
+// ─── SLIDERS ─────────────────────────────────────────────────────────────────
 function bindSlider(id, lblId, fmt){
   let el=document.getElementById(id);
   let lbl=document.getElementById(lblId);
@@ -793,8 +769,9 @@ bindSlider('sl-sy','lbl-sy', v=>parseFloat(v).toFixed(1));
 bindSlider('sl-beta','lbl-beta', v=>parseFloat(v).toFixed(1));
 bindSlider('sl-ec','lbl-ec', v=>parseFloat(v).toFixed(1));
 
-// İlk çizim
+// ─── INIT ────────────────────────────────────────────────────────────────────
 generate();
+applyLang();
 </script>
 </body>
 </html>
