@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Açık Materyaller | Doç. Dr. Erkan Ağaslan</title>
+  <title data-i18n-title-tr="Açık Materyaller | Doç. Dr. Erkan Ağaslan" data-i18n-title-en="Open Materials | Assoc. Prof. Dr. Erkan Ağaslan">Açık Materyaller | Doç. Dr. Erkan Ağaslan</title>
 
   <style>
     :root {
@@ -52,6 +52,8 @@
     .brand-title { font-weight: 800; font-size: 15px; letter-spacing: .2px; }
     .brand-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
 
+    .topbar-right { display: flex; align-items: center; gap: 10px; }
+
     .btn {
       display: inline-flex; align-items: center; gap: 8px;
       padding: 9px 16px; border-radius: 999px;
@@ -67,6 +69,19 @@
       color: var(--accent);
       transform: translateY(-1px);
     }
+
+    .lang-btn {
+      padding: 7px 13px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.05);
+      color: var(--muted);
+      font-size: 12.5px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+    .lang-btn:hover { color: var(--text); background: rgba(255,255,255,.09); }
 
     .wrap {
       width: min(var(--max), calc(100% - 40px));
@@ -98,6 +113,7 @@
     }
     .breadcrumb a:hover { color: var(--accent); }
     .breadcrumb span { opacity: .4; }
+    .breadcrumb .current { opacity: 1; color: var(--text); }
 
     .page-header h1 {
       font-size: clamp(22px, 3vw, 32px);
@@ -133,7 +149,6 @@
       margin: 28px 0 10px;
       padding-left: 4px;
     }
-    .cat-title:first-of-type { margin-top: 0; }
 
     .mat-list { display: flex; flex-direction: column; gap: 10px; }
 
@@ -157,8 +172,7 @@
     .mat-item::before {
       content: "";
       position: absolute; left: 0; top: 0; bottom: 0;
-      width: 3px;
-      border-radius: 999px 0 0 999px;
+      width: 3px; border-radius: 999px 0 0 999px;
     }
     .mat-item.interaktif::before { background: linear-gradient(180deg, var(--accent), var(--accent2)); }
     .mat-item.pdf::before        { background: linear-gradient(180deg, #fb923c, #f43f5e); }
@@ -272,11 +286,14 @@
       <div class="brand">
         <div class="dot"></div>
         <div>
-          <div class="brand-title">Doç. Dr. Erkan Ağaslan</div>
-          <div class="brand-sub">Ekonometri • Kütahya Dumlupınar Üniversitesi</div>
+          <div class="brand-title" data-i18n="brand_title">Doç. Dr. Erkan Ağaslan</div>
+          <div class="brand-sub" data-i18n="brand_sub">Ekonometri • Kütahya Dumlupınar Üniversitesi</div>
         </div>
       </div>
-      <a class="btn" href="./index.html">← Ana Sayfa</a>
+      <div class="topbar-right">
+        <button class="lang-btn" id="langBtn">TR/EN</button>
+        <a class="btn" href="./index.html" data-i18n="back_home">← Ana Sayfa</a>
+      </div>
     </div>
   </div>
 
@@ -285,50 +302,50 @@
     <div class="page-header">
       <div class="page-header-inner">
         <div class="breadcrumb">
-          <a href="./index.html">Ana Sayfa</a>
+          <a href="./index.html" data-i18n="breadcrumb_home">Ana Sayfa</a>
           <span>/</span>
-          <span style="color:var(--text);">Açık Materyaller</span>
+          <span class="current" data-i18n="breadcrumb_current">Açık Materyaller</span>
         </div>
 
-        <h1>📚 Açık Materyaller</h1>
-        <p>İnteraktif simülatörler, ders notları, kod dosyaları ve veri setleri. Tüm materyaller serbestçe erişilebilir; aktif içeriklere tıklayarak ulaşabilirsiniz.</p>
+        <h1 data-i18n="page_title">📚 Açık Materyaller</h1>
+        <p data-i18n="page_desc">İnteraktif simülatörler, ders notları, kod dosyaları ve veri setleri. Tüm materyaller serbestçe erişilebilir; aktif içeriklere tıklayarak ulaşabilirsiniz.</p>
 
         <div class="header-meta">
           <div class="meta-chip">
             <div class="dot-sm"></div>
-            Doç. Dr. Erkan Ağaslan
+            <span data-i18n="meta_author">Doç. Dr. Erkan Ağaslan</span>
           </div>
           <div class="meta-chip">
             <div class="dot-sm blue"></div>
-            Kütahya Dumlupınar Üniversitesi
+            <span data-i18n="meta_uni">Kütahya Dumlupınar Üniversitesi</span>
           </div>
           <div class="meta-chip">
             <div class="dot-sm orange"></div>
-            Sürekli güncellenir
+            <span data-i18n="meta_update">Sürekli güncellenir</span>
           </div>
         </div>
       </div>
     </div>
 
     <!-- İNTERAKTİF GÖRSELler -->
-    <div class="cat-title">İnteraktif görseller</div>
+    <div class="cat-title" data-i18n="cat_interactive">İnteraktif görseller</div>
     <div class="mat-list">
 
       <a class="mat-item interaktif" href="./hata_terimi.html">
         <div class="mat-icon">📈</div>
         <div class="mat-content">
-          <div class="mat-title">Regresyon Simülatörü: Hata Terimi ve Güven Aralıkları</div>
-          <div class="mat-desc">Anakütle regresyon doğrusu, OLS tahmini ve hata terimlerini interaktif olarak inceleyin. σ kaydırıcısıyla varyansı değiştirin, noktalara dokunarak εᵢ değerini görün.</div>
+          <div class="mat-title" data-i18n="sim1_title">Regresyon Simülatörü: Hata Terimi ve Güven Aralıkları</div>
+          <div class="mat-desc" data-i18n="sim1_desc">Anakütle regresyon doğrusu, OLS tahmini ve hata terimlerini interaktif olarak inceleyin. σ kaydırıcısıyla varyansı değiştirin, noktalara dokunarak εᵢ değerini görün.</div>
           <div class="mat-tags">
-            <span class="mat-tag teal">İnteraktif</span>
+            <span class="mat-tag teal" data-i18n="tag_interactive">İnteraktif</span>
             <span class="mat-tag blue">OLS</span>
-            <span class="mat-tag blue">Hata terimi</span>
-            <span class="mat-tag blue">Güven aralığı</span>
-            <span class="mat-tag blue">t istatistiği</span>
+            <span class="mat-tag blue" data-i18n="tag_error_term">Hata terimi</span>
+            <span class="mat-tag blue" data-i18n="tag_conf_int">Güven aralığı</span>
+            <span class="mat-tag blue" data-i18n="tag_t_stat">t istatistiği</span>
           </div>
         </div>
         <div class="mat-right">
-          <div class="mat-badge yeni">Yeni</div>
+          <div class="mat-badge yeni" data-i18n="badge_new">Yeni</div>
           <div class="arrow">→</div>
         </div>
       </a>
@@ -336,18 +353,18 @@
       <a class="mat-item interaktif" href="./mevsimsellik_welch.html">
         <div class="mat-icon">🌊</div>
         <div class="mat-content">
-          <div class="mat-title">Mevsimsellik, Mevsimsellik Testi ve Sahte Regresyon Simülatörü</div>
-          <div class="mat-desc">Aylık, çeyreklik ve yarı-yıllık frekanslarda mevsimsel seriler üretin. Welch ANOVA ile mevsimselliği test edin, ham OLS'nin sahte R² ve t istatistikleri ürettiğini gözlemleyin, TRAMO-SEATS arındırması sonrası ilişkinin nasıl değiştiğini karşılaştırın.</div>
+          <div class="mat-title" data-i18n="sim2_title">Mevsimsellik, Mevsimsellik Testi ve Sahte Regresyon Simülatörü</div>
+          <div class="mat-desc" data-i18n="sim2_desc">Aylık, çeyreklik ve yarı-yıllık frekanslarda mevsimsel seriler üretin. Welch ANOVA ile mevsimselliği test edin, ham OLS'nin sahte R² ve t istatistikleri ürettiğini gözlemleyin, TRAMO-SEATS arındırması sonrası ilişkinin nasıl değiştiğini karşılaştırın.</div>
           <div class="mat-tags">
-            <span class="mat-tag teal">İnteraktif</span>
-            <span class="mat-tag blue">Mevsimsellik</span>
-            <span class="mat-tag blue">Welch Testi</span>
-            <span class="mat-tag blue">Sahte Regresyon</span>
+            <span class="mat-tag teal" data-i18n="tag_interactive">İnteraktif</span>
+            <span class="mat-tag blue" data-i18n="tag_seasonality">Mevsimsellik</span>
+            <span class="mat-tag blue" data-i18n="tag_welch">Welch Testi</span>
+            <span class="mat-tag blue" data-i18n="tag_spurious">Sahte Regresyon</span>
             <span class="mat-tag blue">TRAMO-SEATS</span>
           </div>
         </div>
         <div class="mat-right">
-          <div class="mat-badge yeni">Yeni</div>
+          <div class="mat-badge yeni" data-i18n="badge_new">Yeni</div>
           <div class="arrow">→</div>
         </div>
       </a>
@@ -355,18 +372,18 @@
       <a class="mat-item interaktif" href="./birim_kok_adf_za.html">
         <div class="mat-icon">📉</div>
         <div class="mat-content">
-          <div class="mat-title">Etkileşimli Birim Kök Simülatörü: ADF ve Zivot-Andrews Testleri</div>
-          <div class="mat-desc">I(1) seri simülasyonu, ADF birim kök testi ve kırılmalı Zivot-Andrews testi. Kesişim, trend, gürültü ve yapısal kırılma parametrelerini kaydırıcılarla ayarlayın; test istatistikleri anlık güncellenir.</div>
+          <div class="mat-title" data-i18n="sim3_title">Etkileşimli Birim Kök Simülatörü: ADF ve Zivot-Andrews Testleri</div>
+          <div class="mat-desc" data-i18n="sim3_desc">I(1) seri simülasyonu, ADF birim kök testi ve kırılmalı Zivot-Andrews testi. Kesişim, trend, gürültü ve yapısal kırılma parametrelerini kaydırıcılarla ayarlayın; test istatistikleri anlık güncellenir.</div>
           <div class="mat-tags">
-            <span class="mat-tag teal">İnteraktif</span>
-            <span class="mat-tag blue">Birim kök</span>
+            <span class="mat-tag teal" data-i18n="tag_interactive">İnteraktif</span>
+            <span class="mat-tag blue" data-i18n="tag_unit_root">Birim kök</span>
             <span class="mat-tag blue">ADF</span>
             <span class="mat-tag blue">Zivot-Andrews</span>
-            <span class="mat-tag blue">Yapısal kırılma</span>
+            <span class="mat-tag blue" data-i18n="tag_struct_break">Yapısal kırılma</span>
           </div>
         </div>
         <div class="mat-right">
-          <div class="mat-badge yeni">Yeni</div>
+          <div class="mat-badge yeni" data-i18n="badge_new">Yeni</div>
           <div class="arrow">→</div>
         </div>
       </a>
@@ -374,150 +391,148 @@
       <a class="mat-item interaktif" href="./esbutunlesme.html">
         <div class="mat-icon">🔗</div>
         <div class="mat-content">
-          <div class="mat-title">Eşbütünleşme Simülatörü: I(1) Seriler &amp; Engle-Granger Testi</div>
-          <div class="mat-desc">Eşbütünleşik, eşbütünleşik olmayan ve farklı bütünleşme derecesine sahip seri çiftlerini simüle edin. ADF durağanlık testleri, uzun dönem OLS regresyonu ve Engle-Granger artık testi adım adım gösterilir; sahte regresyon ve doğrusal kombinasyon durağanlığı kavramları görsel olarak pekiştirilir.</div>
+          <div class="mat-title" data-i18n="sim4_title">Eşbütünleşme Simülatörü: I(1) Seriler &amp; Engle-Granger Testi</div>
+          <div class="mat-desc" data-i18n="sim4_desc">Eşbütünleşik, eşbütünleşik olmayan ve farklı bütünleşme derecesine sahip seri çiftlerini simüle edin. ADF durağanlık testleri, uzun dönem OLS regresyonu ve Engle-Granger artık testi adım adım gösterilir; sahte regresyon ve doğrusal kombinasyon durağanlığı kavramları görsel olarak pekiştirilir.</div>
           <div class="mat-tags">
-            <span class="mat-tag teal">İnteraktif</span>
-            <span class="mat-tag blue">Eşbütünleşme</span>
+            <span class="mat-tag teal" data-i18n="tag_interactive">İnteraktif</span>
+            <span class="mat-tag blue" data-i18n="tag_cointegration">Eşbütünleşme</span>
             <span class="mat-tag blue">Engle-Granger</span>
             <span class="mat-tag blue">I(1)</span>
-            <span class="mat-tag blue">Sahte Regresyon</span>
+            <span class="mat-tag blue" data-i18n="tag_spurious">Sahte Regresyon</span>
           </div>
         </div>
         <div class="mat-right">
-          <div class="mat-badge yeni">Yeni</div>
+          <div class="mat-badge yeni" data-i18n="badge_new">Yeni</div>
           <div class="arrow">→</div>
         </div>
       </a>
-
 
       <a class="mat-item interaktif" href="./tanisal_testler_sapmasizlik.html">
         <div class="mat-icon">🧪</div>
         <div class="mat-content">
-          <div class="mat-title">Tanısal Testler Simülatörü — Sapmasızlık, Değişen Varyans ve Otokorelasyon</div>
-          <div class="mat-desc">R mantığıyla veri üretimi üzerinden OLS varsayımlarını inceleyin. Sapmasızlığın neden kaybolmadığını görün; Breusch–Pagan, Breusch–Godfrey ve Durbin–Watson çıktılarıyla değişen varyans ve otokorelasyonu hem görsel hem de hipotez testleriyle değerlendirin.</div>
+          <div class="mat-title" data-i18n="sim5_title">Tanısal Testler Simülatörü — Sapmasızlık, Değişen Varyans ve Otokorelasyon</div>
+          <div class="mat-desc" data-i18n="sim5_desc">R mantığıyla veri üretimi üzerinden OLS varsayımlarını inceleyin. Sapmasızlığın neden kaybolmadığını görün; Breusch–Pagan, Breusch–Godfrey ve Durbin–Watson çıktılarıyla değişen varyans ve otokorelasyonu hem görsel hem de hipotez testleriyle değerlendirin.</div>
           <div class="mat-tags">
-            <span class="mat-tag teal">İnteraktif</span>
-            <span class="mat-tag blue">Tanısal Testler</span>
-            <span class="mat-tag blue">Sapmasızlık</span>
-            <span class="mat-tag blue">Heteroskedastisite</span>
-            <span class="mat-tag blue">Otokorelasyon</span>
+            <span class="mat-tag teal" data-i18n="tag_interactive">İnteraktif</span>
+            <span class="mat-tag blue" data-i18n="tag_diag_tests">Tanısal Testler</span>
+            <span class="mat-tag blue" data-i18n="tag_unbiasedness">Sapmasızlık</span>
+            <span class="mat-tag blue" data-i18n="tag_heterosk">Heteroskedastisite</span>
+            <span class="mat-tag blue" data-i18n="tag_autocorr">Otokorelasyon</span>
           </div>
         </div>
         <div class="mat-right">
-          <div class="mat-badge yeni">Yeni</div>
+          <div class="mat-badge yeni" data-i18n="badge_new">Yeni</div>
           <div class="arrow">→</div>
         </div>
       </a>
 
-
       <div class="mat-item interaktif passive">
         <div class="mat-icon">📊</div>
         <div class="mat-content">
-          <div class="mat-title">Çoklu regresyon — katsayı yorumu</div>
-          <div class="mat-desc">Yakında eklenecek.</div>
+          <div class="mat-title" data-i18n="sim6_title">Çoklu regresyon — katsayı yorumu</div>
+          <div class="mat-desc" data-i18n="coming_soon_desc">Yakında eklenecek.</div>
           <div class="mat-tags">
-            <span class="mat-tag">İnteraktif</span>
-            <span class="mat-tag">Çoklu regresyon</span>
+            <span class="mat-tag" data-i18n="tag_interactive">İnteraktif</span>
+            <span class="mat-tag" data-i18n="tag_multi_reg">Çoklu regresyon</span>
           </div>
         </div>
         <div class="mat-right">
-          <div class="mat-badge beklemede">Yakında</div>
+          <div class="mat-badge beklemede" data-i18n="badge_soon">Yakında</div>
         </div>
       </div>
 
       <div class="mat-item interaktif passive">
         <div class="mat-icon">🔍</div>
         <div class="mat-content">
-          <div class="mat-title">Heteroskedastisite simülatörü</div>
-          <div class="mat-desc">Yakında eklenecek.</div>
+          <div class="mat-title" data-i18n="sim7_title">Heteroskedastisite simülatörü</div>
+          <div class="mat-desc" data-i18n="coming_soon_desc">Yakında eklenecek.</div>
           <div class="mat-tags">
-            <span class="mat-tag">İnteraktif</span>
-            <span class="mat-tag">Heteroskedastisite</span>
+            <span class="mat-tag" data-i18n="tag_interactive">İnteraktif</span>
+            <span class="mat-tag" data-i18n="tag_heterosk">Heteroskedastisite</span>
           </div>
         </div>
         <div class="mat-right">
-          <div class="mat-badge beklemede">Yakında</div>
+          <div class="mat-badge beklemede" data-i18n="badge_soon">Yakında</div>
         </div>
       </div>
 
     </div>
 
     <!-- DERS NOTLARI -->
-    <div class="cat-title">Ders notları</div>
+    <div class="cat-title" data-i18n="cat_notes">Ders notları</div>
     <div class="mat-list">
 
       <div class="mat-item pdf passive">
         <div class="mat-icon">📄</div>
         <div class="mat-content">
-          <div class="mat-title">Hafta 1 — Temel kavramlar</div>
-          <div class="mat-desc">Yakında eklenecek.</div>
+          <div class="mat-title" data-i18n="note1_title">Hafta 1 — Temel kavramlar</div>
+          <div class="mat-desc" data-i18n="coming_soon_desc">Yakında eklenecek.</div>
           <div class="mat-tags">
             <span class="mat-tag orange">PDF</span>
           </div>
         </div>
         <div class="mat-right">
-          <div class="mat-badge beklemede">Yakında</div>
+          <div class="mat-badge beklemede" data-i18n="badge_soon">Yakında</div>
         </div>
       </div>
 
       <div class="mat-item pdf passive">
         <div class="mat-icon">📄</div>
         <div class="mat-content">
-          <div class="mat-title">Hafta 2 — OLS tahmincisi</div>
-          <div class="mat-desc">Yakında eklenecek.</div>
+          <div class="mat-title" data-i18n="note2_title">Hafta 2 — OLS tahmincisi</div>
+          <div class="mat-desc" data-i18n="coming_soon_desc">Yakında eklenecek.</div>
           <div class="mat-tags">
             <span class="mat-tag orange">PDF</span>
           </div>
         </div>
         <div class="mat-right">
-          <div class="mat-badge beklemede">Yakında</div>
+          <div class="mat-badge beklemede" data-i18n="badge_soon">Yakında</div>
         </div>
       </div>
 
     </div>
 
     <!-- KOD DOSYALARI -->
-    <div class="cat-title">Kod dosyaları</div>
+    <div class="cat-title" data-i18n="cat_code">Kod dosyaları</div>
     <div class="mat-list">
 
       <div class="mat-item kod passive">
         <div class="mat-icon">💻</div>
         <div class="mat-content">
-          <div class="mat-title">OLS tahmini — R kodu</div>
-          <div class="mat-desc">Yakında eklenecek.</div>
+          <div class="mat-title" data-i18n="code1_title">OLS tahmini — R kodu</div>
+          <div class="mat-desc" data-i18n="coming_soon_desc">Yakında eklenecek.</div>
           <div class="mat-tags">
             <span class="mat-tag purple">R</span>
           </div>
         </div>
         <div class="mat-right">
-          <div class="mat-badge beklemede">Yakında</div>
+          <div class="mat-badge beklemede" data-i18n="badge_soon">Yakında</div>
         </div>
       </div>
 
     </div>
 
     <!-- VERİ SETLERİ -->
-    <div class="cat-title">Veri setleri</div>
+    <div class="cat-title" data-i18n="cat_data">Veri setleri</div>
     <div class="mat-list">
 
       <div class="mat-item veri passive">
         <div class="mat-icon">🗄️</div>
         <div class="mat-content">
-          <div class="mat-title">Uygulama veri seti 1</div>
-          <div class="mat-desc">Yakında eklenecek.</div>
+          <div class="mat-title" data-i18n="data1_title">Uygulama veri seti 1</div>
+          <div class="mat-desc" data-i18n="coming_soon_desc">Yakında eklenecek.</div>
           <div class="mat-tags">
             <span class="mat-tag teal">CSV</span>
           </div>
         </div>
         <div class="mat-right">
-          <div class="mat-badge beklemede">Yakında</div>
+          <div class="mat-badge beklemede" data-i18n="badge_soon">Yakında</div>
         </div>
       </div>
 
     </div>
 
-    <div class="info-box">
+    <div class="info-box" data-i18n="info_box">
       💡 <strong>Nasıl kullanılır:</strong> İnteraktif görseller doğrudan tarayıcıda açılır — uygulama veya kurulum gerekmez. Telefon ve tabletlerde de çalışır. PDF dosyaları için telefonunuzda PDF okuyucu yüklü olması yeterlidir.
     </div>
 
@@ -531,7 +546,7 @@
       flex-wrap: wrap;
     ">
       <span style="font-size: 18px; flex-shrink:0;">©</span>
-      <p style="margin:0; font-size: 12.5px; color: var(--muted); line-height: 1.7;">
+      <p style="margin:0; font-size: 12.5px; color: var(--muted); line-height: 1.7;" data-i18n="copyright_text">
         Bu sayfadaki tüm materyaller — interaktif simülatörler, ders notları, kod dosyaları ve görseller dahil —
         <strong style="color:var(--text);">Doç. Dr. Erkan Ağaslan</strong>'a aittir.
         Materyaller yalnızca eğitim amaçlı kişisel kullanım için serbestçe erişilebilir;
@@ -541,16 +556,187 @@
     </div>
 
     <div class="foot">
-      <span>© <span id="yr"></span> Doç. Dr. Erkan Ağaslan</span>
-      <a class="btn" href="./index.html">← Ana Sayfa</a>
+      <span>© <span id="yr"></span> <span data-i18n="footer_name">Doç. Dr. Erkan Ağaslan</span></span>
+      <a class="btn" href="./index.html" data-i18n="back_home">← Ana Sayfa</a>
     </div>
 
   </div>
 
   <script>
+    // Yıl
     const y = new Date().getFullYear();
     document.getElementById('yr').textContent = y;
     document.querySelectorAll('.yr-inline').forEach(el => el.textContent = y);
+
+    // --- i18n ---
+    const dict = {
+      tr: {
+        brand_title: "Doç. Dr. Erkan Ağaslan",
+        brand_sub: "Ekonometri • Kütahya Dumlupınar Üniversitesi",
+        back_home: "← Ana Sayfa",
+        breadcrumb_home: "Ana Sayfa",
+        breadcrumb_current: "Açık Materyaller",
+        page_title: "📚 Açık Materyaller",
+        page_desc: "İnteraktif simülatörler, ders notları, kod dosyaları ve veri setleri. Tüm materyaller serbestçe erişilebilir; aktif içeriklere tıklayarak ulaşabilirsiniz.",
+        meta_author: "Doç. Dr. Erkan Ağaslan",
+        meta_uni: "Kütahya Dumlupınar Üniversitesi",
+        meta_update: "Sürekli güncellenir",
+
+        cat_interactive: "İnteraktif görseller",
+        cat_notes: "Ders notları",
+        cat_code: "Kod dosyaları",
+        cat_data: "Veri setleri",
+
+        sim1_title: "Regresyon Simülatörü: Hata Terimi ve Güven Aralıkları",
+        sim1_desc: "Anakütle regresyon doğrusu, OLS tahmini ve hata terimlerini interaktif olarak inceleyin. σ kaydırıcısıyla varyansı değiştirin, noktalara dokunarak εᵢ değerini görün.",
+
+        sim2_title: "Mevsimsellik, Mevsimsellik Testi ve Sahte Regresyon Simülatörü",
+        sim2_desc: "Aylık, çeyreklik ve yarı-yıllık frekanslarda mevsimsel seriler üretin. Welch ANOVA ile mevsimselliği test edin, ham OLS'nin sahte R² ve t istatistikleri ürettiğini gözlemleyin, TRAMO-SEATS arındırması sonrası ilişkinin nasıl değiştiğini karşılaştırın.",
+
+        sim3_title: "Etkileşimli Birim Kök Simülatörü: ADF ve Zivot-Andrews Testleri",
+        sim3_desc: "I(1) seri simülasyonu, ADF birim kök testi ve kırılmalı Zivot-Andrews testi. Kesişim, trend, gürültü ve yapısal kırılma parametrelerini kaydırıcılarla ayarlayın; test istatistikleri anlık güncellenir.",
+
+        sim4_title: "Eşbütünleşme Simülatörü: I(1) Seriler &amp; Engle-Granger Testi",
+        sim4_desc: "Eşbütünleşik, eşbütünleşik olmayan ve farklı bütünleşme derecesine sahip seri çiftlerini simüle edin. ADF durağanlık testleri, uzun dönem OLS regresyonu ve Engle-Granger artık testi adım adım gösterilir; sahte regresyon ve doğrusal kombinasyon durağanlığı kavramları görsel olarak pekiştirilir.",
+
+        sim5_title: "Tanısal Testler Simülatörü — Sapmasızlık, Değişen Varyans ve Otokorelasyon",
+        sim5_desc: "R mantığıyla veri üretimi üzerinden OLS varsayımlarını inceleyin. Sapmasızlığın neden kaybolmadığını görün; Breusch–Pagan, Breusch–Godfrey ve Durbin–Watson çıktılarıyla değişen varyans ve otokorelasyonu hem görsel hem de hipotez testleriyle değerlendirin.",
+
+        sim6_title: "Çoklu regresyon — katsayı yorumu",
+        sim7_title: "Heteroskedastisite simülatörü",
+
+        note1_title: "Hafta 1 — Temel kavramlar",
+        note2_title: "Hafta 2 — OLS tahmincisi",
+        code1_title: "OLS tahmini — R kodu",
+        data1_title: "Uygulama veri seti 1",
+        coming_soon_desc: "Yakında eklenecek.",
+
+        tag_interactive: "İnteraktif",
+        tag_error_term: "Hata terimi",
+        tag_conf_int: "Güven aralığı",
+        tag_t_stat: "t istatistiği",
+        tag_seasonality: "Mevsimsellik",
+        tag_welch: "Welch Testi",
+        tag_spurious: "Sahte Regresyon",
+        tag_unit_root: "Birim kök",
+        tag_struct_break: "Yapısal kırılma",
+        tag_cointegration: "Eşbütünleşme",
+        tag_diag_tests: "Tanısal Testler",
+        tag_unbiasedness: "Sapmasızlık",
+        tag_heterosk: "Heteroskedastisite",
+        tag_autocorr: "Otokorelasyon",
+        tag_multi_reg: "Çoklu regresyon",
+
+        badge_new: "Yeni",
+        badge_soon: "Yakında",
+
+        info_box: "💡 <strong>Nasıl kullanılır:</strong> İnteraktif görseller doğrudan tarayıcıda açılır — uygulama veya kurulum gerekmez. Telefon ve tabletlerde de çalışır. PDF dosyaları için telefonunuzda PDF okuyucu yüklü olması yeterlidir.",
+
+        copyright_text: `Bu sayfadaki tüm materyaller — interaktif simülatörler, ders notları, kod dosyaları ve görseller dahil — <strong style="color:var(--text);">Doç. Dr. Erkan Ağaslan</strong>'a aittir. Materyaller yalnızca eğitim amaçlı kişisel kullanım için serbestçe erişilebilir; <strong style="color:var(--text);">kaynak gösterilmeksizin çoğaltılması, dağıtılması, yayımlanması veya ticari amaçla kullanılması yasaktır.</strong> Akademik atıf için: <em>Ağaslan, E. (<span class="yr-inline"></span>). erkanagaslan.com</em>`,
+
+        footer_name: "Doç. Dr. Erkan Ağaslan",
+      },
+
+      en: {
+        brand_title: "Assoc. Prof. Dr. Erkan Ağaslan",
+        brand_sub: "Econometrics • Kütahya Dumlupınar University",
+        back_home: "← Home",
+        breadcrumb_home: "Home",
+        breadcrumb_current: "Open Materials",
+        page_title: "📚 Open Materials",
+        page_desc: "Interactive simulators, lecture notes, code files, and datasets. All materials are freely accessible — click on any active item to open it.",
+        meta_author: "Assoc. Prof. Dr. Erkan Ağaslan",
+        meta_uni: "Kütahya Dumlupınar University",
+        meta_update: "Continuously updated",
+
+        cat_interactive: "Interactive visuals",
+        cat_notes: "Lecture notes",
+        cat_code: "Code files",
+        cat_data: "Datasets",
+
+        sim1_title: "Regression Simulator: Error Term and Confidence Intervals",
+        sim1_desc: "Explore the population regression line, OLS estimates, and error terms interactively. Adjust the σ slider to change variance; hover over points to inspect individual εᵢ values.",
+
+        sim2_title: "Seasonality, Seasonality Test, and Spurious Regression Simulator",
+        sim2_desc: "Generate seasonal series at monthly, quarterly, and semi-annual frequencies. Test for seasonality with Welch ANOVA, observe the spurious R² and t-statistics produced by raw OLS, and compare how the relationship changes after TRAMO-SEATS adjustment.",
+
+        sim3_title: "Interactive Unit Root Simulator: ADF and Zivot-Andrews Tests",
+        sim3_desc: "Simulate I(1) series and run ADF and Zivot-Andrews unit root tests with structural breaks. Adjust intercept, trend, noise, and break parameters via sliders — test statistics update in real time.",
+
+        sim4_title: "Cointegration Simulator: I(1) Series &amp; Engle-Granger Test",
+        sim4_desc: "Simulate pairs of cointegrated, non-cointegrated, or differently integrated series. ADF stationarity tests, long-run OLS regression, and the Engle-Granger residual test are shown step by step; spurious regression and linear combination stationarity are reinforced visually.",
+
+        sim5_title: "Diagnostic Tests Simulator — Unbiasedness, Heteroskedasticity, and Autocorrelation",
+        sim5_desc: "Examine OLS assumptions through data generation following R logic. See why unbiasedness is preserved; evaluate heteroskedasticity and autocorrelation both visually and via Breusch–Pagan, Breusch–Godfrey, and Durbin–Watson hypothesis tests.",
+
+        sim6_title: "Multiple regression — coefficient interpretation",
+        sim7_title: "Heteroskedasticity simulator",
+
+        note1_title: "Week 1 — Basic concepts",
+        note2_title: "Week 2 — OLS estimator",
+        code1_title: "OLS estimation — R code",
+        data1_title: "Applied dataset 1",
+        coming_soon_desc: "Coming soon.",
+
+        tag_interactive: "Interactive",
+        tag_error_term: "Error term",
+        tag_conf_int: "Confidence interval",
+        tag_t_stat: "t statistic",
+        tag_seasonality: "Seasonality",
+        tag_welch: "Welch Test",
+        tag_spurious: "Spurious Regression",
+        tag_unit_root: "Unit root",
+        tag_struct_break: "Structural break",
+        tag_cointegration: "Cointegration",
+        tag_diag_tests: "Diagnostic Tests",
+        tag_unbiasedness: "Unbiasedness",
+        tag_heterosk: "Heteroskedasticity",
+        tag_autocorr: "Autocorrelation",
+        tag_multi_reg: "Multiple regression",
+
+        badge_new: "New",
+        badge_soon: "Coming soon",
+
+        info_box: "💡 <strong>How to use:</strong> Interactive visuals open directly in your browser — no installation required. They also work on phones and tablets. For PDF files, a PDF reader on your device is sufficient.",
+
+        copyright_text: `All materials on this page — including interactive simulators, lecture notes, code files, and visuals — are the intellectual property of <strong style="color:var(--text);">Assoc. Prof. Dr. Erkan Ağaslan</strong>. Materials are freely accessible for personal educational use only; <strong style="color:var(--text);">reproduction, distribution, publication, or commercial use without attribution is prohibited.</strong> For academic citation: <em>Ağaslan, E. (<span class="yr-inline"></span>). erkanagaslan.com</em>`,
+
+        footer_name: "Assoc. Prof. Dr. Erkan Ağaslan",
+      }
+    };
+
+    function setLang(lang) {
+      const entries = dict[lang] || dict.tr;
+      document.documentElement.lang = lang === "en" ? "en" : "tr";
+
+      // Sayfa başlığı
+      document.title = lang === "en"
+        ? "Open Materials | Assoc. Prof. Dr. Erkan Ağaslan"
+        : "Açık Materyaller | Doç. Dr. Erkan Ağaslan";
+
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        if (entries[key] != null) el.innerHTML = entries[key];
+      });
+
+      // copyright içindeki yr-inline'ları güncelle
+      document.querySelectorAll('.yr-inline').forEach(el => el.textContent = y);
+
+      localStorage.setItem("site_lang", lang);
+    }
+
+    // TR/EN butonu
+    const langBtn = document.getElementById("langBtn");
+    if (langBtn) {
+      langBtn.addEventListener("click", () => {
+        const current = localStorage.getItem("site_lang") || "tr";
+        setLang(current === "tr" ? "en" : "tr");
+      });
+    }
+
+    // Sayfa yüklenince kaydedilmiş dili uygula
+    const savedLang = localStorage.getItem("site_lang") || "tr";
+    setLang(savedLang);
   </script>
 </body>
 </html>
