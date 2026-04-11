@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Çoklu Regresyon — Katsayı Yorumu ve Çoklu Doğrusal Bağlantı</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --blue:#185FA5;--blue-light:#E6F1FB;--blue-dark:#0C447C;
+    --red:#E24B4A;--red-light:#FCEBEB;--red-dark:#791F1F;
+    --green:#3B6D11;--green-light:#EAF3DE;--green-dark:#27500A;
+    --amber:#BA7517;--amber-light:#FAEEDA;--amber-dark:#633806;
+    --purple:#6B3FA0;--purple-light:#F0EAFA;--purple-dark:#3E1F6B;
+    --teal:#1A7A6E;--teal-light:#E3F5F3;--teal-dark:#0D4A43;
+    --text:#1a1a1a;--text2:#5F5E5A;
+    --border:rgba(0,0,0,0.11);--bg:#ffffff;--bg2:#F8F7F4;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg2);color:var(--text);padding:16px;max-width:1400px;margin:0 auto}
+  .topbar-lang{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px}
+  .lang-btn{padding:6px 14px;border-radius:999px;border:1px solid var(--border);background:var(--bg);color:var(--text2);font-size:12.5px;cursor:pointer;transition:all .2s}
+  .lang-btn:hover{background:var(--blue-light);border-color:var(--blue);color:var(--blue)}
+  h1{font-size:18px;font-weight:700;margin-bottom:4px}
+  .subtitle{font-size:13px;color:var(--text2);margin-bottom:16px}
+  /* SCENARIO */
+  .scenario-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+  @media(max-width:700px){.scenario-grid{grid-template-columns:1fr}}
+  .sc-card{border:1.5px solid var(--border);border-radius:var(--radius);padding:10px 12px;cursor:pointer;transition:all .2s;background:var(--bg)}
+  .sc-card:hover{border-color:#85B7EB;background:var(--blue-light)}
+  .sc-card.active{border-color:var(--blue);background:var(--blue-light)}
+  .sc-title{font-size:13px;font-weight:600;margin-bottom:4px}
+  .sc-desc{font-size:11px;color:var(--text2);line-height:1.5}
+  /* LAYOUT */
+  .page-layout{display:grid;grid-template-columns:360px 1fr;gap:14px;align-items:start}
+  @media(max-width:860px){.page-layout{grid-template-columns:1fr}}
+  .col-right{min-width:0}
+  .card{background:var(--bg);border:.5px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:12px}
+  .sec{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.55px;margin-bottom:10px}
+  /* SLIDERS */
+  .sr{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+  .sl{font-size:12.5px;color:var(--text2);min-width:140px;line-height:1.3}
+  input[type=range]{flex:1;height:4px;accent-color:var(--blue);-webkit-appearance:none;appearance:none;background:var(--border);border-radius:2px;outline:none}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;background:var(--blue);border-radius:50%;cursor:pointer}
+  .sv{font-size:13px;font-weight:700;min-width:48px;text-align:right;color:var(--text)}
+  hr{border:none;border-top:.5px solid var(--border);margin:12px 0}
+  .btn{display:block;width:100%;padding:11px;background:var(--blue);color:#fff;border:none;border-radius:var(--radius);font-size:13px;font-weight:600;cursor:pointer;margin-top:6px}
+  .btn:active{opacity:.88}
+  /* METRICS */
+  .metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+  .metric-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px}
+  .metric-grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:10px}
+  @media(max-width:560px){.metric-grid-3,.metric-grid-4{grid-template-columns:1fr 1fr}}
+  .metric{background:var(--bg2);border-radius:8px;padding:9px 12px;text-align:center}
+  .metric-lbl{font-size:10.5px;color:var(--text2);margin-bottom:2px;line-height:1.35}
+  .metric-val{font-size:17px;font-weight:700;color:var(--text)}
+  /* PILLS */
+  .pill{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:999px;font-size:11.5px;font-weight:700;border:1px solid;transition:all .3s}
+  .pill-red{background:var(--red-light);border-color:#F09595;color:var(--red-dark)}
+  .pill-grn{background:var(--green-light);border-color:#C0DD97;color:var(--green-dark)}
+  .pill-amber{background:var(--amber-light);border-color:#E8C97A;color:var(--amber-dark)}
+  .pill-blue{background:var(--blue-light);border-color:#85B7EB;color:var(--blue-dark)}
+  .pill-purple{background:var(--purple-light);border-color:#C9A8E8;color:var(--purple-dark)}
+  /* BAR */
+  .bar-wrap{height:5px;background:rgba(0,0,0,.07);border-radius:3px;overflow:hidden;margin:4px 0 10px}
+  .bar{height:100%;border-radius:3px;transition:width .5s,background .5s}
+  /* BOXES */
+  .info-box,.warn-box,.danger-box,.success-box,.note-box{border-left:3px solid;border-radius:0 var(--radius) var(--radius) 0;padding:10px 14px;font-size:12.5px;line-height:1.65;margin-top:6px}
+  .info-box{background:var(--blue-light);border-left-color:var(--blue);color:var(--blue-dark)}
+  .warn-box{background:var(--amber-light);border-left-color:var(--amber);color:var(--amber-dark)}
+  .danger-box{background:var(--red-light);border-left-color:var(--red);color:var(--red-dark)}
+  .success-box{background:var(--green-light);border-left-color:var(--green);color:var(--green-dark)}
+  .note-box{background:var(--bg2);border-left-color:var(--text2);color:var(--text2)}
+  /* TABLE */
+  .result-table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:8px}
+  .result-table th{background:var(--bg2);padding:7px 10px;text-align:left;font-weight:600;border-bottom:1px solid var(--border)}
+  .result-table td{padding:7px 10px;border-bottom:.5px solid var(--border);vertical-align:middle}
+  .result-table tr:last-child td{border-bottom:none}
+  .val-bad{color:var(--red-dark);font-weight:700}
+  .val-ok{color:var(--green-dark);font-weight:700}
+  .val-warn{color:var(--amber-dark);font-weight:700}
+  .center{text-align:center}
+  /* CHARTS */
+  .chart-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+  @media(max-width:700px){.chart-row{grid-template-columns:1fr}}
+  .legend{display:flex;gap:14px;font-size:11px;color:var(--text2);margin-top:6px;flex-wrap:wrap}
+  .leg-item{display:flex;align-items:center;gap:5px}
+  .leg-line{width:16px;height:2.5px;display:inline-block}
+  /* VIF METER */
+  .vif-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+  .vif-label{font-size:12.5px;min-width:60px;font-weight:600}
+  .vif-track{flex:1;height:10px;background:var(--bg2);border-radius:5px;overflow:hidden;border:.5px solid var(--border)}
+  .vif-fill{height:100%;border-radius:5px;transition:width .5s,background .5s}
+  .vif-val{font-size:13px;font-weight:700;min-width:52px;text-align:right}
+  /* PARADOX HIGHLIGHT */
+  .paradox-banner{
+    display:none;padding:12px 16px;border-radius:var(--radius);
+    background:linear-gradient(135deg,rgba(226,75,74,.10),rgba(107,63,160,.08));
+    border:1.5px solid rgba(226,75,74,.4);
+    font-size:13px;font-weight:600;color:var(--red-dark);
+    margin-bottom:12px;line-height:1.6;
+  }
+  .paradox-banner.show{display:block}
+  /* COEF TABLE */
+  .coef-badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700}
+  .cb-sig{background:var(--green-light);color:var(--green-dark)}
+  .cb-ns{background:var(--red-light);color:var(--red-dark)}
+  .cb-warn{background:var(--amber-light);color:var(--amber-dark)}
+  .formula{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--bg2);padding:2px 6px;border-radius:5px;font-size:11.5px;color:var(--blue-dark)}
+  /* STEP LIST */
+  .step-list{display:flex;flex-direction:column;gap:10px}
+  .step{display:flex;gap:10px;align-items:flex-start}
+  .step-num{min-width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--blue);color:#fff;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+  .step-txt{font-size:12.5px;color:var(--text2);line-height:1.65}
+</style>
+</head>
+<body>
+
+<div class="topbar-lang">
+  <div>
+    <h1 data-i18n="page_title">Çoklu Regresyon Simülatörü: Katsayı Yorumu ve Çoklu Doğrusal Bağlantı</h1>
+    <p class="subtitle" data-i18n="page_subtitle">Doç. Dr. Erkan Ağaslan — Kütahya Dumlupınar Üniversitesi · Finansal Ekonometri</p>
+  </div>
+  <button class="lang-btn" id="langBtn">TR/EN</button>
+</div>
+
+<!-- SENARYO SEÇİMİ -->
+<div class="scenario-grid" id="scenario-grid">
+  <div class="sc-card active" data-s="0" onclick="setScenario(0)">
+    <div class="sc-title" data-i18n="sc0_title">✅ Senaryo 1 — Temiz Model</div>
+    <div class="sc-desc" data-i18n="sc0_desc">Düşük çoklu bağlantı. Hem F hem de bireysel t testleri anlamlı. Katsayılar doğru yorumlanabilir.</div>
+  </div>
+  <div class="sc-card" data-s="1" onclick="setScenario(1)">
+    <div class="sc-title" data-i18n="sc1_title">⚠️ Senaryo 2 — Paradoks</div>
+    <div class="sc-desc" data-i18n="sc1_desc">Yüksek R², anlamlı F testi — ama t'lerin biri/hepsi anlamsız. Çoklu bağlantının klasik belirtisi.</div>
+  </div>
+  <div class="sc-card" data-s="2" onclick="setScenario(2)">
+    <div class="sc-title" data-i18n="sc2_title">🔴 Senaryo 3 — Tam Çakışma</div>
+    <div class="sc-desc" data-i18n="sc2_desc">X₂ ≈ X₁ + gürültü → VIF patlar, SE'ler genişler, katsayılar anlamsızlaşır, R² yapay yükselir.</div>
+  </div>
+</div>
+
+<div class="page-layout">
+<!-- ====== SOL PANEL ====== -->
+<div class="col-left">
+  <div class="card">
+    <div class="sec" data-i18n="sec_params">Parametreler</div>
+
+    <div class="sr">
+      <span class="sl" data-i18n="sl_n">Gözlem sayısı n</span>
+      <input type="range" id="sl-n" min="50" max="300" step="10" value="120">
+      <span class="sv" id="lbl-n">120</span>
+    </div>
+    <div class="sr">
+      <span class="sl" data-i18n="sl_b0">β₀ (sabit)</span>
+      <input type="range" id="sl-b0" min="-3" max="6" step="0.5" value="1">
+      <span class="sv" id="lbl-b0">1.0</span>
+    </div>
+    <div class="sr">
+      <span class="sl" data-i18n="sl_b1">β₁ (X₁ etkisi)</span>
+      <input type="range" id="sl-b1" min="0.1" max="3" step="0.1" value="1.5">
+      <span class="sv" id="lbl-b1">1.5</span>
+    </div>
+    <div class="sr">
+      <span class="sl" data-i18n="sl_b2">β₂ (X₂ etkisi)</span>
+      <input type="range" id="sl-b2" min="0.1" max="3" step="0.1" value="0.8">
+      <span class="sv" id="lbl-b2">0.8</span>
+    </div>
+    <div class="sr">
+      <span class="sl" data-i18n="sl_sig">Hata σ</span>
+      <input type="range" id="sl-sig" min="0.2" max="4" step="0.1" value="1.0">
+      <span class="sv" id="lbl-sig">1.0</span>
+    </div>
+
+    <hr>
+    <div class="sec" data-i18n="sec_mc_ctrl">Çoklu Bağlantı Kontrolü</div>
+
+    <div class="sr">
+      <span class="sl" data-i18n="sl_rho12">X₁–X₂ korelasyonu ρ</span>
+      <input type="range" id="sl-rho" min="0" max="0.99" step="0.01" value="0.2">
+      <span class="sv" id="lbl-rho">0.20</span>
+    </div>
+
+    <div class="sr" id="row-x3">
+      <span class="sl" data-i18n="sl_b3">β₃ (X₃ etkisi)</span>
+      <input type="range" id="sl-b3" min="0" max="2" step="0.1" value="0.5">
+      <span class="sv" id="lbl-b3">0.5</span>
+    </div>
+
+    <hr>
+    <div id="scenario-note" class="warn-box"></div>
+    <button class="btn" onclick="regenerate()" data-i18n="btn_regen">🔄 Yeni Simülasyon</button>
+  </div>
+
+  <!-- ADIMLAR -->
+  <div class="card">
+    <div class="sec" data-i18n="sec_steps">Test Mantığı — Adım Adım</div>
+    <div class="step-list">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-txt" data-i18n="step1"><strong>F testi:</strong> Modelin <em>tümü</em> anlamsız mı? H₀: β₁=β₂=…=0. F istatistiği büyük ve p küçükse model genelde anlamlıdır.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-txt" data-i18n="step2"><strong>Bireysel t testleri:</strong> Her değişken <em>diğerleri sabitken</em> anlamlı mı? VIF yüksekse SE genişler → |t| düşer → anlamsız görünür.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-txt" data-i18n="step3"><strong>VIF (Varyans Büyüme Faktörü):</strong> <span class="formula">VIF_j = 1/(1−R²_j)</span> — X_j'yi diğer X'lere regrese et, R²_j al. VIF > 10 → ciddi sorun.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-txt" data-i18n="step4"><strong>Paradoks:</strong> F anlamlı + R² yüksek ama t'ler anlamsız → çoklu bağlantı şüphesi. Değişkenleri birleştir, birini çıkar veya ridge kullan.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== SAĞ PANEL ====== -->
+<div class="col-right">
+
+  <!-- PARADOX BANNER -->
+  <div class="paradox-banner" id="paradox-banner"></div>
+
+  <!-- F TESTİ + GENEL -->
+  <div class="card">
+    <div class="sec" data-i18n="sec_model_fit">Model Uyum İstatistikleri (F Testi)</div>
+    <div class="metric-grid-4">
+      <div class="metric"><div class="metric-lbl">R²</div><div class="metric-val" id="m-r2">—</div></div>
+      <div class="metric"><div class="metric-lbl" data-i18n="lbl_adj_r2">Düzeltilmiş R²</div><div class="metric-val" id="m-r2adj">—</div></div>
+      <div class="metric"><div class="metric-lbl" data-i18n="lbl_f_stat">F istatistiği</div><div class="metric-val" id="m-f">—</div></div>
+      <div class="metric"><div class="metric-lbl" data-i18n="lbl_f_pval">p (F)</div><div class="metric-val" id="m-fp">—</div></div>
+    </div>
+    <div id="f-pill-wrap"></div>
+    <div class="bar-wrap"><div id="f-bar" class="bar" style="width:0%"></div></div>
+    <div id="f-box" class="info-box">—</div>
+  </div>
+
+  <!-- KATSAYI TABLOSU -->
+  <div class="card">
+    <div class="sec" data-i18n="sec_coefs">Katsayı Tablosu — Bireysel t Testleri</div>
+    <table class="result-table">
+      <thead>
+        <tr>
+          <th data-i18n="tbl_var">Değişken</th>
+          <th data-i18n="tbl_coef">Katsayı β̂</th>
+          <th data-i18n="tbl_se">Std. Hata</th>
+          <th class="center" data-i18n="tbl_t">t istatistiği</th>
+          <th class="center" data-i18n="tbl_p">p-değeri</th>
+          <th data-i18n="tbl_sig">Anlamlılık</th>
+        </tr>
+      </thead>
+      <tbody id="coef-body"></tbody>
+    </table>
+    <div id="t-interpretation" class="note-box" style="margin-top:10px;"></div>
+  </div>
+
+  <!-- VIF PANELİ -->
+  <div class="card">
+    <div class="sec" data-i18n="sec_vif">VIF — Çoklu Doğrusal Bağlantı Tanısı</div>
+    <div id="vif-meters"></div>
+    <table class="result-table" style="margin-top:10px;">
+      <thead>
+        <tr>
+          <th data-i18n="tbl_var">Değişken</th>
+          <th data-i18n="tbl_vif">VIF</th>
+          <th data-i18n="tbl_r2_aux">Yardımcı R²</th>
+          <th data-i18n="tbl_vif_verdict">Değerlendirme</th>
+        </tr>
+      </thead>
+      <tbody id="vif-body"></tbody>
+    </table>
+    <div id="vif-box" class="info-box" style="margin-top:8px;"></div>
+  </div>
+
+  <!-- GRAFİKLER -->
+  <div class="chart-row">
+    <div class="card">
+      <div class="sec" data-i18n="sec_chart_scatter">Y — Tahmin vs. Gerçek</div>
+      <canvas id="ch-yhat" style="height:220px;"></canvas>
+      <div class="legend">
+        <div class="leg-item"><span style="width:10px;height:10px;border-radius:50%;background:rgba(24,95,165,0.5);display:inline-block;"></span> <span data-i18n="leg_obs">Gözlem</span></div>
+        <div class="leg-item"><span class="leg-line" style="background:var(--red)"></span> <span data-i18n="leg_perfect">Mükemmel uyum</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="sec" data-i18n="sec_chart_resid">Artıklar vs. Tahmin</div>
+      <canvas id="ch-resid" style="height:220px;"></canvas>
+      <div class="legend">
+        <div class="leg-item"><span style="width:10px;height:10px;border-radius:50%;background:rgba(226,75,74,0.5);display:inline-block;"></span> <span data-i18n="leg_resid">Artıklar</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KORELASYON MATRİSİ -->
+  <div class="card">
+    <div class="sec" data-i18n="sec_corr">X Değişkenleri Korelasyon Matrisi</div>
+    <div id="corr-matrix"></div>
+    <div id="corr-note" class="note-box" style="margin-top:8px;"></div>
+  </div>
+
+</div><!-- col-right -->
+</div><!-- page-layout -->
+
+<script>
+// ─── i18n ─────────────────────────────────────────────────────────────────────
+const dict = {
+  tr: {
+    page_title:    "Çoklu Regresyon Simülatörü: Katsayı Yorumu ve Çoklu Doğrusal Bağlantı",
+    page_subtitle: "Doç. Dr. Erkan Ağaslan — Kütahya Dumlupınar Üniversitesi · Finansal Ekonometri",
+    sc0_title: "✅ Senaryo 1 — Temiz Model",
+    sc0_desc:  "Düşük çoklu bağlantı. Hem F hem de bireysel t testleri anlamlı. Katsayılar doğru yorumlanabilir.",
+    sc1_title: "⚠️ Senaryo 2 — Paradoks",
+    sc1_desc:  "Yüksek R², anlamlı F testi — ama t'lerin biri/hepsi anlamsız. Çoklu bağlantının klasik belirtisi.",
+    sc2_title: "🔴 Senaryo 3 — Tam Çakışma",
+    sc2_desc:  "X₂ ≈ X₁ + gürültü → VIF patlar, SE'ler genişler, katsayılar anlamsızlaşır, R² yapay yükselir.",
+    sec_params:   "Parametreler",
+    sl_n:         "Gözlem sayısı n",
+    sl_b0:        "β₀ (sabit)",
+    sl_b1:        "β₁ (X₁ etkisi)",
+    sl_b2:        "β₂ (X₂ etkisi)",
+    sl_sig:       "Hata σ",
+    sec_mc_ctrl:  "Çoklu Bağlantı Kontrolü",
+    sl_rho12:     "X₁–X₂ korelasyonu ρ",
+    sl_b3:        "β₃ (X₃ etkisi)",
+    btn_regen:    "🔄 Yeni Simülasyon",
+    sec_steps:    "Test Mantığı — Adım Adım",
+    step1: "<strong>F testi:</strong> Modelin <em>tümü</em> anlamsız mı? H₀: β₁=β₂=…=0. F istatistiği büyük ve p küçükse model genelde anlamlıdır.",
+    step2: "<strong>Bireysel t testleri:</strong> Her değişken <em>diğerleri sabitken</em> anlamlı mı? VIF yüksekse SE genişler → |t| düşer → anlamsız görünür.",
+    step3: "<strong>VIF (Varyans Büyüme Faktörü):</strong> <span class=\"formula\">VIF_j = 1/(1−R²_j)</span> — X_j'yi diğer X'lere regrese et, R²_j al. VIF > 10 → ciddi sorun.",
+    step4: "<strong>Paradoks:</strong> F anlamlı + R² yüksek ama t'ler anlamsız → çoklu bağlantı şüphesi. Değişkenleri birleştir, birini çıkar veya ridge kullan.",
+    sec_model_fit: "Model Uyum İstatistikleri (F Testi)",
+    lbl_adj_r2:   "Düzeltilmiş R²",
+    lbl_f_stat:   "F istatistiği",
+    lbl_f_pval:   "p (F)",
+    sec_coefs:    "Katsayı Tablosu — Bireysel t Testleri",
+    tbl_var:      "Değişken",
+    tbl_coef:     "Katsayı β̂",
+    tbl_se:       "Std. Hata",
+    tbl_t:        "t istatistiği",
+    tbl_p:        "p-değeri",
+    tbl_sig:      "Anlamlılık",
+    sec_vif:      "VIF — Çoklu Doğrusal Bağlantı Tanısı",
+    tbl_vif:      "VIF",
+    tbl_r2_aux:   "Yardımcı R²",
+    tbl_vif_verdict: "Değerlendirme",
+    sec_chart_scatter: "Y — Tahmin vs. Gerçek",
+    sec_chart_resid:   "Artıklar vs. Tahmin",
+    leg_obs:      "Gözlem",
+    leg_perfect:  "Mükemmel uyum",
+    leg_resid:    "Artıklar",
+    sec_corr:     "X Değişkenleri Korelasyon Matrisi",
+    // scenario notes
+    sc_note0: "Senaryo 1: X₁ ve X₂ neredeyse bağımsız. Katsayıları ayrı ayrı yorumlamak güvenlidir.",
+    sc_note1: "Senaryo 2: X₁ ve X₂ arasında yüksek korelasyon. F anlamlı olsa bile t testleri güvenilmez sinyal üretir.",
+    sc_note2: "Senaryo 3: X₂ = X₁ + küçük gürültü. Tam çakışma — VIF çok yüksek, katsayılar kararsız.",
+    // f test
+    f_reject:     "F Testi: H₀ reddedilir — model anlamlı (p < 0.05)",
+    f_noreject:   "F Testi: H₀ reddedilemez — model anlamsız (p ≥ 0.05)",
+    f_box_reject: "<strong>F testi:</strong> F = {f}, p = {p}. <strong>H₀ reddedilir</strong> — değişkenler <em>birlikte</em> Y'yi açıklamaktadır. Ancak bu, her bireysel katsayının da anlamlı olduğu anlamına gelmez.",
+    f_box_ok:     "<strong>F testi:</strong> F = {f}, p = {p}. H₀ reddedilemedi — mevcut değişkenler birlikte anlamsız.",
+    // paradox
+    paradox_msg:  "⚠️ KLASİK PARADOKS: R² = {r2} ve F testi anlamlı (p = {fp}) — ancak {ns} değişkenin t testi anlamsızdır. Bu, çoklu doğrusal bağlantının (multicollinearity) en önemli belirtisidir: model bir bütün olarak çalışıyor, ama bireysel katkıları ayırt edilemiyor.",
+    // vif verdicts
+    vif_ok:    "✓ Normal (VIF < 5)",
+    vif_warn:  "⚠ Orta (5 ≤ VIF < 10)",
+    vif_bad:   "✗ Ciddi (VIF ≥ 10)",
+    vif_extreme: "🔴 Aşırı (VIF ≥ 30)",
+    vif_summary_ok:   "VIF değerleri normal sınırlar içinde — çoklu bağlantı sorunu tespit edilmedi.",
+    vif_summary_warn: "Orta düzey çoklu bağlantı — yorumlar dikkatli yapılmalı.",
+    vif_summary_bad:  "Ciddi çoklu bağlantı (VIF ≥ 10). SE'ler şişirilmiş, t testleri güvenilmez. Değişken seçimi veya ridge regresyonu düşünülmeli.",
+    vif_summary_extreme: "Aşırı çoklu bağlantı! X₂ büyük ölçüde X₁'in kopyası. Katsayılar numerik olarak kararsız.",
+    // t interp
+    t_all_sig:    "Tüm değişkenler bireysel olarak da anlamlıdır (p < 0.05). Katsayı yorumu güvenlidir.",
+    t_some_ns:    "{ns} değişken bireysel olarak anlamsız çıkmıştır — VIF değerlerine bakın.",
+    t_all_ns:     "Tüm t testleri anlamsız (p ≥ 0.05). F anlamlı ise bu klasik multicollinearity paradoksudur.",
+    // sig stars
+    sig_001: "*** (p<0.001)",
+    sig_01:  "** (p<0.01)",
+    sig_05:  "* (p<0.05)",
+    sig_ns:  "ns (p≥0.05)",
+    // corr note
+    corr_note_low:  "Korelasyonlar düşük — çoklu bağlantı riski minimal.",
+    corr_note_mid:  "Orta düzey korelasyonlar gözlemlendi — dikkatli yorum yapılmalı.",
+    corr_note_high: "Yüksek korelasyon tespit edildi! İki veya daha fazla değişken neredeyse aynı bilgiyi taşıyor.",
+    axis_fitted: "Tahmin ŷ",
+    axis_y:      "Gerçek y",
+    axis_resid:  "Artık ê",
+  },
+  en: {
+    page_title:    "Multiple Regression Simulator: Coefficient Interpretation and Multicollinearity",
+    page_subtitle: "Assoc. Prof. Dr. Erkan Ağaslan — Kütahya Dumlupınar University · Financial Econometrics",
+    sc0_title: "✅ Scenario 1 — Clean Model",
+    sc0_desc:  "Low multicollinearity. Both F and individual t-tests are significant. Coefficients can be interpreted reliably.",
+    sc1_title: "⚠️ Scenario 2 — Paradox",
+    sc1_desc:  "High R², significant F-test — but one/all t-tests are not significant. The classic sign of multicollinearity.",
+    sc2_title: "🔴 Scenario 3 — Near-Perfect Overlap",
+    sc2_desc:  "X₂ ≈ X₁ + noise → VIF explodes, SEs widen, coefficients become insignificant, R² inflates artificially.",
+    sec_params:   "Parameters",
+    sl_n:         "Observations n",
+    sl_b0:        "β₀ (intercept)",
+    sl_b1:        "β₁ (X₁ effect)",
+    sl_b2:        "β₂ (X₂ effect)",
+    sl_sig:       "Error σ",
+    sec_mc_ctrl:  "Multicollinearity Control",
+    sl_rho12:     "X₁–X₂ correlation ρ",
+    sl_b3:        "β₃ (X₃ effect)",
+    btn_regen:    "🔄 New Simulation",
+    sec_steps:    "Test Logic — Step by Step",
+    step1: "<strong>F-test:</strong> Is the model as a <em>whole</em> insignificant? H₀: β₁=β₂=…=0. A large F and small p means the model is jointly significant.",
+    step2: "<strong>Individual t-tests:</strong> Is each variable significant <em>holding others fixed</em>? High VIF inflates SE → lowers |t| → appears insignificant.",
+    step3: "<strong>VIF (Variance Inflation Factor):</strong> <span class=\"formula\">VIF_j = 1/(1−R²_j)</span> — regress X_j on other X's, get R²_j. VIF > 10 → serious problem.",
+    step4: "<strong>Paradox:</strong> Significant F + high R² but insignificant t-values → suspect multicollinearity. Combine variables, drop one, or use ridge regression.",
+    sec_model_fit: "Model Fit Statistics (F-Test)",
+    lbl_adj_r2:   "Adjusted R²",
+    lbl_f_stat:   "F statistic",
+    lbl_f_pval:   "p (F)",
+    sec_coefs:    "Coefficient Table — Individual t-Tests",
+    tbl_var:      "Variable",
+    tbl_coef:     "Coefficient β̂",
+    tbl_se:       "Std. Error",
+    tbl_t:        "t statistic",
+    tbl_p:        "p-value",
+    tbl_sig:      "Significance",
+    sec_vif:      "VIF — Multicollinearity Diagnostics",
+    tbl_vif:      "VIF",
+    tbl_r2_aux:   "Auxiliary R²",
+    tbl_vif_verdict: "Assessment",
+    sec_chart_scatter: "Y — Fitted vs. Actual",
+    sec_chart_resid:   "Residuals vs. Fitted",
+    leg_obs:      "Observations",
+    leg_perfect:  "Perfect fit",
+    leg_resid:    "Residuals",
+    sec_corr:     "X Variable Correlation Matrix",
+    sc_note0: "Scenario 1: X₁ and X₂ are nearly independent. Interpreting coefficients separately is reliable.",
+    sc_note1: "Scenario 2: High correlation between X₁ and X₂. Even if F is significant, t-tests produce unreliable signals.",
+    sc_note2: "Scenario 3: X₂ = X₁ + small noise. Near-perfect overlap — VIF is very high, coefficients are unstable.",
+    f_reject:     "F-Test: Reject H₀ — model is significant (p < 0.05)",
+    f_noreject:   "F-Test: Fail to reject H₀ — model is not significant (p ≥ 0.05)",
+    f_box_reject: "<strong>F-test:</strong> F = {f}, p = {p}. <strong>Reject H₀</strong> — the variables <em>jointly</em> explain Y. However, this does not imply that every individual coefficient is also significant.",
+    f_box_ok:     "<strong>F-test:</strong> F = {f}, p = {p}. Fail to reject H₀ — the current variables are jointly insignificant.",
+    paradox_msg:  "⚠️ CLASSIC PARADOX: R² = {r2} and F-test is significant (p = {fp}) — but the t-test for {ns} variable(s) is not significant. This is the hallmark of multicollinearity: the model works as a whole but individual contributions cannot be separated.",
+    vif_ok:    "✓ Normal (VIF < 5)",
+    vif_warn:  "⚠ Moderate (5 ≤ VIF < 10)",
+    vif_bad:   "✗ Serious (VIF ≥ 10)",
+    vif_extreme: "🔴 Extreme (VIF ≥ 30)",
+    vif_summary_ok:   "VIF values are within normal limits — no multicollinearity detected.",
+    vif_summary_warn: "Moderate multicollinearity — interpret results with caution.",
+    vif_summary_bad:  "Serious multicollinearity (VIF ≥ 10). SEs are inflated, t-tests are unreliable. Consider variable selection or ridge regression.",
+    vif_summary_extreme: "Extreme multicollinearity! X₂ is largely a copy of X₁. Coefficients are numerically unstable.",
+    t_all_sig:    "All variables are individually significant (p < 0.05). Coefficient interpretation is reliable.",
+    t_some_ns:    "{ns} variable(s) are individually insignificant — check VIF values.",
+    t_all_ns:     "All t-tests are insignificant (p ≥ 0.05). If F is significant, this is the classic multicollinearity paradox.",
+    sig_001: "*** (p<0.001)",
+    sig_01:  "** (p<0.01)",
+    sig_05:  "* (p<0.05)",
+    sig_ns:  "ns (p≥0.05)",
+    corr_note_low:  "Correlations are low — minimal multicollinearity risk.",
+    corr_note_mid:  "Moderate correlations observed — interpret carefully.",
+    corr_note_high: "High correlation detected! Two or more variables carry nearly the same information.",
+    axis_fitted: "Fitted ŷ",
+    axis_y:      "Actual y",
+    axis_resid:  "Residual ê",
+  }
+};
+
+let currentLang = localStorage.getItem("site_lang") || "tr";
+function t(key){ return (dict[currentLang]||dict.tr)[key] || key; }
+
+function applyLang(){
+  document.documentElement.lang = currentLang === "en" ? "en" : "tr";
+  document.title = currentLang === "en"
+    ? "Multiple Regression — Coefficient Interpretation & Multicollinearity"
+    : "Çoklu Regresyon — Katsayı Yorumu ve Çoklu Doğrusal Bağlantı";
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.getAttribute("data-i18n");
+    const val = t(key);
+    if(val !== undefined) el.innerHTML = val;
+  });
+  if(simData) renderUI();
+}
+
+document.getElementById("langBtn").addEventListener("click", () => {
+  currentLang = currentLang === "tr" ? "en" : "tr";
+  localStorage.setItem("site_lang", currentLang);
+  applyLang();
+});
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let SCENARIO = 0;
+let N=120, b0=1, b1=1.5, b2=0.8, b3=0.5, sigma=1.0, rho12=0.2;
+let simData = null;
+let chartYhat=null, chartResid=null;
+
+// ─── RANDOM ──────────────────────────────────────────────────────────────────
+function randn(){
+  const u1=Math.random()||1e-12, u2=Math.random();
+  return Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2);
+}
+function mean(a){return a.reduce((s,v)=>s+v,0)/a.length;}
+function std(a){const m=mean(a);return Math.sqrt(a.reduce((s,v)=>s+(v-m)**2,0)/a.length);}
+function corr(a,b){
+  const ma=mean(a),mb=mean(b);
+  const n=a.length;
+  const num=a.reduce((s,v,i)=>s+(v-ma)*(b[i]-mb),0);
+  const da=Math.sqrt(a.reduce((s,v)=>s+(v-ma)**2,0));
+  const db=Math.sqrt(b.reduce((s,v)=>s+(v-mb)**2,0));
+  return (da&&db)?num/(da*db):0;
+}
+
+// ─── MATRIX OLS ──────────────────────────────────────────────────────────────
+function olsMatrix(X, y){
+  const n=X.length, k=X[0].length;
+  const XtX=Array.from({length:k},()=>Array(k).fill(0));
+  const Xty=Array(k).fill(0);
+  for(let i=0;i<n;i++){
+    for(let a=0;a<k;a++){
+      Xty[a]+=X[i][a]*y[i];
+      for(let bb=0;bb<k;bb++) XtX[a][bb]+=X[i][a]*X[i][bb];
+    }
+  }
+  // Gauss-Jordan inversion
+  const M=XtX.map((row,i)=>{const id=Array(k).fill(0);id[i]=1;return [...row,...id];});
+  for(let c=0;c<k;c++){
+    let piv=c;
+    for(let r=c+1;r<k;r++) if(Math.abs(M[r][c])>Math.abs(M[piv][c])) piv=r;
+    [M[c],M[piv]]=[M[piv],M[c]];
+    let div=M[c][c]; if(Math.abs(div)<1e-14) div=1e-14;
+    for(let j=0;j<2*k;j++) M[c][j]/=div;
+    for(let r=0;r<k;r++) if(r!==c){const f=M[r][c];for(let j=0;j<2*k;j++) M[r][j]-=f*M[c][j];}
+  }
+  const invXtX=M.map(r=>r.slice(k));
+  const beta=invXtX.map((row)=>row.reduce((s,v,j)=>s+v*Xty[j],0));
+  const yhat=X.map(row=>row.reduce((s,v,j)=>s+v*beta[j],0));
+  const ehat=y.map((v,i)=>v-yhat[i]);
+  const sse=ehat.reduce((s,v)=>s+v*v,0);
+  const yb=mean(y);
+  const tss=y.reduce((s,v)=>s+(v-yb)**2,0);
+  const r2=tss===0?1:1-sse/tss;
+  const s2=sse/(n-k);
+  const se=invXtX.map((_,j)=>Math.sqrt(Math.max(0,s2*invXtX[j][j])));
+  const tStats=beta.map((b,j)=>se[j]>0?b/se[j]:0);
+  return{beta,se,tStats,yhat,ehat,sse,r2,s2,invXtX};
+}
+
+// ─── BIVARIATE OLS (for VIF) ─────────────────────────────────────────────────
+function r2Aux(xj, others){
+  if(!others.length) return 0;
+  const n=xj.length;
+  const X=xj.map((_,i)=>[1,...others.map(o=>o[i])]);
+  const res=olsMatrix(X,xj);
+  return res.r2;
+}
+
+// ─── F DISTRIBUTION P-VALUE (approx) ─────────────────────────────────────────
+function erf(x){
+  const sign=x<0?-1:1; x=Math.abs(x);
+  const a1=0.254829592,a2=-0.284496736,a3=1.421413741,a4=-1.453152027,a5=1.061405429,p=0.3275911;
+  const tt=1/(1+p*x);
+  const y=1-(((((a5*tt+a4)*tt)+a3)*tt+a2)*tt+a1)*tt*Math.exp(-x*x);
+  return sign*y;
+}
+function erfc(x){return 1-erf(x);}
+function betaInc(x,a,b){
+  if(x<=0) return 0; if(x>=1) return 1;
+  const lb=lgamma(a)+lgamma(b)-lgamma(a+b);
+  if(x<(a+1)/(a+b+2)) return Math.exp(a*Math.log(x)+b*Math.log(1-x)-lb)*betaCF(x,a,b)/a;
+  return 1-Math.exp(b*Math.log(1-x)+a*Math.log(x)-lb)*betaCF(1-x,b,a)/b;
+}
+function betaCF(x,a,b){
+  const ITMAX=200,EPS=3e-7,FPMIN=1e-30;
+  const qab=a+b,qap=a+1,qam=a-1;
+  let c=1,d=1-qab*x/qap;if(Math.abs(d)<FPMIN)d=FPMIN;d=1/d;let h=d;
+  for(let m=1;m<=ITMAX;m++){
+    const m2=2*m;
+    let aa=m*(b-m)*x/((qam+m2)*(a+m2));
+    d=1+aa*d;if(Math.abs(d)<FPMIN)d=FPMIN;c=1+aa/c;if(Math.abs(c)<FPMIN)c=FPMIN;d=1/d;h*=d*c;
+    aa=-(a+m)*(qab+m)*x/((a+m2)*(qap+m2));
+    d=1+aa*d;if(Math.abs(d)<FPMIN)d=FPMIN;c=1+aa/c;if(Math.abs(c)<FPMIN)c=FPMIN;d=1/d;const del=d*c;h*=del;
+    if(Math.abs(del-1)<EPS) break;
+  }
+  return h;
+}
+function lgamma(x){
+  const c=[76.18009172947146,-86.50532032941677,24.01409824083091,-1.231739572450155,0.1208650973866179e-2,-0.5395239384953e-5];
+  let y=x,tmp=x+5.5;tmp-=(x+0.5)*Math.log(tmp);let ser=1.000000000190015;
+  for(let j=0;j<6;j++) ser+=c[j]/(++y);
+  return -tmp+Math.log(2.5066282746310005*ser/x);
+}
+function fPval(F,d1,d2){
+  if(F<=0||isNaN(F)) return 1;
+  const x=d2/(d2+d1*F);
+  return betaInc(x,d2/2,d1/2);
+}
+function tPval(tv,df){
+  const x=df/(df+tv*tv);
+  return Math.min(1,betaInc(x,df/2,0.5));
+}
+
+// ─── GENERATE DATA ────────────────────────────────────────────────────────────
+function genCorrelated(n, rhoVal){
+  const z1=[],z2=[];
+  for(let i=0;i<n;i++){z1.push(randn());z2.push(randn());}
+  const x1=z1;
+  const x2=z1.map((v,i)=>rhoVal*v+Math.sqrt(Math.max(0,1-rhoVal**2))*z2[i]);
+  return{x1,x2};
+}
+
+function simulate(){
+  const n=N;
+  let X1,X2,X3,Y;
+
+  if(SCENARIO===0){
+    // Temiz: düşük korelasyon
+    const {x1,x2}=genCorrelated(n, Math.min(rho12, 0.4));
+    X1=x1; X2=x2;
+    X3=Array.from({length:n},()=>randn()); // 3. değişken
+    Y=X1.map((_,i)=>b0+b1*X1[i]+b2*X2[i]+b3*X3[i]+sigma*randn());
+  } else if(SCENARIO===1){
+    // Paradoks: yüksek korelasyon
+    const {x1,x2}=genCorrelated(n, Math.max(rho12, 0.88));
+    X1=x1; X2=x2;
+    X3=Array.from({length:n},()=>randn());
+    Y=X1.map((_,i)=>b0+b1*X1[i]+b2*X2[i]+b3*X3[i]+sigma*randn());
+  } else {
+    // Tam çakışma: X2 ≈ X1 + minimal gürültü
+    X1=Array.from({length:n},()=>randn());
+    X2=X1.map(v=>v+0.05*randn()); // neredeyse aynı
+    X3=Array.from({length:n},()=>randn());
+    Y=X1.map((_,i)=>b0+b1*X1[i]+b2*X2[i]+b3*X3[i]+sigma*randn());
+  }
+
+  // OLS: [1, X1, X2, X3]
+  const Xmat=X1.map((_,i)=>[1,X1[i],X2[i],X3[i]]);
+  const fit=olsMatrix(Xmat,Y);
+
+  // F istatistiği
+  const k=3; // sabit hariç
+  const yb=mean(Y);
+  const tss=Y.reduce((s,v)=>s+(v-yb)**2,0);
+  const msr=(tss-fit.sse)/k;
+  const mse=fit.sse/(n-k-1);
+  const Fstat=msr/mse;
+  const Fpval=fPval(Fstat,k,n-k-1);
+
+  // Adj R²
+  const r2adj=1-(1-fit.r2)*(n-1)/(n-k-1);
+
+  // t p-values
+  const tPvals=fit.tStats.map(tv=>tPval(Math.abs(tv),n-k-1));
+
+  // VIF: regress each X on the others
+  const vif1=1/(1-Math.max(0.001,r2Aux(X1,[X2,X3])));
+  const vif2=1/(1-Math.max(0.001,r2Aux(X2,[X1,X3])));
+  const vif3=1/(1-Math.max(0.001,r2Aux(X3,[X1,X2])));
+  const r2aux1=r2Aux(X1,[X2,X3]);
+  const r2aux2=r2Aux(X2,[X1,X3]);
+  const r2aux3=r2Aux(X3,[X1,X2]);
+
+  // Correlation matrix
+  const corr12=corr(X1,X2);
+  const corr13=corr(X1,X3);
+  const corr23=corr(X2,X3);
+
+  simData={
+    X1,X2,X3,Y,
+    beta:fit.beta, se:fit.se, tStats:fit.tStats, tPvals,
+    yhat:fit.yhat, ehat:fit.ehat,
+    r2:fit.r2, r2adj, Fstat, Fpval,
+    vif:[vif1,vif2,vif3],
+    r2aux:[r2aux1,r2aux2,r2aux3],
+    corr12,corr13,corr23,
+    n
+  };
+  return simData;
+}
+
+// ─── RENDER ───────────────────────────────────────────────────────────────────
+function fmt(v,d=3){return Number(v).toFixed(d);}
+function fmtP(p){return p<0.0001?'<0.0001':fmt(p,4);}
+
+function sigStar(p){
+  if(p<0.001) return t("sig_001");
+  if(p<0.01)  return t("sig_01");
+  if(p<0.05)  return t("sig_05");
+  return t("sig_ns");
+}
+function sigClass(p){return p<0.05?'cb-sig':'cb-ns';}
+
+function renderUI(){
+  const d=simData;
+
+  // ── Senaryo notu ──
+  document.getElementById('scenario-note').innerHTML = t("sc_note"+SCENARIO);
+  document.getElementById('scenario-note').className = ['info-box','warn-box','danger-box'][SCENARIO];
+
+  // ── F testi metrikleri ──
+  document.getElementById('m-r2').textContent=fmt(d.r2,3);
+  document.getElementById('m-r2adj').textContent=fmt(d.r2adj,3);
+  document.getElementById('m-f').textContent=fmt(d.Fstat,2);
+  document.getElementById('m-fp').textContent=fmtP(d.Fpval);
+
+  const fReject=d.Fpval<0.05;
+  document.getElementById('f-pill-wrap').innerHTML=
+    `<span class="pill ${fReject?'pill-grn':'pill-red'}">${fReject?t("f_reject"):t("f_noreject")}</span>`;
+  const fBar=document.getElementById('f-bar');
+  fBar.style.width=Math.min(100,d.Fstat/20*100)+'%';
+  fBar.style.background=fReject?'var(--green)':'var(--red)';
+  const fBox=document.getElementById('f-box');
+  fBox.className=fReject?'success-box':'warn-box';
+  fBox.innerHTML=(fReject?t("f_box_reject"):t("f_box_ok"))
+    .replace('{f}',fmt(d.Fstat,2)).replace('{p}',fmtP(d.Fpval));
+
+  // ── Paradoks banner ──
+  const varNames=['X₁','X₂','X₃'];
+  const nsVars=d.tPvals.slice(1).map((p,i)=>({p,name:varNames[i]})).filter(v=>v.p>=0.05);
+  const banner=document.getElementById('paradox-banner');
+  if(fReject && nsVars.length>0){
+    const nsNames=nsVars.map(v=>v.name).join(', ');
+    banner.innerHTML=t("paradox_msg")
+      .replace('{r2}',fmt(d.r2,3))
+      .replace('{fp}',fmtP(d.Fpval))
+      .replace('{ns}',nsNames);
+    banner.classList.add('show');
+  } else {
+    banner.classList.remove('show');
+  }
+
+  // ── Katsayı tablosu ──
+  const coefNames=[currentLang==='en'?'Intercept':'Sabit','X₁','X₂','X₃'];
+  const coefBody=document.getElementById('coef-body');
+  coefBody.innerHTML=d.beta.map((b,j)=>{
+    const p=d.tPvals[j];
+    const cls=sigClass(p);
+    return `<tr>
+      <td><strong>${coefNames[j]}</strong></td>
+      <td><strong>${fmt(b,4)}</strong></td>
+      <td>${fmt(d.se[j],4)}</td>
+      <td class="center">${fmt(d.tStats[j],3)}</td>
+      <td class="center">${fmtP(p)}</td>
+      <td><span class="coef-badge ${cls}">${sigStar(p)}</span></td>
+    </tr>`;
+  }).join('');
+
+  // t yorum
+  const nsCount=d.tPvals.slice(1).filter(p=>p>=0.05).length;
+  const tInterp=document.getElementById('t-interpretation');
+  if(nsCount===0){
+    tInterp.className='success-box';
+    tInterp.textContent=t("t_all_sig");
+  } else if(nsCount===d.tPvals.slice(1).length){
+    tInterp.className='danger-box';
+    tInterp.textContent=t("t_all_ns");
+  } else {
+    tInterp.className='warn-box';
+    tInterp.textContent=t("t_some_ns").replace('{ns}',nsCount);
+  }
+
+  // ── VIF ──
+  const vifLabels=['X₁','X₂','X₃'];
+  const vifMeters=document.getElementById('vif-meters');
+  vifMeters.innerHTML=d.vif.map((v,j)=>{
+    const pct=Math.min(100,Math.max(0,(v-1)/29*100));
+    const col=v<5?'var(--green)':v<10?'var(--amber)':'var(--red)';
+    return `<div class="vif-row">
+      <span class="vif-label">${vifLabels[j]}</span>
+      <div class="vif-track"><div class="vif-fill" style="width:${pct.toFixed(1)}%;background:${col}"></div></div>
+      <span class="vif-val" style="color:${col}">${v>100?'>100':fmt(v,2)}</span>
+    </div>`;
+  }).join('');
+
+  const maxVIF=Math.max(...d.vif);
+  const vifBody=document.getElementById('vif-body');
+  vifBody.innerHTML=d.vif.map((v,j)=>{
+    const verdict=v>=30?t("vif_extreme"):v>=10?t("vif_bad"):v>=5?t("vif_warn"):t("vif_ok");
+    const vcls=v>=10?'val-bad':v>=5?'val-warn':'val-ok';
+    return `<tr>
+      <td>${vifLabels[j]}</td>
+      <td class="${vcls}">${v>100?'>100':fmt(v,2)}</td>
+      <td>${fmt(d.r2aux[j],4)}</td>
+      <td class="${vcls}">${verdict}</td>
+    </tr>`;
+  }).join('');
+
+  const vifBox=document.getElementById('vif-box');
+  if(maxVIF>=30){
+    vifBox.className='danger-box';
+    vifBox.textContent=t("vif_summary_extreme");
+  } else if(maxVIF>=10){
+    vifBox.className='danger-box';
+    vifBox.textContent=t("vif_summary_bad");
+  } else if(maxVIF>=5){
+    vifBox.className='warn-box';
+    vifBox.textContent=t("vif_summary_warn");
+  } else {
+    vifBox.className='success-box';
+    vifBox.textContent=t("vif_summary_ok");
+  }
+
+  // ── Korelasyon matrisi ──
+  function corrColor(r){
+    const v=Math.abs(r);
+    if(v>0.8) return '#E24B4A';
+    if(v>0.5) return '#BA7517';
+    return '#3B6D11';
+  }
+  function corrBg(r){
+    const v=Math.abs(r);
+    if(v>0.8) return 'rgba(226,75,74,.12)';
+    if(v>0.5) return 'rgba(186,117,23,.12)';
+    return 'rgba(59,109,17,.08)';
+  }
+  const pairs=[
+    {l:'X₁–X₂',v:d.corr12},
+    {l:'X₁–X₃',v:d.corr13},
+    {l:'X₂–X₃',v:d.corr23}
+  ];
+  const maxCorr=Math.max(...pairs.map(p=>Math.abs(p.v)));
+  document.getElementById('corr-matrix').innerHTML=`
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+    ${pairs.map(p=>`
+      <div style="background:${corrBg(p.v)};border-radius:8px;padding:10px 12px;text-align:center;border:.5px solid ${corrColor(p.v)}80">
+        <div style="font-size:11px;color:var(--text2);margin-bottom:4px;">${p.l}</div>
+        <div style="font-size:18px;font-weight:700;color:${corrColor(p.v)}">${fmt(p.v,3)}</div>
+      </div>`).join('')}
+    </div>`;
+
+  const corrNote=document.getElementById('corr-note');
+  if(maxCorr>0.8){corrNote.className='danger-box';corrNote.textContent=t("corr_note_high");}
+  else if(maxCorr>0.5){corrNote.className='warn-box';corrNote.textContent=t("corr_note_mid");}
+  else{corrNote.className='success-box';corrNote.textContent=t("corr_note_low");}
+
+  // ── Grafikler ──
+  updateCharts();
+}
+
+function updateCharts(){
+  const d=simData;
+  if(chartYhat) chartYhat.destroy();
+  if(chartResid) chartResid.destroy();
+
+  const pts=d.yhat.map((yh,i)=>({x:yh,y:d.Y[i]}));
+  const mn=Math.min(...d.yhat,...d.Y);
+  const mx=Math.max(...d.yhat,...d.Y);
+
+  chartYhat=new Chart(document.getElementById('ch-yhat'),{
+    type:'scatter',
+    data:{datasets:[
+      {data:pts,backgroundColor:'rgba(24,95,165,0.35)',borderColor:'rgba(24,95,165,0.7)',pointRadius:3},
+      {type:'line',data:[{x:mn,y:mn},{x:mx,y:mx}],borderColor:'var(--red)',borderWidth:1.5,pointRadius:0,fill:false}
+    ]},
+    options:{responsive:true,plugins:{legend:{display:false}},
+      scales:{
+        x:{title:{display:true,text:t("axis_fitted"),color:'#5F5E5A'},ticks:{color:'#5F5E5A'},grid:{color:'rgba(0,0,0,.05)'}},
+        y:{title:{display:true,text:t("axis_y"),color:'#5F5E5A'},ticks:{color:'#5F5E5A'},grid:{color:'rgba(0,0,0,.05)'}}
+      }}
+  });
+
+  const resPts=d.yhat.map((yh,i)=>({x:yh,y:d.ehat[i]}));
+  chartResid=new Chart(document.getElementById('ch-resid'),{
+    type:'scatter',
+    data:{datasets:[
+      {data:resPts,backgroundColor:'rgba(226,75,74,0.35)',borderColor:'rgba(226,75,74,0.7)',pointRadius:3},
+      {type:'line',data:[{x:Math.min(...d.yhat),y:0},{x:Math.max(...d.yhat),y:0}],borderColor:'rgba(0,0,0,0.25)',borderWidth:1,borderDash:[4,4],pointRadius:0,fill:false}
+    ]},
+    options:{responsive:true,plugins:{legend:{display:false}},
+      scales:{
+        x:{title:{display:true,text:t("axis_fitted"),color:'#5F5E5A'},ticks:{color:'#5F5E5A'},grid:{color:'rgba(0,0,0,.05)'}},
+        y:{title:{display:true,text:t("axis_resid"),color:'#5F5E5A'},ticks:{color:'#5F5E5A'},grid:{color:'rgba(0,0,0,.05)'}}
+      }}
+  });
+}
+
+// ─── SCENARIO ────────────────────────────────────────────────────────────────
+function setScenario(s){
+  SCENARIO=s;
+  document.querySelectorAll('.sc-card').forEach((c,i)=>c.classList.toggle('active',i===s));
+  // Senaryo 1 ve 2 için ρ kaydırıcısını güncelle
+  const rhoSlider=document.getElementById('sl-rho');
+  if(s===0){ rhoSlider.value=0.20; rho12=0.20; document.getElementById('lbl-rho').textContent='0.20'; }
+  else if(s===1){ rhoSlider.value=0.92; rho12=0.92; document.getElementById('lbl-rho').textContent='0.92'; }
+  else { rhoSlider.value=0.99; rho12=0.99; document.getElementById('lbl-rho').textContent='0.99'; }
+  runAll();
+}
+
+// ─── SLIDERS ─────────────────────────────────────────────────────────────────
+function readSliders(){
+  N=+document.getElementById('sl-n').value;
+  b0=+document.getElementById('sl-b0').value;
+  b1=+document.getElementById('sl-b1').value;
+  b2=+document.getElementById('sl-b2').value;
+  b3=+document.getElementById('sl-b3').value;
+  sigma=+document.getElementById('sl-sig').value;
+  rho12=+document.getElementById('sl-rho').value;
+  document.getElementById('lbl-n').textContent=N;
+  document.getElementById('lbl-b0').textContent=b0.toFixed(1);
+  document.getElementById('lbl-b1').textContent=b1.toFixed(1);
+  document.getElementById('lbl-b2').textContent=b2.toFixed(1);
+  document.getElementById('lbl-b3').textContent=b3.toFixed(1);
+  document.getElementById('lbl-sig').textContent=sigma.toFixed(1);
+  document.getElementById('lbl-rho').textContent=rho12.toFixed(2);
+}
+
+function runAll(){
+  readSliders();
+  simulate();
+  renderUI();
+}
+function regenerate(){ runAll(); }
+
+['sl-n','sl-b0','sl-b1','sl-b2','sl-b3','sl-sig','sl-rho'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', runAll);
+});
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+runAll();
+applyLang();
+</script>
+</body>
+</html>
