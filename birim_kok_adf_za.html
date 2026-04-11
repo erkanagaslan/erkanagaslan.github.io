@@ -16,178 +16,91 @@
     --radius:10px;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
-  body{
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    background:var(--bg2);color:var(--text);
-    padding:16px;max-width:1300px;margin:0 auto;
-  }
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg2);color:var(--text);padding:16px;max-width:1300px;margin:0 auto;}
+  .topbar-lang{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;}
+  .lang-btn{padding:6px 14px;border-radius:999px;border:1px solid var(--border);background:var(--bg);color:var(--text2);font-size:12.5px;cursor:pointer;transition:all 0.2s;}
+  .lang-btn:hover{background:var(--blue-light);border-color:var(--blue);color:var(--blue);}
   h1{font-size:18px;font-weight:600;margin-bottom:4px;}
   .subtitle{font-size:13px;color:var(--text2);margin-bottom:16px;}
-
-  .page-layout{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:14px;
-    align-items:start;
-  }
+  .page-layout{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start;}
   @media(max-width:780px){.page-layout{grid-template-columns:1fr;}}
   .col-right{position:sticky;top:12px;min-width:0;}
   @media(max-width:780px){.col-right{position:static;}}
-
-  .card{
-    background:var(--bg);border:0.5px solid var(--border);
-    border-radius:var(--radius);padding:14px 16px;margin-bottom:12px;
-  }
-  .sec{
-    font-size:12px;font-weight:600;color:var(--text2);
-    text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;
-  }
-
-  /* SLIDERS */
+  .card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:12px;}
+  .sec{font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;}
   .sr{display:flex;align-items:center;gap:10px;margin-bottom:9px;}
   .sl{font-size:13px;color:var(--text2);min-width:110px;}
-  input[type=range]{
-    flex:1;height:4px;accent-color:var(--blue);
-    -webkit-appearance:none;appearance:none;
-    background:var(--border);border-radius:2px;outline:none;
-  }
-  input[type=range]::-webkit-slider-thumb{
-    -webkit-appearance:none;width:20px;height:20px;
-    background:var(--blue);border-radius:50%;cursor:pointer;
-  }
+  input[type=range]{flex:1;height:4px;accent-color:var(--blue);-webkit-appearance:none;appearance:none;background:var(--border);border-radius:2px;outline:none;}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;background:var(--blue);border-radius:50%;cursor:pointer;}
   .sv{font-size:13px;font-weight:600;min-width:42px;text-align:right;color:var(--text);}
-
-  /* TOGGLE BUTTONS */
   .toggle-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
   .toggle-lbl{font-size:13px;color:var(--text2);min-width:110px;}
   .tog-opts{display:flex;gap:6px;flex-wrap:wrap;}
-  .tog-btn{
-    padding:4px 10px;font-size:12px;border-radius:999px;
-    border:0.5px solid var(--border);cursor:pointer;
-    background:var(--bg2);color:var(--text2);transition:all .2s;
-  }
+  .tog-btn{padding:4px 10px;font-size:12px;border-radius:999px;border:0.5px solid var(--border);cursor:pointer;background:var(--bg2);color:var(--text2);transition:all .2s;}
   .tog-btn.active{background:var(--blue-light);color:var(--blue-dark);border-color:#85B7EB;}
-
-  /* DIVIDER */
   .divider{border:none;border-top:0.5px solid var(--border);margin:12px 0;}
-
-  /* BUTTON */
-  .btn{
-    display:block;width:100%;padding:11px;background:var(--blue);color:white;
-    border:none;border-radius:var(--radius);font-size:13px;font-weight:500;
-    cursor:pointer;margin-bottom:10px;
-  }
+  .btn{display:block;width:100%;padding:11px;background:var(--blue);color:white;border:none;border-radius:var(--radius);font-size:13px;font-weight:500;cursor:pointer;margin-bottom:10px;}
   .btn:active{opacity:.85;}
-
-  /* METRIC GRID */
   .metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
   .metric{background:var(--bg2);border-radius:8px;padding:9px 12px;text-align:center;}
   .metric-lbl{font-size:11px;color:var(--text2);margin-bottom:2px;}
   .metric-val{font-size:18px;font-weight:600;color:var(--text);}
-
-  /* RESULT PILL */
-  .result-pill{
-    display:inline-flex;align-items:center;
-    padding:5px 12px;border-radius:999px;
-    font-size:12px;font-weight:700;border:1px solid;
-    transition:all .3s;margin-bottom:8px;
-  }
+  .result-pill{display:inline-flex;align-items:center;padding:5px 12px;border-radius:999px;font-size:12px;font-weight:700;border:1px solid;transition:all .3s;margin-bottom:8px;}
   .pill-red{background:var(--red-light);border-color:#F09595;color:var(--red-dark);}
   .pill-grn{background:var(--green-light);border-color:#C0DD97;color:var(--green-dark);}
-
-  /* BAR */
   .bar-wrap{height:5px;background:rgba(0,0,0,.07);border-radius:3px;overflow:hidden;margin:4px 0 10px;}
   .bar{height:100%;border-radius:3px;transition:width .4s,background .4s;}
-
-  /* TEST ROWS */
   .test-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap;}
   .test-lbl{font-size:12px;color:var(--text2);min-width:80px;}
   .test-val{font-size:14px;font-weight:600;}
-
-  /* INFO BOXES */
-  .info-box{
-    border-left:3px solid var(--blue);border-radius:0 var(--radius) var(--radius) 0;
-    background:var(--blue-light);color:var(--blue-dark);
-    padding:10px 12px;font-size:12px;line-height:1.6;margin-top:8px;
-  }
-  .za-box{
-    border-left:3px solid var(--amber);border-radius:0 var(--radius) var(--radius) 0;
-    background:var(--amber-light);color:var(--amber-dark);
-    padding:10px 12px;font-size:12px;line-height:1.6;margin-top:8px;
-  }
-  .note-box{
-    border-left:3px solid var(--text2);border-radius:0 var(--radius) var(--radius) 0;
-    background:var(--bg2);color:var(--text2);
-    padding:8px 12px;font-size:12px;line-height:1.6;margin-top:6px;
-  }
-
-  /* CHART LEGEND */
+  .info-box{border-left:3px solid var(--blue);border-radius:0 var(--radius) var(--radius) 0;background:var(--blue-light);color:var(--blue-dark);padding:10px 12px;font-size:12px;line-height:1.6;margin-top:8px;}
+  .za-box{border-left:3px solid var(--amber);border-radius:0 var(--radius) var(--radius) 0;background:var(--amber-light);color:var(--amber-dark);padding:10px 12px;font-size:12px;line-height:1.6;margin-top:8px;}
+  .note-box{border-left:3px solid var(--text2);border-radius:0 var(--radius) var(--radius) 0;background:var(--bg2);color:var(--text2);padding:8px 12px;font-size:12px;line-height:1.6;margin-top:6px;}
   .legend{display:flex;gap:14px;font-size:11px;color:var(--text2);margin-top:6px;flex-wrap:wrap;}
   .leg-item{display:flex;align-items:center;gap:5px;}
   .leg-line{width:16px;height:2px;display:inline-block;}
   .leg-dash{width:16px;height:0;display:inline-block;border-top:2px dashed var(--amber);}
-
-  /* DISABLED ROWS */
   .dim{opacity:.4;pointer-events:none;}
-
-  /* BİPOLAR SLIDER — ortalı iz ve işaretli değer */
   .sv-pos{color:var(--green);font-weight:600;}
   .sv-neg{color:var(--red);font-weight:600;}
   .sv-zero{color:var(--text2);}
-  /* BİPOLAR KAYDIRICI — sıfır işareti */
   .bi-wrap{position:relative;margin-bottom:10px;}
   .bi-track{display:flex;align-items:center;gap:10px;}
   .bi-track .sl{font-size:13px;color:var(--text2);min-width:110px;flex:0 0 auto;}
   .bi-track input[type=range]{flex:1;}
   .bi-track .sv{font-size:13px;font-weight:600;min-width:42px;text-align:right;}
-  .zero-bar{
-    position:relative;
-    margin-left:120px; /* sl genişliği + gap */
-    margin-right:52px; /* sv genişliği + gap */
-    height:14px;
-    margin-top:1px;
-    margin-bottom:4px;
-  }
-  .zero-line{
-    position:absolute;
-    top:0;bottom:0;width:1px;
-    background:rgba(0,0,0,0.18);
-  }
-  .zero-lbl{
-    position:absolute;
-    top:0;
-    transform:translateX(-50%);
-    font-size:9px;color:var(--text2);
-    white-space:nowrap;letter-spacing:.3px;
-  }
-  .zero-end{
-    position:absolute;top:0;
-    font-size:9px;color:var(--text2);
-    white-space:nowrap;
-  }
+  .zero-bar{position:relative;margin-left:120px;margin-right:52px;height:14px;margin-top:1px;margin-bottom:4px;}
+  .zero-line{position:absolute;top:0;bottom:0;width:1px;background:rgba(0,0,0,0.18);}
+  .zero-lbl{position:absolute;top:0;transform:translateX(-50%);font-size:9px;color:var(--text2);white-space:nowrap;letter-spacing:.3px;}
+  .zero-end{position:absolute;top:0;font-size:9px;color:var(--text2);white-space:nowrap;}
 </style>
 </head>
 <body>
 
-<h1>Etkileşimli Birim Kök Simülatörü: ADF ve Zivot-Andrews Testleri</h1>
-<p class="subtitle">Doç. Dr. Erkan Ağaslan — Kütahya Dumlupınar Üniversitesi</p>
+<div class="topbar-lang">
+  <div>
+    <h1 data-i18n="page_title">Etkileşimli Birim Kök Simülatörü: ADF ve Zivot-Andrews Testleri</h1>
+    <p class="subtitle" data-i18n="page_subtitle">Doç. Dr. Erkan Ağaslan — Kütahya Dumlupınar Üniversitesi</p>
+  </div>
+  <button class="lang-btn" id="langBtn">TR/EN</button>
+</div>
 
 <div class="page-layout">
 
 <!-- ====== SOL PANEL ====== -->
 <div class="col-left">
 <div class="card">
-  <div class="sec">Seri parametreleri</div>
+  <div class="sec" data-i18n="sec_params">Seri parametreleri</div>
 
   <div class="sr">
-    <span class="sl">Gözlem sayısı n</span>
+    <span class="sl" data-i18n="sl_n">Gözlem sayısı n</span>
     <input type="range" id="sl-n" min="50" max="300" step="10" value="120">
     <span class="sv" id="lbl-n">120</span>
   </div>
 
   <div class="bi-wrap" id="biwrap-b0">
     <div class="bi-track">
-      <span class="sl">Kesişim b₀</span>
+      <span class="sl" data-i18n="sl_b0">Kesişim b₀</span>
       <input type="range" id="sl-b0" min="-10" max="10" step="0.5" value="0">
       <span class="sv sv-zero" id="lbl-b0">0.0</span>
     </div>
@@ -200,29 +113,28 @@
   </div>
 
   <div class="sr sr-bi">
-    <span class="sl">Trend β</span>
+    <span class="sl" data-i18n="sl_trend">Trend β</span>
     <input type="range" id="sl-tr" min="-0.2" max="0.2" step="0.005" value="0.01">
     <span class="sv sv-pos" id="lbl-tr">+0.010</span>
   </div>
-  <div class="zero-tick">← eksi &nbsp;|&nbsp; sıfır &nbsp;|&nbsp; artı →</div>
   <div class="sr">
-    <span class="sl">Gürültü σ</span>
+    <span class="sl" data-i18n="sl_sig">Gürültü σ</span>
     <input type="range" id="sl-sig" min="0.5" max="5" step="0.1" value="1.5">
     <span class="sv" id="lbl-sig">1.5</span>
   </div>
   <hr class="divider">
-  <div class="sec">ADF test modeli</div>
 
+  <div class="sec" data-i18n="sec_adf_model">ADF test modeli</div>
   <div class="toggle-row">
-    <span class="toggle-lbl">Determinizm</span>
+    <span class="toggle-lbl" data-i18n="lbl_determinism">Determinizm</span>
     <div class="tog-opts" id="adf-model">
-      <button class="tog-btn" data-v="none">Saf</button>
-      <button class="tog-btn active" data-v="drift">Sabitli</button>
-      <button class="tog-btn" data-v="trend">Sabitli + trendli</button>
+      <button class="tog-btn" data-v="none" data-i18n="adf_none">Saf</button>
+      <button class="tog-btn active" data-v="drift" data-i18n="adf_drift">Sabitli</button>
+      <button class="tog-btn" data-v="trend" data-i18n="adf_trend">Sabitli + trendli</button>
     </div>
   </div>
   <div class="toggle-row">
-    <span class="toggle-lbl">Gecikme sayısı p</span>
+    <span class="toggle-lbl" data-i18n="lbl_lag">Gecikme sayısı p</span>
     <div class="tog-opts" id="adf-lag">
       <button class="tog-btn active" data-v="0">0</button>
       <button class="tog-btn" data-v="1">1</button>
@@ -232,41 +144,37 @@
   </div>
 
   <hr class="divider">
-  <div class="sec">Yapısal kırılma</div>
-
+  <div class="sec" data-i18n="sec_break">Yapısal kırılma</div>
   <div class="toggle-row">
-    <span class="toggle-lbl">Kırılma türü</span>
+    <span class="toggle-lbl" data-i18n="lbl_break_type">Kırılma türü</span>
     <div class="tog-opts" id="brk-type">
-      <button class="tog-btn active" data-v="none">Yok</button>
-      <button class="tog-btn" data-v="level">Sabit</button>
-      <button class="tog-btn" data-v="slope">Eğim</button>
-      <button class="tog-btn" data-v="both">Her ikisi</button>
+      <button class="tog-btn active" data-v="none" data-i18n="brk_none">Yok</button>
+      <button class="tog-btn" data-v="level" data-i18n="brk_level">Sabit</button>
+      <button class="tog-btn" data-v="slope" data-i18n="brk_slope">Eğim</button>
+      <button class="tog-btn" data-v="both" data-i18n="brk_both">Her ikisi</button>
     </div>
   </div>
 
   <div class="sr dim" id="brk-point-row">
-    <span class="sl">Kırılma noktası</span>
+    <span class="sl" data-i18n="sl_brk_pos">Kırılma noktası</span>
     <input type="range" id="sl-brk" min="0.15" max="0.85" step="0.01" value="0.5">
     <span class="sv" id="lbl-brk">%50</span>
   </div>
   <div class="sr dim" id="brk-level-row">
-    <span class="sl">Seviye sıçraması</span>
+    <span class="sl" data-i18n="sl_brk_lvl">Seviye sıçraması</span>
     <input type="range" id="sl-blv" min="-8" max="8" step="0.5" value="4">
     <span class="sv" id="lbl-blv">4.0</span>
   </div>
   <div class="sr dim" id="brk-slope-row">
-    <span class="sl">Eğim değişimi</span>
+    <span class="sl" data-i18n="sl_brk_slp">Eğim değişimi</span>
     <input type="range" id="sl-bsl" min="-0.1" max="0.1" step="0.005" value="0.03">
     <span class="sv" id="lbl-bsl">0.030</span>
   </div>
 
-  <button class="btn" onclick="regenerate()">↺ Yeni veri üret</button>
+  <button class="btn" onclick="regenerate()" data-i18n="btn_regen">↺ Yeni veri üret</button>
 
-  <div class="note-box">
-    Model (R mantığı): yₜ = b₀ + t·β + εₜ + kırılma,  εₜ ~ iid N(0, σ²).
-    b₀ tüm seriyi yukarı/aşağı kaydırır. β ≠ 0 → deterministik doğrusal trend.
-    Kırılma: seviye (k — anlık sıçrama) veya eğim (kırılma sonrası ek eğim).
-    Bu seri yapısı gereği I(0) — ADF bunu doğrulamalı.
+  <div class="note-box" data-i18n="note_model">
+    Model (R mantığı): yₜ = b₀ + t·β + εₜ + kırılma, εₜ ~ iid N(0, σ²). b₀ tüm seriyi yukarı/aşağı kaydırır. β ≠ 0 → deterministik doğrusal trend. Kırılma: seviye (k — anlık sıçrama) veya eğim (kırılma sonrası ek eğim). Bu seri yapısı gereği I(0) — ADF bunu doğrulamalı.
   </div>
 </div>
 </div>
@@ -275,85 +183,273 @@
 <div class="col-right">
 
 <div class="card">
-  <div class="sec">I(1) seri — seviye ve 1. fark</div>
+  <div class="sec" data-i18n="sec_series_chart">I(1) seri — seviye ve 1. fark</div>
   <div style="position:relative;height:160px;"><canvas id="chart-series"></canvas></div>
   <div style="margin-top:8px;position:relative;height:95px;"><canvas id="chart-diff"></canvas></div>
   <div class="legend">
-    <div class="leg-item"><div class="leg-line" style="background:#185FA5;"></div>Seviye I(1)</div>
-    <div class="leg-item"><div class="leg-line" style="background:#3B6D11;"></div>1. fark I(0)</div>
-    <div class="leg-item"><div class="leg-dash"></div>Kırılma noktası</div>
+    <div class="leg-item"><div class="leg-line" style="background:#185FA5;"></div><span data-i18n="leg_level">Seviye I(1)</span></div>
+    <div class="leg-item"><div class="leg-line" style="background:#3B6D11;"></div><span data-i18n="leg_diff">1. fark I(0)</span></div>
+    <div class="leg-item"><div class="leg-dash"></div><span data-i18n="leg_break">Kırılma noktası</span></div>
   </div>
 </div>
 
 <div class="card">
-  <div class="sec">ADF test sonuçları</div>
+  <div class="sec" data-i18n="sec_adf_results">ADF test sonuçları</div>
   <div class="metric-grid">
-    <div class="metric"><div class="metric-lbl">ADF t-istatistiği</div><div class="metric-val" id="adf-tstat">—</div></div>
-    <div class="metric"><div class="metric-lbl">Kritik değer %5</div><div class="metric-val" id="adf-cv5">—</div></div>
-    <div class="metric"><div class="metric-lbl">Kritik değer %1</div><div class="metric-val" id="adf-cv1">—</div></div>
-    <div class="metric"><div class="metric-lbl">Kritik değer %10</div><div class="metric-val" id="adf-cv10">—</div></div>
+    <div class="metric"><div class="metric-lbl" data-i18n="lbl_adf_tstat">ADF t-istatistiği</div><div class="metric-val" id="adf-tstat">—</div></div>
+    <div class="metric"><div class="metric-lbl" data-i18n="lbl_cv5">Kritik değer %5</div><div class="metric-val" id="adf-cv5">—</div></div>
+    <div class="metric"><div class="metric-lbl" data-i18n="lbl_cv1">Kritik değer %1</div><div class="metric-val" id="adf-cv1">—</div></div>
+    <div class="metric"><div class="metric-lbl" data-i18n="lbl_cv10">Kritik değer %10</div><div class="metric-val" id="adf-cv10">—</div></div>
   </div>
   <div class="test-row">
-    <span class="test-lbl">Model</span>
+    <span class="test-lbl" data-i18n="lbl_model">Model</span>
     <span class="test-val" id="adf-model-lbl" style="font-size:13px;">—</span>
   </div>
   <div class="test-row">
-    <span class="test-lbl">Gecikme p</span>
+    <span class="test-lbl" data-i18n="lbl_lag_p">Gecikme p</span>
     <span class="test-val" id="adf-lag-lbl">—</span>
-    <span style="font-size:12px;color:var(--text2);">/ kullanılan gözlem:</span>
+    <span style="font-size:12px;color:var(--text2);" data-i18n="lbl_nobs_used">/ kullanılan gözlem:</span>
     <span class="test-val" id="adf-nused">—</span>
   </div>
 
   <div style="border-top:0.5px solid var(--border);margin:10px 0 8px;"></div>
-  <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:7px;">Regresyon katsayıları</div>
+  <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:7px;" data-i18n="lbl_reg_coefs">Regresyon katsayıları</div>
 
   <div class="test-row">
-    <span class="test-lbl" style="min-width:90px;">γ (birim kök)</span>
+    <span class="test-lbl" style="min-width:90px;" data-i18n="lbl_gamma">γ (birim kök)</span>
     <span class="test-val" id="adf-tstat-lbl" style="min-width:60px;">—</span>
     <span style="font-size:11px;color:var(--text2);">t =</span>
     <span class="test-val" id="adf-tstat-val">—</span>
   </div>
   <div class="test-row" id="row-const" style="display:none;">
-    <span class="test-lbl" style="min-width:90px;">c (sabit)</span>
+    <span class="test-lbl" style="min-width:90px;" data-i18n="lbl_const">c (sabit)</span>
     <span class="test-val" id="adf-const-lbl" style="min-width:60px;">—</span>
     <span style="font-size:11px;color:var(--text2);">t =</span>
     <span class="test-val" id="adf-const-t">—</span>
     <span id="adf-const-sig" style="font-size:11px;margin-left:4px;"></span>
   </div>
   <div class="test-row" id="row-trend" style="display:none;">
-    <span class="test-lbl" style="min-width:90px;">β (trend)</span>
+    <span class="test-lbl" style="min-width:90px;" data-i18n="lbl_beta_trend">β (trend)</span>
     <span class="test-val" id="adf-trend-lbl" style="min-width:60px;">—</span>
     <span style="font-size:11px;color:var(--text2);">t =</span>
     <span class="test-val" id="adf-trend-t">—</span>
     <span id="adf-trend-sig" style="font-size:11px;margin-left:4px;"></span>
   </div>
 
-  <div style="font-size:12px;color:var(--text2);margin:8px 0 3px;">|t(γ)| / |kritik %5| oranı</div>
+  <div style="font-size:12px;color:var(--text2);margin:8px 0 3px;" data-i18n="lbl_power_bar">|t(γ)| / |kritik %5| oranı</div>
   <div class="bar-wrap"><div class="bar" id="adf-bar" style="width:0%;"></div></div>
   <div id="adf-pill-wrap"></div>
   <div class="info-box" id="adf-info">—</div>
 </div>
 
 <div class="card">
-  <div class="sec">Zivot-Andrews kırılmalı birim kök testi</div>
-  <div style="font-size:12px;color:var(--text2);margin-bottom:8px;">
+  <div class="sec" data-i18n="sec_za">Zivot-Andrews kırılmalı birim kök testi</div>
+  <div style="font-size:12px;color:var(--text2);margin-bottom:8px;" data-i18n="za_desc">
     Tüm olası kırılma noktaları taranır — en düşük t-istatistiğini veren kırılma seçilir (Model C: sabit + trend + kırılma).
   </div>
   <div class="metric-grid">
-    <div class="metric"><div class="metric-lbl">ZA t-istatistiği (min)</div><div class="metric-val" id="za-tstat">—</div></div>
-    <div class="metric"><div class="metric-lbl">Bulunan kırılma</div><div class="metric-val" id="za-break" style="font-size:14px;">—</div></div>
-    <div class="metric"><div class="metric-lbl">Kritik değer %5</div><div class="metric-val" id="za-cv5">—</div></div>
-    <div class="metric"><div class="metric-lbl">Karar</div><div class="metric-val" id="za-dec" style="font-size:13px;">—</div></div>
+    <div class="metric"><div class="metric-lbl" data-i18n="lbl_za_tstat">ZA t-istatistiği (min)</div><div class="metric-val" id="za-tstat">—</div></div>
+    <div class="metric"><div class="metric-lbl" data-i18n="lbl_za_break">Bulunan kırılma</div><div class="metric-val" id="za-break" style="font-size:14px;">—</div></div>
+    <div class="metric"><div class="metric-lbl" data-i18n="lbl_za_cv5">Kritik değer %5</div><div class="metric-val" id="za-cv5">—</div></div>
+    <div class="metric"><div class="metric-lbl" data-i18n="lbl_za_decision">Karar</div><div class="metric-val" id="za-dec" style="font-size:13px;">—</div></div>
   </div>
   <div id="za-pill-wrap"></div>
   <div class="za-box" id="za-info">—</div>
 </div>
 
-</div><!-- col-right -->
-</div><!-- page-layout -->
+</div>
+</div>
 
 <script>
-/* ========== STATE ========== */
+// ─── i18n ────────────────────────────────────────────────────────────────────
+const dict = {
+  tr: {
+    page_title:    "Etkileşimli Birim Kök Simülatörü: ADF ve Zivot-Andrews Testleri",
+    page_subtitle: "Doç. Dr. Erkan Ağaslan — Kütahya Dumlupınar Üniversitesi",
+    sec_params:    "Seri parametreleri",
+    sl_n:          "Gözlem sayısı n",
+    sl_b0:         "Kesişim b₀",
+    sl_trend:      "Trend β",
+    sl_sig:        "Gürültü σ",
+    sec_adf_model: "ADF test modeli",
+    lbl_determinism:"Determinizm",
+    adf_none:      "Saf",
+    adf_drift:     "Sabitli",
+    adf_trend:     "Sabitli + trendli",
+    lbl_lag:       "Gecikme sayısı p",
+    sec_break:     "Yapısal kırılma",
+    lbl_break_type:"Kırılma türü",
+    brk_none:      "Yok",
+    brk_level:     "Sabit",
+    brk_slope:     "Eğim",
+    brk_both:      "Her ikisi",
+    sl_brk_pos:    "Kırılma noktası",
+    sl_brk_lvl:    "Seviye sıçraması",
+    sl_brk_slp:    "Eğim değişimi",
+    btn_regen:     "↺ Yeni veri üret",
+    note_model:    "Model (R mantığı): yₜ = b₀ + t·β + εₜ + kırılma, εₜ ~ iid N(0, σ²). b₀ tüm seriyi yukarı/aşağı kaydırır. β ≠ 0 → deterministik doğrusal trend. Kırılma: seviye (k — anlık sıçrama) veya eğim (kırılma sonrası ek eğim). Bu seri yapısı gereği I(0) — ADF bunu doğrulamalı.",
+    sec_series_chart:"I(1) seri — seviye ve 1. fark",
+    leg_level:     "Seviye I(1)",
+    leg_diff:      "1. fark I(0)",
+    leg_break:     "Kırılma noktası",
+    sec_adf_results:"ADF test sonuçları",
+    lbl_adf_tstat: "ADF t-istatistiği",
+    lbl_cv5:       "Kritik değer %5",
+    lbl_cv1:       "Kritik değer %1",
+    lbl_cv10:      "Kritik değer %10",
+    lbl_model:     "Model",
+    lbl_lag_p:     "Gecikme p",
+    lbl_nobs_used: "/ kullanılan gözlem:",
+    lbl_reg_coefs: "Regresyon katsayıları",
+    lbl_gamma:     "γ (birim kök)",
+    lbl_const:     "c (sabit)",
+    lbl_beta_trend:"β (trend)",
+    lbl_power_bar: "|t(γ)| / |kritik %5| oranı",
+    sec_za:        "Zivot-Andrews kırılmalı birim kök testi",
+    za_desc:       "Tüm olası kırılma noktaları taranır — en düşük t-istatistiğini veren kırılma seçilir (Model C: sabit + trend + kırılma).",
+    lbl_za_tstat:  "ZA t-istatistiği (min)",
+    lbl_za_break:  "Bulunan kırılma",
+    lbl_za_cv5:    "Kritik değer %5",
+    lbl_za_decision:"Karar",
+    // dynamic
+    m_none:        "Saf (determinizm yok)",
+    m_drift:       "Sabitli",
+    m_trend:       "Sabitli + deterministik trend",
+    sig_pct1:      "*** %1",
+    sig_pct5:      "** %5",
+    sig_pct10:     "* %10",
+    sig_insig:     "anlamsız",
+    adf_reject5:   "H₀ reddedildi — t = {t} < {cv} (%5 anlamlılık)",
+    adf_noreject:  "H₀ reddedilemedi — t = {t} > {cv} (%5 anlamlılık)",
+    adf_stationary1:"Seri %1 düzeyinde de durağan (I(0))",
+    adf_stationary5:"Seri %5 düzeyinde durağan (I(0))",
+    adf_unitroot:  "Seri birim kök içeriyor (I(1)), fark almak gerekir",
+    adf_trend_sig: " Trend katsayısı istatistiksel olarak anlamlı (%5).",
+    adf_trend_insig:" Trend katsayısı anlamsız — modelden çıkarılabilir.",
+    adf_insufficient:"Yeterli gözlem sayısı yok — n veya gecikmeyi ayarlayın.",
+    adf_info_fmt:  "ADF({model}, p={lag}): t(γ) = {t}. Kritik: %1 = {cv1}, %5 = {cv5}, %10 = {cv10}. Karar: {dec}.",
+    za_reject:     "H₀ reddedildi — t = {t} < {cv}",
+    za_noreject:   "H₀ reddedilemedi — t = {t} > {cv}",
+    za_stationary1:"Kırılma altında %1 düzeyinde de durağan",
+    za_stationary5:"Kırılma altında %5 düzeyinde durağan",
+    za_unitroot:   "Kırılma altında hâlâ birim kök var",
+    za_info_fmt:   "ZA Model C (sabit + trend + sabit/eğim kırılma): t_min = {t}, en güçlü kırılma {tb}. dönemde (%{pct}). Kritik: %1 = {cv1}, %5 = {cv5}, %10 = {cv10}. Karar: {dec}.",
+    za_insufficient:"ZA testi için yeterli gözlem yok.",
+    za_stationary: "Durağan",
+    za_has_ur:     "Birim kök",
+    brk_pct_fmt:   "%{v}",
+    t_at:          "t = {tb}  (%{pct})",
+  },
+  en: {
+    page_title:    "Interactive Unit Root Simulator: ADF and Zivot-Andrews Tests",
+    page_subtitle: "Assoc. Prof. Dr. Erkan Ağaslan — Kütahya Dumlupınar University",
+    sec_params:    "Series parameters",
+    sl_n:          "Observations n",
+    sl_b0:         "Intercept b₀",
+    sl_trend:      "Trend β",
+    sl_sig:        "Noise σ",
+    sec_adf_model: "ADF test model",
+    lbl_determinism:"Deterministics",
+    adf_none:      "None",
+    adf_drift:     "With constant",
+    adf_trend:     "Constant + trend",
+    lbl_lag:       "Lag order p",
+    sec_break:     "Structural break",
+    lbl_break_type:"Break type",
+    brk_none:      "None",
+    brk_level:     "Level",
+    brk_slope:     "Slope",
+    brk_both:      "Both",
+    sl_brk_pos:    "Break position",
+    sl_brk_lvl:    "Level shift",
+    sl_brk_slp:    "Slope change",
+    btn_regen:     "↺ Generate new data",
+    note_model:    "Model (R logic): yₜ = b₀ + t·β + εₜ + break, εₜ ~ iid N(0, σ²). b₀ shifts the entire series up/down. β ≠ 0 → deterministic linear trend. Break: level (k — instantaneous jump) or slope (additional slope after the break). This series is I(0) by construction — ADF should confirm this.",
+    sec_series_chart:"Series — level and 1st difference",
+    leg_level:     "Level I(1)",
+    leg_diff:      "1st difference I(0)",
+    leg_break:     "Break point",
+    sec_adf_results:"ADF test results",
+    lbl_adf_tstat: "ADF t-statistic",
+    lbl_cv5:       "Critical value 5%",
+    lbl_cv1:       "Critical value 1%",
+    lbl_cv10:      "Critical value 10%",
+    lbl_model:     "Model",
+    lbl_lag_p:     "Lag p",
+    lbl_nobs_used: "/ observations used:",
+    lbl_reg_coefs: "Regression coefficients",
+    lbl_gamma:     "γ (unit root)",
+    lbl_const:     "c (constant)",
+    lbl_beta_trend:"β (trend)",
+    lbl_power_bar: "|t(γ)| / |critical 5%| ratio",
+    sec_za:        "Zivot-Andrews unit root test with structural break",
+    za_desc:       "All possible break points are scanned — the break yielding the minimum t-statistic is selected (Model C: constant + trend + break).",
+    lbl_za_tstat:  "ZA t-statistic (min)",
+    lbl_za_break:  "Detected break",
+    lbl_za_cv5:    "Critical value 5%",
+    lbl_za_decision:"Decision",
+    // dynamic
+    m_none:        "None (no deterministics)",
+    m_drift:       "With constant",
+    m_trend:       "Constant + deterministic trend",
+    sig_pct1:      "*** 1%",
+    sig_pct5:      "** 5%",
+    sig_pct10:     "* 10%",
+    sig_insig:     "n.s.",
+    adf_reject5:   "Reject H₀ — t = {t} < {cv} (5% significance)",
+    adf_noreject:  "Fail to reject H₀ — t = {t} > {cv} (5% significance)",
+    adf_stationary1:"Series is stationary at the 1% level (I(0))",
+    adf_stationary5:"Series is stationary at the 5% level (I(0))",
+    adf_unitroot:  "Series contains a unit root (I(1)); differencing required",
+    adf_trend_sig: " Trend coefficient is statistically significant (5%).",
+    adf_trend_insig:" Trend coefficient is insignificant — can be dropped from the model.",
+    adf_insufficient:"Insufficient observations — adjust n or lag order.",
+    adf_info_fmt:  "ADF({model}, p={lag}): t(γ) = {t}. Critical: 1% = {cv1}, 5% = {cv5}, 10% = {cv10}. Decision: {dec}.",
+    za_reject:     "Reject H₀ — t = {t} < {cv}",
+    za_noreject:   "Fail to reject H₀ — t = {t} > {cv}",
+    za_stationary1:"Stationary at the 1% level under the break",
+    za_stationary5:"Stationary at the 5% level under the break",
+    za_unitroot:   "Unit root remains even under the break",
+    za_info_fmt:   "ZA Model C (constant + trend + level/slope break): t_min = {t}, strongest break at period {tb} ({pct}%). Critical: 1% = {cv1}, 5% = {cv5}, 10% = {cv10}. Decision: {dec}.",
+    za_insufficient:"Insufficient observations for the ZA test.",
+    za_stationary: "Stationary",
+    za_has_ur:     "Unit root",
+    brk_pct_fmt:   "{v}%",
+    t_at:          "t = {tb}  ({pct}%)",
+  }
+};
+
+let currentLang = localStorage.getItem("site_lang") || "tr";
+function t(key){ return (dict[currentLang]||dict.tr)[key] || key; }
+
+function applyLang(){
+  document.documentElement.lang = currentLang === "en" ? "en" : "tr";
+  document.title = currentLang === "en"
+    ? "Interactive Unit Root Simulator: ADF and Zivot-Andrews Tests"
+    : "Etkileşimli Birim Kök Simülatörü: ADF ve Zivot-Andrews Testleri";
+
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.getAttribute("data-i18n");
+    const val = t(key);
+    if(val !== undefined) el.innerHTML = val;
+  });
+
+  // Kaydırıcı etiketleri (innerHTML destekli)
+  ["sl_n","sl_b0","sl_trend","sl_sig","sl_brk_pos","sl_brk_lvl","sl_brk_slp"].forEach(k => {
+    // already handled by data-i18n above
+  });
+
+  // Zaten render çalıştıysa sonuçları yenile
+  if(series.length) runAll();
+}
+
+document.getElementById("langBtn").addEventListener("click", () => {
+  currentLang = currentLang === "tr" ? "en" : "tr";
+  localStorage.setItem("site_lang", currentLang);
+  applyLang();
+});
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
 let N=120, b0=0, trend=0, sig=1.5;
 let breakType='none', breakPos=0.5, breakLevel=4, breakSlope=0.03;
 let adfModel='drift', adfLag=0;
@@ -361,7 +457,7 @@ let series=[], diffs=[];
 let baseU=[];
 let chartS=null, chartD=null;
 
-/* ========== RANDOM ========== */
+// ─── RANDOM ──────────────────────────────────────────────────────────────────
 function randn(){
   const u1=Math.random()||1e-12, u2=Math.random();
   return Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2);
@@ -369,24 +465,23 @@ function randn(){
 function genBase(){ baseU=[]; for(let i=0;i<N+20;i++) baseU.push(randn()); }
 function regenerate(){ genBase(); runAll(); }
 
-/* ========== SERIES ========== */
-// R mantığı: yₜ = b0 + t·β + εₜ + k·1(t≥tb)  — trend-stationary, I(0)
+// ─── SERIES ──────────────────────────────────────────────────────────────────
 function buildSeries(){
   series=[]; diffs=[];
-  const tb = Math.floor(N * breakPos);
-  for(let t=0; t<N; t++){
-    const e = sig * baseU[t];
-    let lvlJump = 0, slpJump = 0;
-    if(t >= tb){
-      if(breakType==='level'||breakType==='both') lvlJump = breakLevel;
-      if(breakType==='slope'||breakType==='both') slpJump = breakSlope * (t - tb);
+  const tb=Math.floor(N*breakPos);
+  for(let i=0;i<N;i++){
+    const e=sig*baseU[i];
+    let lvlJump=0, slpJump=0;
+    if(i>=tb){
+      if(breakType==='level'||breakType==='both') lvlJump=breakLevel;
+      if(breakType==='slope'||breakType==='both') slpJump=breakSlope*(i-tb);
     }
-    series.push(b0 + t * trend + e + lvlJump + slpJump);
+    series.push(b0+i*trend+e+lvlJump+slpJump);
   }
-  for(let i=1; i<N; i++) diffs.push(series[i]-series[i-1]);
+  for(let i=1;i<N;i++) diffs.push(series[i]-series[i-1]);
 }
 
-/* ========== MATRIX UTILS ========== */
+// ─── MATRIX UTILS ────────────────────────────────────────────────────────────
 function transpose(M){ return M[0].map((_,j)=>M.map(r=>r[j])); }
 function matMul(A,B){
   const r=A.length,c=B[0].length,k=B.length;
@@ -429,8 +524,8 @@ function inv(A){
   return M.map(r=>r.slice(n));
 }
 
-/* ========== ADF TEST ========== */
-function adfTest(arr, model, lag){
+// ─── ADF TEST ────────────────────────────────────────────────────────────────
+function adfTest(arr,model,lag){
   const n=arr.length;
   const dy=[];
   for(let i=1;i<n;i++) dy.push(arr[i]-arr[i-1]);
@@ -473,11 +568,11 @@ function adfTest(arr, model, lag){
   const tTrend=(model==="trend")?tStats[2]:NaN;
   const bConst=(model==="drift"||model==="trend")?b[1]:NaN;
   const bTrend=(model==="trend")?b[2]:NaN;
-  return{t:tGamma, n:eff, tConst, tTrend, bConst, bTrend};
+  return{t:tGamma,n:eff,tConst,tTrend,bConst,bTrend};
 }
 
-/* ========== ZA TEST ========== */
-function zaTest(arr, lag){
+// ─── ZA TEST ─────────────────────────────────────────────────────────────────
+function zaTest(arr,lag){
   const n=arr.length;
   const dy=[];
   for(let i=1;i<n;i++) dy.push(arr[i]-arr[i-1]);
@@ -497,13 +592,13 @@ function zaTest(arr, lag){
     }
     const X=[];
     for(let i=0;i<eff;i++){
-      const t=i+lag;
+      const tt=i+lag;
       const row=[];
-      row.push(yL[i]);          // γ·yₜ₋₁
-      row.push(1);              // sabit
-      row.push(t+1);            // trend
-      row.push(t+1>=tb?1:0);   // DU (seviye kırılma)
-      row.push(t+1>=tb?(t+1-tb):0); // DT (eğim kırılma)
+      row.push(yL[i]);
+      row.push(1);
+      row.push(tt+1);
+      row.push(tt+1>=tb?1:0);
+      row.push(tt+1>=tb?(tt+1-tb):0);
       for(let k=0;k<lag;k++) row.push(dYL[i][k]);
       X.push(row);
     }
@@ -519,12 +614,12 @@ function zaTest(arr, lag){
     if(!invXtX) continue;
     const se=Math.sqrt(Math.max(0,s2*invXtX[0][0]));
     const tStat=se>0?b[0]/se:NaN;
-    if(!isNaN(tStat)&&tStat<best.t){ best={t:tStat,tb}; }
+    if(!isNaN(tStat)&&tStat<best.t) best={t:tStat,tb};
   }
   return best;
 }
 
-/* ========== CRITICAL VALUES ========== */
+// ─── CRITICAL VALUES ─────────────────────────────────────────────────────────
 const CV_ADF={
   none: {p1:-2.60,p5:-1.95,p10:-1.61},
   drift:{p1:-3.50,p5:-2.89,p10:-2.58},
@@ -532,40 +627,44 @@ const CV_ADF={
 };
 const CV_ZA={p1:-5.57,p5:-5.08,p10:-4.82};
 
-/* ========== UPDATE UI ========== */
+// ─── SIGNIFICANCE STARS ──────────────────────────────────────────────────────
+function sigStars(tv){
+  if(isNaN(tv)) return '';
+  const a=Math.abs(tv);
+  if(a>3.29) return `<span style="color:var(--green);font-weight:600;">${t("sig_pct1")}</span>`;
+  if(a>1.96) return `<span style="color:var(--green);">${t("sig_pct5")}</span>`;
+  if(a>1.645) return `<span style="color:var(--amber);">${t("sig_pct10")}</span>`;
+  return `<span style="color:var(--red);">${t("sig_insig")}</span>`;
+}
+
+// ─── MAIN UPDATE ─────────────────────────────────────────────────────────────
 function runAll(){
   buildSeries();
   updateCharts();
 
   // ADF
-  const {t,n,tConst,tTrend,bConst,bTrend}=adfTest(series,adfModel,adfLag);
+  const {tv,n,tConst,tTrend,bConst,bTrend} = (() => {
+    const r = adfTest(series,adfModel,adfLag);
+    return {tv:r.t, n:r.n, tConst:r.tConst, tTrend:r.tTrend, bConst:r.bConst, bTrend:r.bTrend};
+  })();
   const cv=CV_ADF[adfModel];
-  document.getElementById('adf-tstat').textContent=isNaN(t)?'—':t.toFixed(3);
+  document.getElementById('adf-tstat').textContent=isNaN(tv)?'—':tv.toFixed(3);
   document.getElementById('adf-cv5').textContent=cv.p5.toFixed(2);
   document.getElementById('adf-cv1').textContent=cv.p1.toFixed(2);
   document.getElementById('adf-cv10').textContent=cv.p10.toFixed(2);
   document.getElementById('adf-nused').textContent=n;
   document.getElementById('adf-lag-lbl').textContent=adfLag;
-  const mLbls={none:'Saf (determinizm yok)',drift:'Sabitli',trend:'Sabitli + deterministik trend'};
+
+  const mLbls={none:t("m_none"),drift:t("m_drift"),trend:t("m_trend")};
   document.getElementById('adf-model-lbl').textContent=mLbls[adfModel];
 
-  // Katsayı satırları
-  document.getElementById('adf-tstat-lbl').textContent=isNaN(t)?'—':t.toFixed(4);
-  document.getElementById('adf-tstat-val').textContent=isNaN(t)?'—':t.toFixed(4);
-
-  function sigStars(tv){
-    if(isNaN(tv)) return '';
-    const a=Math.abs(tv);
-    if(a>3.29) return '<span style="color:var(--green);font-weight:600;">*** %1</span>';
-    if(a>1.96) return '<span style="color:var(--green);">** %5</span>';
-    if(a>1.645) return '<span style="color:var(--amber);">* %10</span>';
-    return '<span style="color:var(--red);">anlamsız</span>';
-  }
+  document.getElementById('adf-tstat-lbl').textContent=isNaN(tv)?'—':tv.toFixed(4);
+  document.getElementById('adf-tstat-val').textContent=isNaN(tv)?'—':tv.toFixed(4);
 
   const showConst = adfModel==='drift'||adfModel==='trend';
   const showTrend = adfModel==='trend';
-  document.getElementById('row-const').style.display = showConst?'flex':'none';
-  document.getElementById('row-trend').style.display = showTrend?'flex':'none';
+  document.getElementById('row-const').style.display=showConst?'flex':'none';
+  document.getElementById('row-trend').style.display=showTrend?'flex':'none';
 
   if(showConst){
     document.getElementById('adf-const-lbl').textContent=isNaN(bConst)?'—':bConst.toFixed(4);
@@ -578,66 +677,84 @@ function runAll(){
     document.getElementById('adf-trend-sig').innerHTML=sigStars(tTrend);
   }
 
-  if(!isNaN(t)){
-    const reject5=t<cv.p5, reject1=t<cv.p1;
+  if(!isNaN(tv)){
+    const reject5=tv<cv.p5, reject1=tv<cv.p1;
     const pillCls=reject5?'pill-grn':'pill-red';
-    const pillTxt=reject5?`H₀ reddedildi — t = ${t.toFixed(3)} < ${cv.p5} (%5 anlamlılık)`
-                         :`H₀ reddedilemedi — t = ${t.toFixed(3)} > ${cv.p5} (%5 anlamlılık)`;
+    const pillTmpl=reject5?t("adf_reject5"):t("adf_noreject");
+    const pillTxt=pillTmpl.replace('{t}',tv.toFixed(3)).replace('{cv}',cv.p5);
     document.getElementById('adf-pill-wrap').innerHTML=`<span class="result-pill ${pillCls}">${pillTxt}</span>`;
-    const barPct=Math.min(180,Math.abs(t)/Math.abs(cv.p5)*100);
+
+    const barPct=Math.min(180,Math.abs(tv)/Math.abs(cv.p5)*100);
     const bar=document.getElementById('adf-bar');
     bar.style.width=barPct.toFixed(1)+'%';
     bar.style.background=reject5?'#3B6D11':'#E24B4A';
+
     const trendNotu=showTrend&&!isNaN(tTrend)
-      ? (Math.abs(tTrend)>1.96?' Trend katsayısı istatistiksel olarak anlamlı (%5).':' Trend katsayısı anlamsız — modelden çıkarılabilir.')
-      : '';
-    const karar=reject1?'Seri %1 düzeyinde de durağan (I(0))':
-                 reject5?'Seri %5 düzeyinde durağan (I(0))':
-                         'Seri birim kök içeriyor (I(1)), fark almak gerekir';
-    document.getElementById('adf-info').textContent=
-      `ADF(${mLbls[adfModel]}, p=${adfLag}): t(γ) = ${t.toFixed(3)}. `+
-      `Kritik: %1 = ${cv.p1}, %5 = ${cv.p5}, %10 = ${cv.p10}. `+
-      `Karar: ${karar}.${trendNotu}`;
+      ?(Math.abs(tTrend)>1.96?t("adf_trend_sig"):t("adf_trend_insig")):'';
+    const dec=reject1?t("adf_stationary1"):reject5?t("adf_stationary5"):t("adf_unitroot");
+
+    const info=t("adf_info_fmt")
+      .replace('{model}',mLbls[adfModel])
+      .replace('{lag}',adfLag)
+      .replace('{t}',tv.toFixed(3))
+      .replace('{cv1}',cv.p1)
+      .replace('{cv5}',cv.p5)
+      .replace('{cv10}',cv.p10)
+      .replace('{dec}',dec)
+      + trendNotu;
+    document.getElementById('adf-info').textContent=info;
   } else {
     document.getElementById('adf-pill-wrap').innerHTML='';
-    document.getElementById('adf-info').textContent='Yeterli gözlem sayısı yok — n veya gecikmeyi ayarlayın.';
+    document.getElementById('adf-info').textContent=t("adf_insufficient");
   }
 
   // ZA
-  const za=zaTest(series, Math.min(adfLag,2));
+  const za=zaTest(series,Math.min(adfLag,2));
   document.getElementById('za-tstat').textContent=isNaN(za.t)?'—':za.t.toFixed(3);
-  document.getElementById('za-break').textContent=isNaN(za.tb)?'—':`t = ${za.tb}  (%${Math.round(za.tb/N*100)})`;
+
+  if(!isNaN(za.tb)){
+    const pct=Math.round(za.tb/N*100);
+    const brkLbl=currentLang==='en'
+      ? `t = ${za.tb}  (${pct}%)`
+      : `t = ${za.tb}  (%${pct})`;
+    document.getElementById('za-break').textContent=brkLbl;
+  } else {
+    document.getElementById('za-break').textContent='—';
+  }
+
   document.getElementById('za-cv5').textContent=CV_ZA.p5.toFixed(2);
   const zaReject=!isNaN(za.t)&&za.t<CV_ZA.p5;
-  document.getElementById('za-dec').textContent=isNaN(za.t)?'—':zaReject?'Durağan':'Birim kök';
+  document.getElementById('za-dec').textContent=isNaN(za.t)?'—':zaReject?t("za_stationary"):t("za_has_ur");
 
   if(!isNaN(za.t)){
     const zaRej1=za.t<CV_ZA.p1;
     const pillCls=zaReject?'pill-grn':'pill-red';
-    const pillTxt=zaReject?`ZA H₀ reddedildi — t = ${za.t.toFixed(3)} < ${CV_ZA.p5}`
-                          :`ZA H₀ reddedilemedi — t = ${za.t.toFixed(3)} > ${CV_ZA.p5}`;
+    const pillTmpl=zaReject?t("za_reject"):t("za_noreject");
+    const pillTxt=pillTmpl.replace('{t}',za.t.toFixed(3)).replace('{cv}',CV_ZA.p5);
     document.getElementById('za-pill-wrap').innerHTML=`<span class="result-pill ${pillCls}">${pillTxt}</span>`;
-    const karar=zaRej1?'Kırılma altında %1 düzeyinde de durağan':
-                zaReject?'Kırılma altında %5 düzeyinde durağan':
-                         'Kırılma altında hâlâ birim kök var';
-    document.getElementById('za-info').textContent=
-      `ZA Model C (sabit + trend + sabit/eğim kırılma): t_min = ${za.t.toFixed(3)}, `+
-      `en güçlü kırılma ${za.tb}. dönemde (%${Math.round(za.tb/N*100)}). `+
-      `Kritik: %1 = ${CV_ZA.p1}, %5 = ${CV_ZA.p5}, %10 = ${CV_ZA.p10}. `+
-      `Karar: ${karar}.`;
+
+    const dec=zaRej1?t("za_stationary1"):zaReject?t("za_stationary5"):t("za_unitroot");
+    const pct=Math.round(za.tb/N*100);
+    const info=t("za_info_fmt")
+      .replace('{t}',za.t.toFixed(3))
+      .replace('{tb}',za.tb)
+      .replace('{pct}',pct)
+      .replace('{cv1}',CV_ZA.p1)
+      .replace('{cv5}',CV_ZA.p5)
+      .replace('{cv10}',CV_ZA.p10)
+      .replace('{dec}',dec);
+    document.getElementById('za-info').textContent=info;
   } else {
     document.getElementById('za-pill-wrap').innerHTML='';
-    document.getElementById('za-info').textContent='ZA testi için yeterli gözlem yok.';
+    document.getElementById('za-info').textContent=t("za_insufficient");
   }
 }
 
-/* ========== CHARTS ========== */
+// ─── CHARTS ──────────────────────────────────────────────────────────────────
 function updateCharts(){
   const labels=series.map((_,i)=>i+1);
   const diffLabels=diffs.map((_,i)=>i+2);
   const tb=Math.floor(N*breakPos);
-
-  // Kırılma çizgisi için annotation-benzeri dikey veri (null trick)
   const brkS=series.map((_,i)=>i===tb?series[tb]:null);
 
   if(chartS){
@@ -649,27 +766,16 @@ function updateCharts(){
     const ctx=document.getElementById('chart-series').getContext('2d');
     chartS=new Chart(ctx,{
       type:'line',
-      data:{
-        labels,
-        datasets:[
-          {data:[...series],borderColor:'#185FA5',borderWidth:1.5,
-           pointRadius:0,tension:0.15,fill:false,spanGaps:true},
-          {data:brkS,borderColor:'rgba(186,117,23,0.7)',borderWidth:1.5,
-           borderDash:[4,4],pointRadius:6,pointBackgroundColor:'rgba(186,117,23,0.7)',
-           fill:false,spanGaps:false,label:'kırılma'}
-        ]
-      },
-      options:{
-        responsive:true,maintainAspectRatio:false,
-        animation:{duration:180},
-        plugins:{legend:{display:false},tooltip:{
-          callbacks:{label:(ctx)=>ctx.datasetIndex===0?`y = ${ctx.raw.toFixed(2)}`:null}
-        }},
+      data:{labels,datasets:[
+        {data:[...series],borderColor:'#185FA5',borderWidth:1.5,pointRadius:0,tension:0.15,fill:false,spanGaps:true},
+        {data:brkS,borderColor:'rgba(186,117,23,0.7)',borderWidth:1.5,borderDash:[4,4],pointRadius:6,pointBackgroundColor:'rgba(186,117,23,0.7)',fill:false,spanGaps:false,label:'break'}
+      ]},
+      options:{responsive:true,maintainAspectRatio:false,animation:{duration:180},
+        plugins:{legend:{display:false},tooltip:{callbacks:{label:(ctx)=>ctx.datasetIndex===0?`y = ${ctx.raw.toFixed(2)}`:null}}},
         scales:{
           x:{grid:{color:'rgba(0,0,0,.04)'},ticks:{font:{size:10},maxTicksLimit:8,color:'#888'}},
           y:{grid:{color:'rgba(0,0,0,.04)'},ticks:{font:{size:10},maxTicksLimit:5,color:'#888'}}
-        }
-      }
+        }}
     });
   }
 
@@ -681,24 +787,18 @@ function updateCharts(){
     const ctx2=document.getElementById('chart-diff').getContext('2d');
     chartD=new Chart(ctx2,{
       type:'line',
-      data:{
-        labels:diffLabels,
-        datasets:[{data:[...diffs],borderColor:'#3B6D11',borderWidth:1.2,pointRadius:0,tension:0.1,fill:false}]
-      },
-      options:{
-        responsive:true,maintainAspectRatio:false,
-        animation:{duration:180},
+      data:{labels:diffLabels,datasets:[{data:[...diffs],borderColor:'#3B6D11',borderWidth:1.2,pointRadius:0,tension:0.1,fill:false}]},
+      options:{responsive:true,maintainAspectRatio:false,animation:{duration:180},
         plugins:{legend:{display:false},tooltip:{enabled:false}},
         scales:{
           x:{grid:{color:'rgba(0,0,0,.04)'},ticks:{font:{size:9},maxTicksLimit:8,color:'#888'}},
           y:{grid:{color:'rgba(0,0,0,.04)'},ticks:{font:{size:9},maxTicksLimit:4,color:'#888'}}
-        }
-      }
+        }}
     });
   }
 }
 
-/* ========== SLIDERS ========== */
+// ─── SLIDERS ─────────────────────────────────────────────────────────────────
 function sliderBind(id,lblId,fmt,stateSetter){
   document.getElementById(id).addEventListener('input',function(){
     const v=parseFloat(this.value);
@@ -708,30 +808,26 @@ function sliderBind(id,lblId,fmt,stateSetter){
     runAll();
   });
 }
-sliderBind('sl-n',  'lbl-n',  v=>String(Math.round(v)), v=>{N=Math.round(v); genBase();});
-sliderBind('sl-b0', 'lbl-b0',
-  v=>{
-    const el=document.getElementById('lbl-b0');
-    el.className='sv '+(v>0.01?'sv-pos':v<-0.01?'sv-neg':'sv-zero');
-    return (v>0.01?'+':'')+v.toFixed(1);
-  },
-  v=>{ b0=v; }
-);
-sliderBind('sl-tr',  'lbl-tr',
-  v=>{
-    const el=document.getElementById('lbl-tr');
-    el.className='sv '+(v>0.0001?'sv-pos':v<-0.0001?'sv-neg':'sv-zero');
-    return (v>0.0001?'+':'')+v.toFixed(3);
-  },
-  v=>{ trend=v; }
-);
-sliderBind('sl-sig', 'lbl-sig', v=>v.toFixed(1), v=>{ sig=v; });
-sliderBind('sl-brk', 'lbl-brk', v=>'%'+Math.round(v*100), v=>breakPos=v);
-sliderBind('sl-blv', 'lbl-blv', v=>v.toFixed(1),        v=>breakLevel=v);
-sliderBind('sl-bsl', 'lbl-bsl', v=>v.toFixed(3),        v=>breakSlope=v);
+sliderBind('sl-n','lbl-n',v=>String(Math.round(v)),v=>{N=Math.round(v);genBase();});
+sliderBind('sl-b0','lbl-b0',v=>{
+  const el=document.getElementById('lbl-b0');
+  el.className='sv '+(v>0.01?'sv-pos':v<-0.01?'sv-neg':'sv-zero');
+  return (v>0.01?'+':'')+v.toFixed(1);
+},v=>{b0=v;});
+sliderBind('sl-tr','lbl-tr',v=>{
+  const el=document.getElementById('lbl-tr');
+  el.className='sv '+(v>0.0001?'sv-pos':v<-0.0001?'sv-neg':'sv-zero');
+  return (v>0.0001?'+':'')+v.toFixed(3);
+},v=>{trend=v;});
+sliderBind('sl-sig','lbl-sig',v=>v.toFixed(1),v=>{sig=v;});
+sliderBind('sl-brk','lbl-brk',v=>{
+  return currentLang==='en'?`${Math.round(v*100)}%`:`%${Math.round(v*100)}`;
+},v=>breakPos=v);
+sliderBind('sl-blv','lbl-blv',v=>v.toFixed(1),v=>breakLevel=v);
+sliderBind('sl-bsl','lbl-bsl',v=>v.toFixed(3),v=>breakSlope=v);
 
-/* ========== TOGGLES ========== */
-function bindToggleGroup(groupId, onSelect){
+// ─── TOGGLES ─────────────────────────────────────────────────────────────────
+function bindToggleGroup(groupId,onSelect){
   document.getElementById(groupId).querySelectorAll('.tog-btn').forEach(btn=>{
     btn.addEventListener('click',function(){
       document.getElementById(groupId).querySelectorAll('.tog-btn').forEach(b=>b.classList.remove('active'));
@@ -740,43 +836,39 @@ function bindToggleGroup(groupId, onSelect){
     });
   });
 }
-bindToggleGroup('adf-model', v=>{ adfModel=v; runAll(); });
-bindToggleGroup('adf-lag',   v=>{ adfLag=parseInt(v); runAll(); });
-bindToggleGroup('brk-type',  v=>{
+bindToggleGroup('adf-model',v=>{adfModel=v;runAll();});
+bindToggleGroup('adf-lag',v=>{adfLag=parseInt(v);runAll();});
+bindToggleGroup('brk-type',v=>{
   breakType=v;
-  const hasBrk  = v!=='none';
-  const hasLvl  = v==='level'||v==='both';
-  const hasSl   = v==='slope'||v==='both';
-  ['brk-point-row'].forEach(id=>{
-    const el=document.getElementById(id);
-    el.classList.toggle('dim',!hasBrk);
-  });
+  const hasBrk=v!=='none';
+  const hasLvl=v==='level'||v==='both';
+  const hasSl=v==='slope'||v==='both';
+  document.getElementById('brk-point-row').classList.toggle('dim',!hasBrk);
   document.getElementById('brk-level-row').classList.toggle('dim',!hasLvl);
   document.getElementById('brk-slope-row').classList.toggle('dim',!hasSl);
   runAll();
 });
 
-/* ========== SIFIR ÇIZGISI ========== */
-function posZeroLine(sliderId, lineId, lblId){
-  const sl = document.getElementById(sliderId);
-  const line = document.getElementById(lineId);
-  const lbl  = document.getElementById(lblId);
+// ─── ZERO LINE ───────────────────────────────────────────────────────────────
+function posZeroLine(sliderId,lineId,lblId){
+  const sl=document.getElementById(sliderId);
+  const line=document.getElementById(lineId);
+  const lbl=document.getElementById(lblId);
   if(!sl||!line||!lbl) return;
-  const min = parseFloat(sl.min);
-  const max = parseFloat(sl.max);
-  const pct = (0 - min) / (max - min) * 100;
-  line.style.left = pct.toFixed(3) + '%';
-  lbl.style.left  = pct.toFixed(3) + '%';
+  const min=parseFloat(sl.min),max=parseFloat(sl.max);
+  const pct=(0-min)/(max-min)*100;
+  line.style.left=pct.toFixed(3)+'%';
+  lbl.style.left=pct.toFixed(3)+'%';
 }
 function posAllZeroLines(){
   posZeroLine('sl-b0','zline-b0','zlbl-b0');
-  posZeroLine('sl-tr','zline-tr','zlbl-tr');
 }
 
-/* ========== INIT ========== */
+// ─── INIT ────────────────────────────────────────────────────────────────────
 genBase();
 runAll();
 posAllZeroLines();
+applyLang();
 </script>
 </body>
 </html>
