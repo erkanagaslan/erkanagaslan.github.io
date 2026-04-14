@@ -3,1058 +3,1513 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Betimsel İstatistikler — Yayılım ve Dağılım</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<title>Istatistik mi, Ekonometri mi? — Görsel Sezgi</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --blue:#185FA5; --blue-light:#E6F1FB;
-    --red:#E24B4A;  --red-light:#FCEBEB;
-    --orange:#D85A30; --green:#3B6D11; --green-light:#EAF3DE;
-    --purple:#7B3FA0; --purple-light:#F3EBF9;
-    --text:#1a1a1a; --text2:#5F5E5A;
-    --border:rgba(0,0,0,0.12); --bg:#ffffff; --bg2:#F8F7F4;
-    --radius:10px;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    background:var(--bg2);color:var(--text);padding:16px;max-width:1300px;margin:0 auto;}
+:root {
+  --bg: #08090d;
+  --surface: #0f1117;
+  --surface2: #161820;
+  --border: rgba(255,255,255,.08);
+  --border2: rgba(255,255,255,.14);
+  --text: rgba(255,255,255,.93);
+  --muted: rgba(255,255,255,.50);
+  --dim: rgba(255,255,255,.28);
 
-  .tabs{display:flex;gap:0;margin-bottom:18px;border-bottom:2px solid var(--border);}
-  .tab{padding:10px 22px;font-size:14px;font-weight:500;cursor:pointer;
-    border:none;background:none;color:var(--text2);border-bottom:3px solid transparent;
-    margin-bottom:-2px;transition:all 0.2s;}
-  .tab.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:600;}
-  .tab:hover:not(.active){color:var(--text);}
-  .lang-panel{display:none;}
-  .lang-panel.active{display:block;}
+  --stat: #f59e0b;       /* amber — statistics */
+  --stat-light: rgba(245,158,11,.15);
+  --stat-glow: rgba(245,158,11,.35);
 
-  h1{font-size:18px;font-weight:600;margin-bottom:4px;}
-  .subtitle{font-size:13px;color:var(--text2);margin-bottom:16px;}
-  .card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px;}
-  .section-title{font-size:14px;font-weight:600;margin-bottom:12px;}
+  --eco: #22d3ee;        /* cyan — econometrics */
+  --eco-light: rgba(34,211,238,.12);
+  --eco-glow: rgba(34,211,238,.35);
 
-  .page-layout{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start;}
-  .col-left{min-width:0;}
-  .col-right{min-width:0;position:sticky;top:12px;}
-  @media(max-width:820px){.page-layout{grid-template-columns:1fr;}.col-right{position:static;}}
+  --danger: #f87171;
+  --green: #4ade80;
 
-  .measure-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;}
-  .measure-box{border-radius:8px;padding:10px 12px;text-align:center;border:2px solid;}
-  .measure-box .m-label{font-size:11px;font-weight:600;margin-bottom:3px;text-transform:uppercase;letter-spacing:.5px;}
-  .measure-box .m-val{font-size:22px;font-weight:700;}
-  .m-mean{background:#E6F1FB;border-color:#185FA5;color:#185FA5;}
-  .m-median{background:#EAF3DE;border-color:#3B6D11;color:#3B6D11;}
-  .m-mode{background:#F3EBF9;border-color:#7B3FA0;color:#7B3FA0;}
+  --radius: 16px;
+  --max: 960px;
+}
 
-  .spread-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
-  .spread-box{border-radius:8px;padding:10px 12px;background:var(--bg2);border:0.5px solid var(--border);}
-  .spread-box .s-label{font-size:11px;color:var(--text2);margin-bottom:2px;}
-  .spread-box .s-val{font-size:18px;font-weight:600;color:var(--text);transition:color 0.3s;}
-  .s-val.up{color:#E24B4A;} .s-val.down{color:#3B6D11;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+}
 
-  .slider-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-  .slider-label{font-size:13px;color:var(--text2);min-width:130px;line-height:1.3;}
-  input[type=range]{flex:1;height:4px;accent-color:var(--blue);
-    -webkit-appearance:none;appearance:none;background:var(--border);border-radius:2px;outline:none;}
-  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;
-    background:var(--blue);border-radius:50%;cursor:pointer;}
-  .slider-val{font-size:13px;font-weight:600;min-width:48px;text-align:right;}
+/* ── NOISE OVERLAY ── */
+body::before{
+  content:"";
+  position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:0;opacity:.6;
+}
 
-  .btn-row{display:flex;gap:8px;margin-bottom:12px;}
-  .btn{flex:1;padding:11px;border:none;border-radius:var(--radius);
-    font-size:13px;font-weight:500;cursor:pointer;transition:opacity .15s;}
-  .btn:active{opacity:0.8;}
-  .btn-blue{background:var(--blue);color:white;}
-  .btn-outline{background:var(--bg);color:var(--blue);border:1.5px solid var(--blue);}
-  .btn-red{background:var(--red);color:white;}
-  .btn-outline-red{background:var(--bg);color:var(--red);border:1.5px solid var(--red);}
+/* ── AMBIENT GLOW ── */
+.ambient{
+  position:fixed;pointer-events:none;z-index:0;
+  border-radius:50%;filter:blur(120px);opacity:.18;
+}
+.ambient-stat{width:600px;height:400px;background:var(--stat);top:-100px;left:-100px;}
+.ambient-eco{width:500px;height:400px;background:var(--eco);bottom:-100px;right:-100px;}
 
-  .preset-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
-  .preset-btn{padding:5px 12px;border-radius:999px;font-size:12px;font-weight:500;cursor:pointer;
-    border:1.5px solid;transition:all .15s;}
-  .preset-btn:hover{opacity:0.8;}
-  .pb-sym{background:#E6F1FB;border-color:#185FA5;color:#185FA5;}
-  .pb-right{background:#FCEBEB;border-color:#E24B4A;color:#A32D2D;}
-  .pb-left{background:#EAF3DE;border-color:#3B6D11;color:#3B6D11;}
-  .pb-bi{background:#F3EBF9;border-color:#7B3FA0;color:#7B3FA0;}
+/* ── HEADER ── */
+.header{
+  position:relative;z-index:10;
+  padding:40px 20px 0;
+  max-width:var(--max);
+  margin:0 auto;
+  text-align:center;
+}
+.header-eyebrow{
+  font-family:'DM Mono',monospace;
+  font-size:11px;letter-spacing:3px;
+  color:var(--muted);text-transform:none;
+  margin-bottom:14px;
+}
+.header h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(28px,5vw,52px);
+  font-weight:700;line-height:1.1;
+  margin-bottom:10px;
+}
+.header h1 em{font-style:italic;color:var(--stat);}
+.header h1 strong{font-style:normal;color:var(--eco);}
+.header-sub{
+  font-size:15px;color:var(--muted);
+  max-width:50ch;margin:0 auto 28px;line-height:1.6;
+}
 
-  .info-box{background:var(--blue-light);border-left:3px solid var(--blue);
-    border-radius:0 var(--radius) var(--radius) 0;padding:11px 14px;
-    font-size:13px;color:#0C447C;line-height:1.7;margin-bottom:10px;}
-  .warn-box{background:var(--red-light);border-left:3px solid var(--red);
-    border-radius:0 var(--radius) var(--radius) 0;padding:11px 14px;
-    font-size:13px;color:#791F1F;line-height:1.7;margin-bottom:10px;}
-  .note-box{background:var(--bg2);border-left:3px solid var(--text2);
-    border-radius:0 var(--radius) var(--radius) 0;padding:11px 14px;
-    font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:10px;}
-  .highlight-box{background:#FFF8E1;border-left:3px solid #F59E0B;
-    border-radius:0 var(--radius) var(--radius) 0;padding:11px 14px;
-    font-size:13px;color:#7C5700;line-height:1.7;margin-bottom:10px;}
+/* ── PROGRESS TRACK ── */
+.progress-track{
+  display:flex;align-items:center;justify-content:center;
+  gap:0;margin:0 auto 32px;
+  max-width:600px;
+  position:relative;z-index:10;
+  padding:0 20px;
+}
+.step-node{
+  display:flex;flex-direction:column;align-items:center;
+  gap:6px;flex:1;cursor:pointer;
+}
+.step-circle{
+  width:34px;height:34px;border-radius:50%;
+  border:2px solid var(--border2);
+  background:var(--surface);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:600;color:var(--dim);
+  transition:all .4s ease;
+  font-family:'DM Mono',monospace;
+}
+.step-circle.stat-active{
+  border-color:var(--stat);background:var(--stat-light);
+  color:var(--stat);box-shadow:0 0 16px var(--stat-glow);
+}
+.step-circle.eco-active{
+  border-color:var(--eco);background:var(--eco-light);
+  color:var(--eco);box-shadow:0 0 16px var(--eco-glow);
+}
+.step-circle.done{
+  border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.06);
+  color:rgba(255,255,255,.5);
+}
+.step-label{
+  font-size:10px;color:var(--dim);text-align:center;
+  font-family:'DM Mono',monospace;letter-spacing:.5px;
+  text-transform:none;line-height:1.3;
+  transition:color .3s;
+}
+.step-node.stat-active .step-label{color:var(--stat);}
+.step-node.eco-active .step-label{color:var(--eco);}
+.step-connector{
+  height:2px;flex:0 0 30px;
+  background:var(--border2);
+  margin-bottom:22px;
+  transition:background .4s;
+}
+.step-connector.lit{background:rgba(255,255,255,.25);}
 
-  .formula-block{background:var(--bg2);border-radius:var(--radius);
-    padding:12px 16px;margin:8px 0;font-size:13px;line-height:2.0;}
-  .formula-line{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;}
-  .fvar{font-family:"Georgia",serif;font-size:14px;}
+/* ── MAIN STAGE ── */
+.stage{
+  max-width:var(--max);
+  margin:0 auto;
+  padding:0 20px 60px;
+  position:relative;z-index:10;
+}
 
-  .legend{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--text2);margin-bottom:8px;}
-  .legend-item{display:flex;align-items:center;gap:5px;}
-  .leg-line{width:22px;height:3px;}
+.scene{
+  display:none;
+  animation:fadeUp .5s ease forwards;
+}
+.scene.active{display:block;}
 
-  .cov-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px;}
-  .cov-table th{background:var(--blue);color:white;padding:7px 10px;font-weight:600;text-align:center;}
-  .cov-table td{padding:6px 10px;text-align:center;border-bottom:0.5px solid var(--border);}
-  .cov-table tr:nth-child(even) td{background:var(--bg2);}
-  .cov-pos{color:var(--green);font-weight:600;}
-  .cov-neg{color:var(--red);font-weight:600;}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(16px);}
+  to{opacity:1;transform:translateY(0);}
+}
 
-  .outlier-badge{display:inline-flex;align-items:center;gap:5px;
-    background:var(--red-light);border:1px solid var(--red);border-radius:999px;
-    padding:3px 10px;font-size:12px;font-weight:700;color:#A32D2D;
-    transition:opacity .3s;margin-bottom:8px;}
-  .outlier-badge.hidden{opacity:0;pointer-events:none;}
+/* ── SCENE CARD ── */
+.scene-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  overflow:hidden;
+  margin-bottom:16px;
+}
 
-  .sens-compare{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:6px;}
-  .sens-item{border-radius:8px;padding:8px;text-align:center;}
-  .sens-item .si-label{font-size:11px;margin-bottom:2px;}
-  .sens-item .si-delta{font-size:15px;font-weight:700;}
-  .si-blue{background:#E6F1FB;color:#185FA5;}
-  .si-green{background:#EAF3DE;color:#3B6D11;}
-  .si-purple{background:#F3EBF9;color:#7B3FA0;}
+/* ── BADGE ROW ── */
+.badge-row{
+  display:flex;align-items:center;gap:10px;
+  padding:16px 22px 0;
+}
+.discipline-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:5px 14px;border-radius:999px;
+  font-family:'DM Mono',monospace;
+  font-size:11px;font-weight:500;letter-spacing:.5px;
+  border:1px solid;
+}
+.badge-stat{
+  background:var(--stat-light);border-color:rgba(245,158,11,.35);color:var(--stat);
+}
+.badge-eco{
+  background:var(--eco-light);border-color:rgba(34,211,238,.3);color:var(--eco);
+}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0;}
+.scene-step-label{
+  font-family:'DM Mono',monospace;font-size:11px;
+  color:var(--muted);letter-spacing:1px;text-transform:none;
+}
 
-  .corr-badge{display:inline-block;padding:4px 14px;border-radius:999px;
-    font-size:13px;font-weight:700;margin-left:8px;}
-  .corr-strong{background:#EAF3DE;color:#3B6D11;}
-  .corr-mod{background:#E6F1FB;color:#185FA5;}
-  .corr-weak{background:#F3EBF9;color:#7B3FA0;}
-  .corr-none{background:var(--bg2);color:var(--text2);}
-  .corr-neg{background:#FCEBEB;color:#A32D2D;}
+/* ── NARRATIVE ── */
+.narrative{
+  padding:18px 22px 14px;
+}
+.narrative h2{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(18px,2.5vw,24px);
+  font-weight:700;line-height:1.3;
+  margin-bottom:8px;
+}
+.narrative h2 .stat-hl{color:var(--stat);}
+.narrative h2 .eco-hl{color:var(--eco);}
+.narrative p{
+  font-size:14px;color:var(--muted);line-height:1.7;
+  max-width:68ch;
+}
+
+/* ── SPLIT PANEL ── */
+.split{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:1px;background:var(--border);
+}
+@media(max-width:640px){.split{grid-template-columns:1fr;}}
+.split-panel{
+  background:var(--surface);
+  padding:20px;
+}
+.split-panel.stat-panel{border-top:3px solid var(--stat);}
+.split-panel.eco-panel{border-top:3px solid var(--eco);}
+.panel-header{
+  font-family:'DM Mono',monospace;
+  font-size:11px;letter-spacing:1.5px;text-transform:none;
+  margin-bottom:14px;display:flex;align-items:center;gap:8px;
+}
+.panel-header.stat-h{color:var(--stat);}
+.panel-header.eco-h{color:var(--eco);}
+.panel-dot{width:7px;height:7px;border-radius:50%;background:currentColor;}
+
+/* ── CANVAS WRAPPER ── */
+.canvas-wrap{
+  position:relative;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:10px;
+  overflow:hidden;
+  margin-bottom:12px;
+}
+canvas{display:block;width:100% !important;}
+
+/* ── OUTPUT BOXES ── */
+.output-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
+.output-box{
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:10px 12px;
+}
+.output-box.stat-box{border-left:3px solid var(--stat);}
+.output-box.eco-box{border-left:3px solid var(--eco);}
+.output-box.warn-box{border-left:3px solid var(--danger);}
+.output-box.ok-box{border-left:3px solid var(--green);}
+.output-label{
+  font-family:'DM Mono',monospace;
+  font-size:10px;color:var(--muted);
+  text-transform:none;letter-spacing:.8px;
+  margin-bottom:4px;
+}
+.output-val{
+  font-family:'DM Mono',monospace;
+  font-size:17px;font-weight:500;
+}
+.output-val.stat-col{color:var(--stat);}
+.output-val.eco-col{color:var(--eco);}
+.output-val.warn-col{color:var(--danger);}
+.output-val.ok-col{color:var(--green);}
+.output-sub{font-size:11px;color:var(--dim);margin-top:2px;line-height:1.4;}
+
+/* ── INSIGHT BOX ── */
+.insight{
+  margin:0 22px 20px;
+  padding:14px 16px;
+  border-radius:12px;
+  font-size:13px;line-height:1.7;
+  border:1px solid;
+}
+.insight.stat-insight{
+  background:var(--stat-light);
+  border-color:rgba(245,158,11,.25);
+  color:rgba(245,158,11,.9);
+}
+.insight.eco-insight{
+  background:var(--eco-light);
+  border-color:rgba(34,211,238,.2);
+  color:rgba(34,211,238,.9);
+}
+.insight.neutral-insight{
+  background:rgba(255,255,255,.04);
+  border-color:var(--border2);
+  color:var(--muted);
+}
+.insight strong{color:var(--text);}
+
+/* ── QUESTION BOX ── */
+.question-box{
+  background:var(--surface2);
+  border:1px solid var(--border2);
+  border-radius:12px;
+  padding:16px 18px;
+  margin-bottom:12px;
+}
+.question-box .q-label{
+  font-family:'DM Mono',monospace;
+  font-size:10px;letter-spacing:1.5px;text-transform:none;
+  color:var(--muted);margin-bottom:6px;
+}
+.question-box .q-text{
+  font-family:'Playfair Display',serif;
+  font-size:16px;font-style:italic;color:var(--text);
+}
+.question-box .q-sub{font-size:12px;color:var(--muted);margin-top:4px;}
+
+.question-pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+@media(max-width:640px){.question-pair{grid-template-columns:1fr;}}
+
+.q-stat{border-left:3px solid var(--stat);}
+.q-eco{border-left:3px solid var(--eco);}
+
+/* ── CONTROLS ── */
+.controls{
+  padding:16px 22px 20px;
+  display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+}
+.slider-group{display:flex;align-items:center;gap:10px;flex:1;min-width:180px;}
+.slider-group label{
+  font-family:'DM Mono',monospace;font-size:11px;
+  color:var(--muted);letter-spacing:.5px;white-space:nowrap;
+}
+input[type=range]{
+  flex:1;height:3px;
+  -webkit-appearance:none;appearance:none;
+  background:var(--border2);border-radius:2px;outline:none;
+}
+input[type=range].stat-range{accent-color:var(--stat);}
+input[type=range].eco-range{accent-color:var(--eco);}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:18px;height:18px;
+  border-radius:50%;cursor:pointer;
+}
+input[type=range].stat-range::-webkit-slider-thumb{background:var(--stat);}
+input[type=range].eco-range::-webkit-slider-thumb{background:var(--eco);}
+.slider-val{
+  font-family:'DM Mono',monospace;font-size:12px;
+  font-weight:500;min-width:36px;text-align:right;
+}
+.slider-val.stat-col{color:var(--stat);}
+.slider-val.eco-col{color:var(--eco);}
+
+/* ── NAV BUTTONS ── */
+.nav-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:0 0 8px;
+  gap:12px;
+}
+.nav-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:12px 24px;border-radius:999px;
+  border:1px solid;font-size:14px;font-weight:500;
+  cursor:pointer;transition:all .2s ease;
+  font-family:'DM Sans',sans-serif;
+}
+.nav-btn:disabled{opacity:.3;cursor:default;}
+.btn-prev{
+  background:rgba(255,255,255,.04);
+  border-color:var(--border2);color:var(--muted);
+}
+.btn-prev:not(:disabled):hover{
+  background:rgba(255,255,255,.08);color:var(--text);
+}
+.btn-next-stat{
+  background:var(--stat-light);
+  border-color:rgba(245,158,11,.4);color:var(--stat);
+}
+.btn-next-stat:not(:disabled):hover{
+  background:rgba(245,158,11,.25);
+  box-shadow:0 0 20px var(--stat-glow);
+}
+.btn-next-eco{
+  background:var(--eco-light);
+  border-color:rgba(34,211,238,.3);color:var(--eco);
+}
+.btn-next-eco:not(:disabled):hover{
+  background:rgba(34,211,238,.2);
+  box-shadow:0 0 20px var(--eco-glow);
+}
+.scene-counter{
+  font-family:'DM Mono',monospace;font-size:11px;
+  color:var(--dim);letter-spacing:1px;
+}
+
+/* ── FINAL COMPARISON TABLE ── */
+.compare-table{width:100%;border-collapse:collapse;font-size:13px;}
+.compare-table th{
+  padding:10px 14px;text-align:left;
+  font-family:'DM Mono',monospace;font-size:11px;
+  letter-spacing:1px;text-transform:none;color:var(--muted);
+  border-bottom:1px solid var(--border2);
+}
+.compare-table th.stat-th{color:var(--stat);}
+.compare-table th.eco-th{color:var(--eco);}
+.compare-table td{
+  padding:10px 14px;
+  border-bottom:1px solid var(--border);
+  vertical-align:top;line-height:1.5;color:var(--muted);
+}
+.compare-table td:first-child{color:var(--dim);font-size:11px;white-space:nowrap;}
+.compare-table td.stat-td{color:rgba(245,158,11,.8);}
+.compare-table td.eco-td{color:rgba(34,211,238,.8);}
+.compare-table tr:last-child td{border-bottom:none;}
+
+/* ── FORMULA STRIP ── */
+.formula-strip{
+  font-family:'DM Mono',monospace;
+  font-size:13px;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:12px 16px;
+  margin-top:10px;
+  color:var(--muted);
+  line-height:2;
+}
+.formula-strip .hl-stat{color:var(--stat);font-weight:500;}
+.formula-strip .hl-eco{color:var(--eco);font-weight:500;}
+
+/* ── RESIDUAL PLOT NOTE ── */
+.fan-note{
+  font-size:11px;color:var(--muted);
+  font-family:'DM Mono',monospace;
+  margin-top:6px;line-height:1.5;
+}
+
+/* ── LANG TOGGLE ── */
+.lang-toggle{
+  position:fixed;top:16px;right:20px;z-index:100;
+  padding:6px 14px;border-radius:999px;
+  border:1px solid var(--border2);
+  background:rgba(15,17,23,.8);
+  color:var(--muted);font-size:12px;
+  cursor:pointer;backdrop-filter:blur(8px);
+  transition:all .2s;
+}
+.lang-toggle:hover{color:var(--text);border-color:rgba(255,255,255,.25);}
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head>
 <body>
 
-<div class="tabs">
-  <button class="tab active" onclick="switchLang('tr',event)">🇹🇷 Türkçe</button>
-  <button class="tab" onclick="switchLang('en',event)">🇬🇧 English</button>
+<div class="ambient ambient-stat"></div>
+<div class="ambient ambient-eco"></div>
+
+<button class="lang-toggle" id="langBtn">EN / TR</button>
+
+<div class="header">
+  <div class="header-eyebrow" data-i18n="eyebrow">Illustrating the Invisible · Görsel Sezgi</div>
+  <h1><em data-i18n="h1_stat">İstatistik</em> <span style="color:var(--dim);font-family:'DM Mono',monospace;font-size:.55em;"> vs </span> <strong data-i18n="h1_eco">Ekonometri</strong></h1>
+  <p class="header-sub" data-i18n="header_sub">Aynı veri. Farklı sorular. Farklı araçlar.</p>
 </div>
 
-<!-- ═══════════════════════════════ TÜRKÇE ═══════════════════════════════ -->
-<div class="lang-panel active" id="panel-tr">
-<h1>Betimsel İstatistikler — Gelir ve Tüketim Örneği</h1>
-<p class="subtitle">Doç. Dr. Erkan Ağaslan — Kütahya Dumlupınar Üniversitesi</p>
-
-<div class="page-layout">
-<div class="col-left">
-
-  <!-- SENARYOLAR -->
-  <div class="card">
-    <div class="section-title">Hazır senaryolar</div>
-    <div class="preset-row">
-      <button class="preset-btn pb-sym" onclick="loadPreset('sym','tr')">Simetrik gelir</button>
-      <button class="preset-btn pb-right" onclick="loadPreset('right','tr')">Sağa çarpık gelir</button>
-      <button class="preset-btn pb-left" onclick="loadPreset('left','tr')">Sola çarpık gelir</button>
-      <button class="preset-btn pb-bi" onclick="loadPreset('bi','tr')">Bimodal</button>
-    </div>
-
-    <div class="slider-row">
-      <span class="slider-label">Örneklem büyüklüğü n</span>
-      <input type="range" id="tr-n" min="10" max="1000" step="5" value="60">
-      <span class="slider-val" id="tr-n-lbl">60</span>
-    </div>
-    <div class="slider-row">
-      <span class="slider-label">Gelir std. sapması (bin ₺)</span>
-      <input type="range" id="tr-sigma" min="1" max="15" step="0.5" value="5">
-      <span class="slider-val" id="tr-sigma-lbl">5.0</span>
-    </div>
-    <div class="slider-row">
-      <span class="slider-label">Çarpıklık kuvveti</span>
-      <input type="range" id="tr-skew" min="-3" max="3" step="0.1" value="0">
-      <span class="slider-val" id="tr-skew-lbl">0.0</span>
-    </div>
-
-    <div class="btn-row">
-      <button class="btn btn-blue" onclick="generate('tr')">Yeni veri üret</button>
-    </div>
-
-    <!-- OUTLIER TOGGLE -->
-    <div style="background:#FFF3E0;border:1.5px dashed #D85A30;border-radius:var(--radius);padding:12px;margin-bottom:8px;">
-      <div style="font-size:13px;font-weight:600;color:#A03010;margin-bottom:6px;">
-        💰 Çok varlıklı bireyler örnekleme girsin mi?
-      </div>
-      <div style="font-size:12px;color:#7C3A10;margin-bottom:10px;">
-        Geliri ≥ 5× ortalama olan 1–5 aşırı yüksek gelirli birey ekler. 
-        Ortalamanın nasıl bozulduğunu gözlemleyin — medyan yerinde kalır!
-      </div>
-      <div class="slider-row" style="margin-bottom:6px;">
-        <span class="slider-label" style="color:#7C3A10;">Çok varlıklı sayısı</span>
-        <input type="range" id="tr-out" min="0" max="5" step="1" value="0" style="accent-color:#D85A30;">
-        <span class="slider-val" id="tr-out-lbl" style="color:#D85A30;">0</span>
-      </div>
-    </div>
-
-    <div id="tr-outlier-badge" class="outlier-badge hidden">⚠ Çok varlıklı birey(ler) aktif</div>
+<!-- PROGRESS -->
+<div class="progress-track" id="progressTrack">
+  <div class="step-node" onclick="goToScene(0)" id="node-0">
+    <div class="step-circle stat-active" id="circle-0">01</div>
+    <div class="step-label" data-i18n="step0">Veri &amp; Soru</div>
   </div>
+  <div class="step-connector" id="conn-0"></div>
+  <div class="step-node" onclick="goToScene(1)" id="node-1">
+    <div class="step-circle" id="circle-1">02</div>
+    <div class="step-label" data-i18n="step1">Korelasyon</div>
+  </div>
+  <div class="step-connector" id="conn-1"></div>
+  <div class="step-node" onclick="goToScene(2)" id="node-2">
+    <div class="step-circle" id="circle-2">03</div>
+    <div class="step-label" data-i18n="step2">OLS Regresyon</div>
+  </div>
+  <div class="step-connector" id="conn-2"></div>
+  <div class="step-node" onclick="goToScene(3)" id="node-3">
+    <div class="step-circle" id="circle-3">04</div>
+    <div class="step-label" data-i18n="step3">Varsayımlar</div>
+  </div>
+  <div class="step-connector" id="conn-3"></div>
+  <div class="step-node" onclick="goToScene(4)" id="node-4">
+    <div class="step-circle" id="circle-4">05</div>
+    <div class="step-label" data-i18n="step4">Çıkarım</div>
+  </div>
+  <div class="step-connector" id="conn-4"></div>
+  <div class="step-node" onclick="goToScene(5)" id="node-5">
+    <div class="step-circle" id="circle-5">06</div>
+    <div class="step-label" data-i18n="step5">Özet</div>
+  </div>
+</div>
 
-  <!-- MERKEZİ EĞİLİM -->
-  <div class="card">
-    <div class="section-title">Merkezi eğilim ölçüleri — Gelir (X)</div>
-    <div class="measure-grid">
-      <div class="measure-box m-mean">
-        <div class="m-label">Ortalama x̄</div>
-        <div class="m-val" id="tr-mean">—</div>
+<div class="stage">
+
+<!-- ════════════ SCENE 0: THE SETUP ════════════ -->
+<div class="scene active" id="scene-0">
+  <div class="scene-card">
+    <div class="badge-row">
+      <div class="discipline-badge badge-stat"><div class="badge-dot"></div><span data-i18n="badge_stat">İSTATİSTİK</span></div>
+      <div class="discipline-badge badge-eco"><div class="badge-dot"></div><span data-i18n="badge_eco">EKONOMETRİ</span></div>
+      <span class="scene-step-label" data-i18n="scene0_step">Adım 1 / 6 — Veriyi Tanıyalım</span>
+    </div>
+    <div class="narrative">
+      <h2><span class="stat-hl" data-i18n="scene0_h2a">Aynı veri,</span> <span class="eco-hl" data-i18n="scene0_h2b">farklı sorular.</span></h2>
+      <p data-i18n="scene0_p">100 haneye ait aylık gelir (X) ve tüketim (Y) verisi elimizde. İki disiplin bu veriye çok farklı gözlerle bakar.</p>
+    </div>
+
+    <div class="question-pair" style="padding:0 22px 16px;">
+      <div class="question-box q-stat">
+        <div class="q-label" data-i18n="q_stat_label">📊 İstatistik sorar:</div>
+        <div class="q-text" data-i18n="q_stat_q">"Bu iki değişken arasında ilişki var mı? Ne kadar güçlü?"</div>
+        <div class="q-sub" data-i18n="q_stat_sub">→ Tanımlama, özetleme, örüntü arama</div>
       </div>
-      <div class="measure-box m-median">
-        <div class="m-label">Medyan</div>
-        <div class="m-val" id="tr-med">—</div>
-      </div>
-      <div class="measure-box m-mode">
-        <div class="m-label">Mod</div>
-        <div class="m-val" id="tr-mode">—</div>
+      <div class="question-box q-eco">
+        <div class="q-label" data-i18n="q_eco_label">📐 Ekonometri sorar:</div>
+        <div class="q-text" data-i18n="q_eco_q">"Gelir 1 birim artarsa tüketim gerçekten ne kadar artar? Varsayımlar sağlıklı mı?"</div>
+        <div class="q-sub" data-i18n="q_eco_sub">→ Nedensellik, katsayı, politika çıkarımı</div>
       </div>
     </div>
-    <div style="font-size:11px;color:var(--text2);margin-bottom:8px;">(bin ₺ cinsinden)</div>
 
-    <div class="info-box" id="tr-skew-msg">
-      Veri simetrik — ortalama, medyan ve mod birbirine yakın.
+    <div style="padding:0 22px 16px;">
+      <canvas id="c0-scatter" height="220"></canvas>
     </div>
 
-    <div class="section-title" style="margin-top:10px;">Ortalama ne kadar hassas?</div>
-    <div class="note-box">
-      Gelir verilerinde <strong>çok varlıklı bireyler</strong> örnekleme girdiğinde
-      ortalama yukarı çekilir, oysa medyan neredeyse değişmez. 
-      Bu yüzden gelir istatistiklerinde çoğunlukla <em>medyan tercih edilir</em>.
+    <div class="controls">
+      <div class="slider-group">
+        <label data-i18n="ctrl_n">n (gözlem)</label>
+        <input type="range" id="s0-n" class="eco-range" min="30" max="200" step="10" value="100">
+        <span class="slider-val eco-col" id="s0-n-lbl">100</span>
+      </div>
+      <div class="slider-group">
+        <label data-i18n="ctrl_noise">Gürültü σ</label>
+        <input type="range" id="s0-noise" class="stat-range" min="1" max="10" step="0.5" value="3">
+        <span class="slider-val stat-col" id="s0-noise-lbl">3.0</span>
+      </div>
     </div>
 
-    <div style="font-size:12px;color:var(--text2);margin-bottom:4px;">Çok varlıklı eklendiğinde ölçülerin kayma miktarı</div>
-    <div class="sens-compare">
-      <div class="sens-item si-blue">
-        <div class="si-label">Ortalama Δ</div>
-        <div class="si-delta" id="tr-delta-mean">—</div>
-      </div>
-      <div class="sens-item si-green">
-        <div class="si-label">Medyan Δ</div>
-        <div class="si-delta" id="tr-delta-med">—</div>
-      </div>
-      <div class="sens-item si-purple">
-        <div class="si-label">Mod Δ</div>
-        <div class="si-delta" id="tr-delta-mode">—</div>
-      </div>
+    <div class="insight neutral-insight" style="margin:0 22px 20px;">
+      <strong data-i18n="scene0_insight_title">💡 Fark nerede başlar?</strong><br>
+      <span data-i18n="scene0_insight_body">İstatistik bu grafiğe bakıp "ilişki var" der ve işi biter. Ekonometri ise "ne kadar?", "neden?", "bu tahmin güvenilir mi?", "politika tasarımında kullanabilir miyiz?" diye sormaya devam eder.</span>
     </div>
   </div>
 
-  <!-- YAYILIM -->
-  <div class="card">
-    <div class="section-title">Yayılım ölçüleri — Gelir (X)</div>
-    <div class="spread-grid">
-      <div class="spread-box">
-        <div class="s-label">Varyans s²</div>
-        <div class="s-val" id="tr-var">—</div>
-      </div>
-      <div class="spread-box">
-        <div class="s-label">Standart Sapma s</div>
-        <div class="s-val" id="tr-std">—</div>
-      </div>
-      <div class="spread-box">
-        <div class="s-label">Değişim Katsayısı CV</div>
-        <div class="s-val" id="tr-cv">—</div>
-      </div>
-      <div class="spread-box">
-        <div class="s-label">Ranj (Maks − Min)</div>
-        <div class="s-val" id="tr-range">—</div>
-      </div>
-      <div class="spread-box">
-        <div class="s-label">IQR (Q3 − Q1)</div>
-        <div class="s-val" id="tr-iqr">—</div>
-      </div>
-      <div class="spread-box">
-        <div class="s-label">Çarpıklık (Skewness)</div>
-        <div class="s-val" id="tr-skewstat">—</div>
-      </div>
-    </div>
-    <div class="formula-block">
-      <div class="formula-line">
-        <span class="fvar">s²</span> =
-        <span class="fvar">1/(n−1) · Σ(xᵢ − x̄)²</span>
-        <span style="color:var(--text2);font-size:12px;">&nbsp;— örneklem varyansı</span>
-      </div>
-      <div class="formula-line">
-        <span class="fvar">s</span> =
-        <span class="fvar">√s²</span>
-        <span style="color:var(--text2);font-size:12px;">&nbsp;— standart sapma (x ile aynı birim)</span>
-      </div>
-    </div>
+  <div class="nav-row">
+    <button class="nav-btn btn-prev" disabled>← <span data-i18n="nav_prev">Geri</span></button>
+    <span class="scene-counter" id="counter-0">1 / 6</span>
+    <button class="nav-btn btn-next-eco" onclick="goToScene(1)"><span data-i18n="nav_next">İleri</span> →</button>
   </div>
+</div>
 
-  <!-- KOVARYANS / KORELASYON KAYDIRACIYLA -->
-  <div class="card">
-    <div class="section-title">Kovaryans ve Korelasyon — Gelir (X) &amp; Tüketim (Y)</div>
-    <div class="note-box">
-      Gelir (X) ve tüketim (Y) değişkenleri arasındaki ilişkiyi kontrol edin.
-      Korelasyon yükseldikçe noktalar <strong>45° çizgisine</strong> yaklaşır;
-      azaldıkça serpilme diyagramında <em>dağılır</em>.
+<!-- ════════════ SCENE 1: CORRELATION ════════════ -->
+<div class="scene" id="scene-1">
+  <div class="scene-card">
+    <div class="badge-row">
+      <div class="discipline-badge badge-stat"><div class="badge-dot"></div><span data-i18n="badge_stat">İSTATİSTİK</span></div>
+      <span class="scene-step-label" data-i18n="scene1_step">Adım 2 / 6 — İstatistiğin Cevabı: Korelasyon</span>
+    </div>
+    <div class="narrative">
+      <h2><span class="stat-hl" data-i18n="scene1_h2">"r = 0.87 — güçlü pozitif ilişki."</span></h2>
+      <p data-i18n="scene1_p">İstatistik bu noktada tatmin olabilir. Korelasyon katsayısı r, iki değişkenin birlikte ne kadar hareket ettiğini ölçer. Ama bu yeterli mi?</p>
     </div>
 
-    <div class="slider-row">
-      <span class="slider-label" style="color:var(--blue);font-weight:600;">Korelasyon gücü r</span>
-      <input type="range" id="tr-corr" min="-1" max="1" step="0.05" value="0.75" style="accent-color:var(--blue);">
-      <span class="slider-val" id="tr-corr-lbl" style="color:var(--blue);">0.75</span>
-    </div>
-
-    <table class="cov-table" style="margin-top:6px;">
-      <tr><th>İstatistik</th><th>Değer</th></tr>
-      <tr><td>Cov(X, Y)</td><td id="tr-cov">—</td></tr>
-      <tr><td>Korelasyon r</td><td id="tr-cor">—</td></tr>
-      <tr><td>Belirlilik katsayısı r²</td><td id="tr-r2">—</td></tr>
-    </table>
-    <div class="formula-block" style="margin-top:10px;">
-      <div class="formula-line">
-        <span class="fvar">Cov(X,Y)</span> =
-        <span class="fvar">1/(n−1) · Σ(xᵢ−x̄)(yᵢ−ȳ)</span>
+    <div class="split">
+      <div class="split-panel stat-panel">
+        <div class="panel-header stat-h"><div class="panel-dot"></div><span data-i18n="panel_stat_finds">İstatistiğin bulduğu</span></div>
+        <div class="canvas-wrap"><canvas id="c1-scatter" height="200"></canvas></div>
+        <div class="output-grid">
+          <div class="output-box stat-box">
+            <div class="output-label">Pearson r</div>
+            <div class="output-val stat-col" id="c1-r">—</div>
+            <div class="output-sub" data-i18n="c1_r_sub">Güçlü pozitif ilişki</div>
+          </div>
+          <div class="output-box stat-box">
+            <div class="output-label">r²</div>
+            <div class="output-val stat-col" id="c1-r2">—</div>
+            <div class="output-sub" data-i18n="c1_r2_sub">Açıklanan varyans</div>
+          </div>
+        </div>
+        <div class="formula-strip">
+          <span class="hl-stat">r</span> = Cov(X,Y) / (s<sub>x</sub> · s<sub>y</sub>)
+        </div>
+        <p style="font-size:12px;color:var(--muted);margin-top:8px;line-height:1.6;" data-i18n="c1_stat_note">İstatistik burada durabilir: "İlişki güçlü, r büyük, anlamlı."</p>
       </div>
-      <div class="formula-line">
-        <span class="fvar">r</span> =
-        <span class="fvar">Cov(X,Y) / (sₓ · sᵧ)</span>
+
+      <div class="split-panel eco-panel">
+        <div class="panel-header eco-h"><div class="panel-dot"></div><span data-i18n="panel_eco_asks">Ekonometrinin sorusu</span></div>
+        <div class="question-box q-eco" style="margin-bottom:10px;">
+          <div class="q-label" data-i18n="eco_q1_label">Ekonometri henüz tatmin olmaz:</div>
+          <div class="q-text" style="font-size:14px;" data-i18n="eco_q1">"r yüksek ama bu nedensellik mi? X, Y'yi mi etkiliyor, yoksa Y, X'i mi? Üçüncü bir değişken var mı?"</div>
+        </div>
+        <div class="question-box q-eco">
+          <div class="q-label" data-i18n="eco_q2_label">Asıl soru:</div>
+          <div class="q-text" style="font-size:14px;" data-i18n="eco_q2">"Gelir 1 TL arttığında tüketim tam olarak kaç TL artar? Bu tahminin standart hatası nedir?"</div>
+        </div>
+        <div class="insight eco-insight" style="margin:10px 0 0;">
+          <strong data-i18n="corr_vs_cause_title">Korelasyon ≠ Nedensellik</strong><br>
+          <span data-i18n="corr_vs_cause_body">Buz dondurma satışı ile boğulma ölümleri arasında r ≈ 0.85. İkisi de sıcak hava ile ilgili. Korelasyon yüksek ama nedensellik yok.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="slider-group">
+        <label data-i18n="ctrl_corr">Korelasyon gücü</label>
+        <input type="range" id="s1-rho" class="stat-range" min="0.3" max="0.99" step="0.01" value="0.87">
+        <span class="slider-val stat-col" id="s1-rho-lbl">0.87</span>
       </div>
     </div>
   </div>
 
-</div><!-- col-left -->
-
-<!-- ─── SAĞ KOLON ─── -->
-<div class="col-right">
-
-  <!-- HISTOGRAM -->
-  <div class="card">
-    <div class="section-title">Gelir dağılımı — Histogram + Normal eğri</div>
-    <div class="highlight-box" id="tr-normality-msg">
-      n = 60 — Dağılımı gözlemleyin. n artırınca kırmızı normal eğrisine yaklaşır.
-    </div>
-    <div class="legend">
-      <div class="legend-item"><div class="leg-line" style="background:#185FA5;"></div>Ortalama</div>
-      <div class="legend-item"><div class="leg-line" style="background:#3B6D11;"></div>Medyan</div>
-      <div class="legend-item"><div class="leg-line" style="background:#7B3FA0;"></div>Mod</div>
-      <div class="legend-item"><div class="leg-line" style="background:#E24B4A;"></div>Normal eğri</div>
-    </div>
-    <canvas id="tr-hist"></canvas>
+  <div class="nav-row">
+    <button class="nav-btn btn-prev" onclick="goToScene(0)">← <span data-i18n="nav_prev">Geri</span></button>
+    <span class="scene-counter">2 / 6</span>
+    <button class="nav-btn btn-next-eco" onclick="goToScene(2)"><span data-i18n="nav_next">İleri</span> →</button>
   </div>
+</div>
 
-  <!-- SCATTER -->
-  <div class="card">
-    <div class="section-title">Gelir–Tüketim Serpilme Diyagramı</div>
-    <div id="tr-corr-desc" class="info-box">Güçlü pozitif korelasyon — noktalar 45° çizgisine yakın.</div>
-    <canvas id="tr-scatter"></canvas>
-  </div>
-
-</div><!-- col-right -->
-</div><!-- page-layout -->
-</div><!-- panel-tr -->
-
-
-<!-- ═══════════════════════════════ ENGLISH ═══════════════════════════════ -->
-<div class="lang-panel" id="panel-en">
-<h1>Descriptive Statistics — Income &amp; Consumption Example</h1>
-<p class="subtitle">Assoc. Prof. Dr. Erkan Ağaslan — Kütahya Dumlupınar University</p>
-
-<div class="page-layout">
-<div class="col-left">
-
-  <div class="card">
-    <div class="section-title">Ready-made scenarios</div>
-    <div class="preset-row">
-      <button class="preset-btn pb-sym" onclick="loadPreset('sym','en')">Symmetric income</button>
-      <button class="preset-btn pb-right" onclick="loadPreset('right','en')">Right-skewed income</button>
-      <button class="preset-btn pb-left" onclick="loadPreset('left','en')">Left-skewed income</button>
-      <button class="preset-btn pb-bi" onclick="loadPreset('bi','en')">Bimodal</button>
+<!-- ════════════ SCENE 2: OLS ════════════ -->
+<div class="scene" id="scene-2">
+  <div class="scene-card">
+    <div class="badge-row">
+      <div class="discipline-badge badge-eco"><div class="badge-dot"></div><span data-i18n="badge_eco">EKONOMETRİ</span></div>
+      <span class="scene-step-label" data-i18n="scene2_step">Adım 3 / 6 — Ekonometrinin Cevabı: OLS</span>
+    </div>
+    <div class="narrative">
+      <h2><span class="eco-hl" data-i18n="scene2_h2">"β̂₁ = 0.74 — her 1 bin TL gelir artışı, tüketimi 740 TL artırıyor."</span></h2>
+      <p data-i18n="scene2_p">Ekonometri bir adım öteye geçer: OLS ile katsayıları tahmin eder, güven aralığı hesaplar, anlamlılık testi yapar.</p>
     </div>
 
-    <div class="slider-row">
-      <span class="slider-label">Sample size n</span>
-      <input type="range" id="en-n" min="10" max="300" step="5" value="60">
-      <span class="slider-val" id="en-n-lbl">60</span>
-    </div>
-    <div class="slider-row">
-      <span class="slider-label">Income std. dev. (k₺)</span>
-      <input type="range" id="en-sigma" min="1" max="15" step="0.5" value="5">
-      <span class="slider-val" id="en-sigma-lbl">5.0</span>
-    </div>
-    <div class="slider-row">
-      <span class="slider-label">Skewness strength</span>
-      <input type="range" id="en-skew" min="-3" max="3" step="0.1" value="0">
-      <span class="slider-val" id="en-skew-lbl">0.0</span>
-    </div>
-
-    <div class="btn-row">
-      <button class="btn btn-blue" onclick="generate('en')">Generate new data</button>
-    </div>
-
-    <div style="background:#FFF3E0;border:1.5px dashed #D85A30;border-radius:var(--radius);padding:12px;margin-bottom:8px;">
-      <div style="font-size:13px;font-weight:600;color:#A03010;margin-bottom:6px;">
-        💰 Add very wealthy individuals to the sample?
+    <div class="split">
+      <div class="split-panel eco-panel">
+        <div class="panel-header eco-h"><div class="panel-dot"></div><span data-i18n="panel_ols">OLS Regresyon Doğrusu</span></div>
+        <div class="canvas-wrap"><canvas id="c2-scatter" height="200"></canvas></div>
+        <div class="output-grid">
+          <div class="output-box eco-box">
+            <div class="output-label" data-i18n="lbl_b0">β̂₀ (sabit)</div>
+            <div class="output-val eco-col" id="c2-b0">—</div>
+            <div class="output-sub" data-i18n="c2_b0_sub">Kesişim noktası</div>
+          </div>
+          <div class="output-box eco-box">
+            <div class="output-label" data-i18n="lbl_b1">β̂₁ (eğim)</div>
+            <div class="output-val eco-col" id="c2-b1">—</div>
+            <div class="output-sub" data-i18n="c2_b1_sub">Marjinal tüketim eğilimi</div>
+          </div>
+          <div class="output-box eco-box">
+            <div class="output-label">R²</div>
+            <div class="output-val eco-col" id="c2-r2">—</div>
+          </div>
+          <div class="output-box eco-box">
+            <div class="output-label">SE(β̂₁)</div>
+            <div class="output-val eco-col" id="c2-se">—</div>
+            <div class="output-sub" data-i18n="c2_se_sub">Standart hata</div>
+          </div>
+        </div>
       </div>
-      <div style="font-size:12px;color:#7C3A10;margin-bottom:10px;">
-        Adds 1–5 extremely high-income outliers (≥ 5× mean). 
-        Watch the mean get pulled up — the median barely moves!
-      </div>
-      <div class="slider-row" style="margin-bottom:6px;">
-        <span class="slider-label" style="color:#7C3A10;">Wealthy count</span>
-        <input type="range" id="en-out" min="0" max="5" step="1" value="0" style="accent-color:#D85A30;">
-        <span class="slider-val" id="en-out-lbl" style="color:#D85A30;">0</span>
-      </div>
-    </div>
 
-    <div id="en-outlier-badge" class="outlier-badge hidden">⚠ High-income outlier(s) active</div>
-  </div>
-
-  <div class="card">
-    <div class="section-title">Central tendency — Income (X)</div>
-    <div class="measure-grid">
-      <div class="measure-box m-mean">
-        <div class="m-label">Mean x̄</div>
-        <div class="m-val" id="en-mean">—</div>
-      </div>
-      <div class="measure-box m-median">
-        <div class="m-label">Median</div>
-        <div class="m-val" id="en-med">—</div>
-      </div>
-      <div class="measure-box m-mode">
-        <div class="m-label">Mode</div>
-        <div class="m-val" id="en-mode">—</div>
+      <div class="split-panel stat-panel">
+        <div class="panel-header stat-h"><div class="panel-dot"></div><span data-i18n="panel_what_adds">Ekonometri ne ekliyor?</span></div>
+        <div class="formula-strip">
+          <span style="color:var(--muted);">Model: </span><span class="hl-eco">Y = β₀ + β₁X + ε</span><br>
+          <span style="color:var(--muted);">OLS: </span><span class="hl-eco">β̂₁ = Σ(xᵢ−x̄)(yᵢ−ȳ) / Σ(xᵢ−x̄)²</span><br>
+          <span style="color:var(--muted);">t-testi: </span><span class="hl-stat">t = β̂₁ / SE(β̂₁)</span>
+        </div>
+        <div style="margin-top:12px;">
+          <div class="output-box eco-box" style="margin-bottom:8px;">
+            <div class="output-label" data-i18n="lbl_tstat">t istatistiği</div>
+            <div class="output-val eco-col" id="c2-t">—</div>
+            <div class="output-sub">H₀: β₁ = 0</div>
+          </div>
+          <div class="output-box" id="c2-sig-box" style="margin-bottom:8px;">
+            <div class="output-label" data-i18n="c2_sig_label">Anlamlılık</div>
+            <div class="output-val" id="c2-sig">—</div>
+          </div>
+        </div>
+        <div class="insight eco-insight" style="margin:10px 0 0;">
+          <strong data-i18n="ols_insight_title">OLS'nin gücü:</strong><br>
+          <span data-i18n="ols_insight_body">Korelasyon "ilişki var" der. OLS "1 birim X, Y'yi tam olarak β̂₁ kadar değiştiriyor — ve bu tahmin % 95 güven aralığıyla şu aralıkta" der. Bu fark politika için kritiktir.</span>
+        </div>
       </div>
     </div>
-    <div style="font-size:11px;color:var(--text2);margin-bottom:8px;">(in thousand ₺)</div>
 
-    <div class="info-box" id="en-skew-msg">
-      Symmetric data — mean, median and mode are close.
-    </div>
-
-    <div class="section-title" style="margin-top:10px;">How sensitive is the mean?</div>
-    <div class="note-box">
-      When <strong>very wealthy individuals</strong> enter the sample, the mean is pulled up, 
-      while the median barely moves. This is why <em>median income</em> is preferred in policy contexts.
-    </div>
-
-    <div style="font-size:12px;color:var(--text2);margin-bottom:4px;">Shift in measures when outlier is added</div>
-    <div class="sens-compare">
-      <div class="sens-item si-blue">
-        <div class="si-label">Mean Δ</div>
-        <div class="si-delta" id="en-delta-mean">—</div>
+    <div class="controls">
+      <div class="slider-group">
+        <label data-i18n="ctrl_mpc">MTC (β₁ gerçek)</label>
+        <input type="range" id="s2-beta" class="eco-range" min="0.3" max="0.95" step="0.01" value="0.74">
+        <span class="slider-val eco-col" id="s2-beta-lbl">0.74</span>
       </div>
-      <div class="sens-item si-green">
-        <div class="si-label">Median Δ</div>
-        <div class="si-delta" id="en-delta-med">—</div>
-      </div>
-      <div class="sens-item si-purple">
-        <div class="si-label">Mode Δ</div>
-        <div class="si-delta" id="en-delta-mode">—</div>
+      <div class="slider-group">
+        <label data-i18n="ctrl_noise2">Gürültü σ</label>
+        <input type="range" id="s2-noise" class="stat-range" min="0.5" max="8" step="0.5" value="2.5">
+        <span class="slider-val stat-col" id="s2-noise-lbl">2.5</span>
       </div>
     </div>
   </div>
 
-  <div class="card">
-    <div class="section-title">Spread measures — Income (X)</div>
-    <div class="spread-grid">
-      <div class="spread-box">
-        <div class="s-label">Variance s²</div>
-        <div class="s-val" id="en-var">—</div>
+  <div class="nav-row">
+    <button class="nav-btn btn-prev" onclick="goToScene(1)">← <span data-i18n="nav_prev">Geri</span></button>
+    <span class="scene-counter">3 / 6</span>
+    <button class="nav-btn btn-next-eco" onclick="goToScene(3)"><span data-i18n="nav_next">İleri</span> →</button>
+  </div>
+</div>
+
+<!-- ════════════ SCENE 3: ASSUMPTIONS ════════════ -->
+<div class="scene" id="scene-3">
+  <div class="scene-card">
+    <div class="badge-row">
+      <div class="discipline-badge badge-eco"><div class="badge-dot"></div><span data-i18n="badge_eco">EKONOMETRİ</span></div>
+      <span class="scene-step-label" data-i18n="scene3_step">Adım 4 / 6 — İstatistiğin Görmediği: Varsayımlar</span>
+    </div>
+    <div class="narrative">
+      <h2><span class="stat-hl" data-i18n="scene3_h2a">İstatistik yüksek R² görür.</span> <span class="eco-hl" data-i18n="scene3_h2b">Ekonometri artıkları inceler.</span></h2>
+      <p data-i18n="scene3_p">OLS'nin BLUE (En İyi Doğrusal Sapmasız Tahminci) olması için Gauss-Markov koşullarının sağlanması gerekir. Artıklar bu koşulları test eder.</p>
+    </div>
+
+    <div class="split">
+      <div class="split-panel stat-panel">
+        <div class="panel-header stat-h"><div class="panel-dot"></div><span data-i18n="panel_stat_sees">İstatistik görür: Yüksek R²</span></div>
+        <div class="canvas-wrap"><canvas id="c3-scatter" height="180"></canvas></div>
+        <div class="output-grid">
+          <div class="output-box stat-box">
+            <div class="output-label">R²</div>
+            <div class="output-val stat-col" id="c3-r2">—</div>
+            <div class="output-sub" data-i18n="c3_r2_sub">"Model iyi uyum sağlıyor"</div>
+          </div>
+          <div class="output-box stat-box">
+            <div class="output-label" data-i18n="lbl_pval">p-değeri</div>
+            <div class="output-val stat-col" id="c3-p">&lt; 0.001</div>
+            <div class="output-sub" data-i18n="c3_p_sub">"İlişki anlamlı"</div>
+          </div>
+        </div>
+        <p style="font-size:12px;color:var(--muted);margin-top:10px;line-height:1.6;" data-i18n="c3_stat_stop">"R² yüksek, p küçük — bitti!" diyebilir istatistik.</p>
       </div>
-      <div class="spread-box">
-        <div class="s-label">Std. Deviation s</div>
-        <div class="s-val" id="en-std">—</div>
+
+      <div class="split-panel eco-panel">
+        <div class="panel-header eco-h"><div class="panel-dot"></div><span data-i18n="panel_eco_sees">Ekonometri görür: Huni Şekilli Artıklar!</span></div>
+        <div class="canvas-wrap"><canvas id="c3-resid" height="180"></canvas></div>
+        <div class="output-grid">
+          <div class="output-box warn-box">
+            <div class="output-label" data-i18n="c3_hetero_label">Heteroskedastisite</div>
+            <div class="output-val warn-col" id="c3-bp">BP testi !</div>
+            <div class="output-sub" data-i18n="c3_hetero_sub">Varyans sabit değil</div>
+          </div>
+          <div class="output-box warn-box">
+            <div class="output-label" data-i18n="c3_se_problem">SE sorunu</div>
+            <div class="output-val warn-col" data-i18n="c3_se_problem_val">Güvenilmez</div>
+            <div class="output-sub" data-i18n="c3_se_problem_sub">t-testleri bozulmuş</div>
+          </div>
+        </div>
+        <div class="insight eco-insight" style="margin:10px 0 0;">
+          <strong data-i18n="hetero_insight_title">Heteroskedastisite neden önemli?</strong><br>
+          <span data-i18n="hetero_insight_body">Gelir arttıkça tüketim örüntüsü de genişler (zenginler daha değişken harcama yapar). Bu durumda OLS standart hataları güvenilmez — t-testleri yanıltıcı olur. Ekonometri bunu görüp HAC/WLS kullanır.</span>
+        </div>
       </div>
-      <div class="spread-box">
-        <div class="s-label">Coeff. of Variation CV</div>
-        <div class="s-val" id="en-cv">—</div>
-      </div>
-      <div class="spread-box">
-        <div class="s-label">Range (Max − Min)</div>
-        <div class="s-val" id="en-range">—</div>
-      </div>
-      <div class="spread-box">
-        <div class="s-label">IQR (Q3 − Q1)</div>
-        <div class="s-val" id="en-iqr">—</div>
-      </div>
-      <div class="spread-box">
-        <div class="s-label">Skewness</div>
-        <div class="s-val" id="en-skewstat">—</div>
+    </div>
+
+    <div class="controls">
+      <div class="slider-group">
+        <label data-i18n="ctrl_hetero">Heteroskedastisite gücü</label>
+        <input type="range" id="s3-het" class="eco-range" min="0" max="3" step="0.1" value="1.5">
+        <span class="slider-val eco-col" id="s3-het-lbl">1.5</span>
       </div>
     </div>
   </div>
 
-  <div class="card">
-    <div class="section-title">Covariance &amp; Correlation — Income (X) &amp; Consumption (Y)</div>
-    <div class="note-box">
-      As correlation increases, points cluster along the <strong>45° line</strong>; 
-      as it decreases, the scatter plot disperses widely.
+  <div class="nav-row">
+    <button class="nav-btn btn-prev" onclick="goToScene(2)">← <span data-i18n="nav_prev">Geri</span></button>
+    <span class="scene-counter">4 / 6</span>
+    <button class="nav-btn btn-next-eco" onclick="goToScene(4)"><span data-i18n="nav_next">İleri</span> →</button>
+  </div>
+</div>
+
+<!-- ════════════ SCENE 4: INFERENCE ════════════ -->
+<div class="scene" id="scene-4">
+  <div class="scene-card">
+    <div class="badge-row">
+      <div class="discipline-badge badge-eco"><div class="badge-dot"></div><span data-i18n="badge_eco">EKONOMETRİ</span></div>
+      <span class="scene-step-label" data-i18n="scene4_step">Adım 5 / 6 — Çıkarım: Politika Ne Olmalı?</span>
+    </div>
+    <div class="narrative">
+      <h2><span class="eco-hl" data-i18n="scene4_h2">"Vergi indirimi tüketimi gerçekten artırır mı? β̂₁ bize ne söylüyor?"</span></h2>
+      <p data-i18n="scene4_p">Ekonometrinin nihai hedefi: katsayı tahminlerini politika çıkarımına dönüştürmek. Güven aralığı ve hipotez testi burada kritik rol oynar.</p>
     </div>
 
-    <div class="slider-row">
-      <span class="slider-label" style="color:var(--blue);font-weight:600;">Correlation strength r</span>
-      <input type="range" id="en-corr" min="-1" max="1" step="0.05" value="0.75" style="accent-color:var(--blue);">
-      <span class="slider-val" id="en-corr-lbl" style="color:var(--blue);">0.75</span>
-    </div>
+    <div style="padding:16px 22px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;" class="two-col-responsive">
 
-    <table class="cov-table" style="margin-top:6px;">
-      <tr><th>Statistic</th><th>Value</th></tr>
-      <tr><td>Cov(X, Y)</td><td id="en-cov">—</td></tr>
-      <tr><td>Correlation r</td><td id="en-cor">—</td></tr>
-      <tr><td>Coefficient of determination r²</td><td id="en-r2">—</td></tr>
-    </table>
-    <div class="formula-block" style="margin-top:10px;">
-      <div class="formula-line">
-        <span class="fvar">Cov(X,Y)</span> =
-        <span class="fvar">1/(n−1) · Σ(xᵢ−x̄)(yᵢ−ȳ)</span>
+        <div>
+          <div class="panel-header eco-h" style="margin-bottom:12px;"><div class="panel-dot"></div><span data-i18n="panel_ci">Güven Aralığı — β̂₁</span></div>
+          <div class="canvas-wrap"><canvas id="c4-ci" height="180"></canvas></div>
+          <div class="output-grid" style="margin-top:8px;">
+            <div class="output-box eco-box">
+              <div class="output-label" data-i18n="lbl_b1est">β̂₁ tahmini</div>
+              <div class="output-val eco-col" id="c4-b1">—</div>
+            </div>
+            <div class="output-box eco-box">
+              <div class="output-label" data-i18n="lbl_ci95">%95 GA</div>
+              <div class="output-val eco-col" id="c4-ci-val">—</div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="panel-header stat-h" style="margin-bottom:12px;"><div class="panel-dot"></div><span data-i18n="panel_sampling">Örnekleme Dağılımı (β̂₁)</span></div>
+          <div class="canvas-wrap"><canvas id="c4-dist" height="180"></canvas></div>
+          <div class="output-grid" style="margin-top:8px;">
+            <div class="output-box stat-box">
+              <div class="output-label" data-i18n="c4_bias_label">Sapma</div>
+              <div class="output-val stat-col" id="c4-bias">—</div>
+              <div class="output-sub" data-i18n="c4_bias_sub">E[β̂₁] − β₁</div>
+            </div>
+            <div class="output-box" id="c4-h0-box">
+              <div class="output-label">H₀: β₁ = 0</div>
+              <div class="output-val" id="c4-h0">—</div>
+            </div>
+          </div>
+        </div>
+
       </div>
-      <div class="formula-line">
-        <span class="fvar">r</span> =
-        <span class="fvar">Cov(X,Y) / (sₓ · sᵧ)</span>
+    </div>
+
+    <div class="controls">
+      <div class="slider-group">
+        <label data-i18n="ctrl_samples">Tekrar sayısı (Monte Carlo)</label>
+        <input type="range" id="s4-sims" class="eco-range" min="50" max="500" step="50" value="200">
+        <span class="slider-val eco-col" id="s4-sims-lbl">200</span>
+      </div>
+      <div class="slider-group">
+        <label data-i18n="ctrl_n4">n (gözlem)</label>
+        <input type="range" id="s4-n" class="stat-range" min="20" max="200" step="10" value="80">
+        <span class="slider-val stat-col" id="s4-n-lbl">80</span>
       </div>
     </div>
-  </div>
 
-</div><!-- col-left -->
-
-<div class="col-right">
-
-  <div class="card">
-    <div class="section-title">Income distribution — Histogram + Normal curve</div>
-    <div class="highlight-box" id="en-normality-msg">
-      n = 60 — Increase n to see the distribution approach the normal curve.
+    <div class="insight eco-insight" style="margin:0 22px 20px;">
+      <strong data-i18n="inference_insight_title">Ekonometrinin çıkarımı:</strong><br>
+      <span data-i18n="inference_insight_body">β̂₁ = 0.74 → "Ortalama bir hanede gelir 1 bin TL artarsa tüketim yaklaşık 740 TL artar." Bu bulgu; vergi politikası, teşvik programı, refah transferi gibi kararlar için doğrudan kullanılabilir. İstatistik bize "r yüksek" dedi — ekonometri bize karar verdirir.</span>
     </div>
-    <div class="legend">
-      <div class="legend-item"><div class="leg-line" style="background:#185FA5;"></div>Mean</div>
-      <div class="legend-item"><div class="leg-line" style="background:#3B6D11;"></div>Median</div>
-      <div class="legend-item"><div class="leg-line" style="background:#7B3FA0;"></div>Mode</div>
-      <div class="legend-item"><div class="leg-line" style="background:#E24B4A;"></div>Normal curve</div>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn btn-prev" onclick="goToScene(3)">← <span data-i18n="nav_prev">Geri</span></button>
+    <span class="scene-counter">5 / 6</span>
+    <button class="nav-btn btn-next-eco" onclick="goToScene(5)"><span data-i18n="nav_next">Özet</span> →</button>
+  </div>
+</div>
+
+<!-- ════════════ SCENE 5: SUMMARY ════════════ -->
+<div class="scene" id="scene-5">
+  <div class="scene-card">
+    <div class="badge-row">
+      <div class="discipline-badge badge-stat"><div class="badge-dot"></div><span data-i18n="badge_stat">İSTATİSTİK</span></div>
+      <div class="discipline-badge badge-eco"><div class="badge-dot"></div><span data-i18n="badge_eco">EKONOMETRİ</span></div>
+      <span class="scene-step-label" data-i18n="scene5_step">Adım 6 / 6 — Özet Karşılaştırma</span>
     </div>
-    <canvas id="en-hist"></canvas>
+    <div class="narrative">
+      <h2><span class="stat-hl" data-i18n="scene5_h2a">İstatistik temeli sağlar.</span> <span class="eco-hl" data-i18n="scene5_h2b">Ekonometri ekonomik anlam kurar.</span></h2>
+    </div>
+
+    <div style="padding:0 22px 20px;overflow-x:auto;">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th data-i18n="th_dim">Boyut</th>
+            <th class="stat-th" data-i18n="th_stat">📊 İstatistik</th>
+            <th class="eco-th" data-i18n="th_eco">📐 Ekonometri</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-i18n="row_q">Temel soru</td>
+            <td class="stat-td" data-i18n="row_q_stat">"İlişki var mı? Ne kadar güçlü?"</td>
+            <td class="eco-td" data-i18n="row_q_eco">"Nedensellik var mı? Katsayı nedir? Politika ne olmalı?"</td>
+          </tr>
+          <tr>
+            <td data-i18n="row_tool">Ana araç</td>
+            <td class="stat-td" data-i18n="row_tool_stat">Korelasyon, betimsel istatistik, dağılım</td>
+            <td class="eco-td" data-i18n="row_tool_eco">OLS, hipotez testi, diagnostik testler, güven aralığı</td>
+          </tr>
+          <tr>
+            <td data-i18n="row_output">Çıktı</td>
+            <td class="stat-td" data-i18n="row_output_stat">r = 0.87, R² = 0.76</td>
+            <td class="eco-td" data-i18n="row_output_eco">β̂₁ = 0.74 (SE=0.03), t=24.7, %95 GA [0.68, 0.80]</td>
+          </tr>
+          <tr>
+            <td data-i18n="row_assump">Varsayım kontrolü</td>
+            <td class="stat-td" data-i18n="row_assump_stat">Genellikle sorgulanmaz</td>
+            <td class="eco-td" data-i18n="row_assump_eco">BP, BG, DW, VIF, Zivot-Andrews — zorunlu</td>
+          </tr>
+          <tr>
+            <td data-i18n="row_policy">Politika çıkarımı</td>
+            <td class="stat-td" data-i18n="row_policy_stat">Doğrudan yapılmaz</td>
+            <td class="eco-td" data-i18n="row_policy_eco">"1 TL vergi indirimi → 0.74 TL tüketim artışı"</td>
+          </tr>
+          <tr>
+            <td data-i18n="row_meta">Ekonometri + İstatistik</td>
+            <td colspan="2" style="color:var(--muted);font-style:italic;" data-i18n="row_meta_val">Ekonometri, istatistiğin üzerine inşa edilir — onu reddeder değil, ekonomik içerikle zenginleştirir.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="insight neutral-insight" style="margin:0 22px 20px;">
+      <strong data-i18n="final_insight_title">🎓 Özet cümle:</strong><br>
+      <span data-i18n="final_insight_body">İstatistik "ne" sorusunu cevaplar. Ekonometri "ne kadar", "neden" ve "ne yapmalı" sorularını cevaplar. Gelir–tüketim örneğinde istatistik korelasyonu buldu; ekonometri onu marjinal tüketim eğilimine, güven aralığına ve politika tavsiyesine dönüştürdü.</span>
+    </div>
   </div>
 
-  <div class="card">
-    <div class="section-title">Income–Consumption Scatter Plot</div>
-    <div id="en-corr-desc" class="info-box">Strong positive correlation — points cluster near the 45° line.</div>
-    <canvas id="en-scatter"></canvas>
+  <div class="nav-row">
+    <button class="nav-btn btn-prev" onclick="goToScene(4)">← <span data-i18n="nav_prev">Geri</span></button>
+    <span class="scene-counter">6 / 6</span>
+    <button class="nav-btn btn-next-stat" onclick="goToScene(0)">↺ <span data-i18n="nav_restart">Başa dön</span></button>
   </div>
+</div>
 
-</div><!-- col-right -->
-</div><!-- page-layout -->
-</div><!-- panel-en -->
-
+</div><!-- stage -->
 
 <script>
-// ════════════════════════════════════════════════════
+// ══════════════════════════════════════════════
 // UTILITIES
-// ════════════════════════════════════════════════════
-function randn() {
+// ══════════════════════════════════════════════
+function randn(){
   let u=0,v=0;
-  while(u===0) u=Math.random();
-  while(v===0) v=Math.random();
+  while(!u)u=Math.random();while(!v)v=Math.random();
   return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);
 }
+function mean(a){return a.reduce((s,v)=>s+v,0)/a.length;}
+function std(a){const m=mean(a);return Math.sqrt(a.reduce((s,v)=>s+(v-m)**2,0)/(a.length-1));}
 
-function skewedNormal(skew){
-  const u1=randn(), u2=randn();
-  const delta = skew/Math.sqrt(1+skew*skew);
-  return delta*Math.abs(u1) + Math.sqrt(1-delta*delta)*u2;
+function olsSimple(x,y){
+  const mx=mean(x),my=mean(y);
+  const b1=x.reduce((s,xi,i)=>s+(xi-mx)*(y[i]-my),0)/x.reduce((s,xi)=>s+(xi-mx)**2,0);
+  const b0=my-b1*mx;
+  const yhat=x.map(xi=>b0+b1*xi);
+  const resid=y.map((yi,i)=>yi-yhat[i]);
+  const sse=resid.reduce((s,e)=>s+e*e,0);
+  const n=x.length;
+  const s2=sse/(n-2);
+  const sxx=x.reduce((s,xi)=>s+(xi-mx)**2,0);
+  const se=Math.sqrt(s2/sxx);
+  const sst=y.reduce((s,yi)=>s+(yi-my)**2,0);
+  const r2=1-sse/sst;
+  const r=Math.sign(b1)*Math.sqrt(r2);
+  const t=b1/se;
+  return{b0,b1,se,r2,r,t,resid,yhat};
 }
 
-function mean(arr){ return arr.reduce((a,b)=>a+b,0)/arr.length; }
+// ── Color helpers ──
+const C_STAT='rgba(245,158,11,';
+const C_ECO ='rgba(34,211,238,';
+const C_WARN='rgba(248,113,113,';
+const C_GRN ='rgba(74,222,128,';
 
-function median(arr){
-  const s=[...arr].sort((a,b)=>a-b);
-  const m=Math.floor(s.length/2);
-  return s.length%2===0?(s[m-1]+s[m])/2:s[m];
+// ── Chart registry ──
+const charts={};
+function destroyChart(id){if(charts[id]){charts[id].destroy();delete charts[id];}}
+
+// ── Helpers ──
+function fmtNum(v,d=2){return isNaN(v)?'—':v.toFixed(d);}
+
+// ══════════════════════════════════════════════
+// DATA GENERATION
+// ══════════════════════════════════════════════
+let globalData={x:[],y:[]};
+
+function genData(n=100,noise=3,rho=0.87,beta1=0.74,hetGain=0){
+  // X = gelir (5..25 bin TL), Y = tüketim
+  const muX=15,sdX=4;
+  const muY=muX*beta1,sdY=sdX*beta1+noise;
+  const x=[],y=[];
+  for(let i=0;i<n;i++){
+    const xi=muX+randn()*sdX;
+    const noiseScale=hetGain>0?noise*(1+hetGain*((xi-5)/20)):noise;
+    const yi=2+beta1*xi+randn()*noiseScale;
+    x.push(xi);y.push(Math.max(0.5,yi));
+  }
+  return{x,y};
 }
 
-function mode(arr){
-  const bins={};
-  arr.forEach(v=>{ const k=Math.round(v); bins[k]=(bins[k]||0)+1; });
-  let maxC=0,modeV=0;
-  Object.entries(bins).forEach(([k,c])=>{ if(c>maxC){maxC=c;modeV=+k;} });
-  return modeV;
-}
-
-function variance(arr){
-  const m=mean(arr);
-  return arr.reduce((s,v)=>s+(v-m)**2,0)/(arr.length-1);
-}
-
-function stddev(arr){ return Math.sqrt(variance(arr)); }
-
-function skewnessCoef(arr){
-  const m=mean(arr), s=stddev(arr), n=arr.length;
-  if(s===0) return 0;
-  return arr.reduce((a,v)=>a+((v-m)/s)**3,0) * n/((n-1)*(n-2));
-}
-
-function quantile(arr, q){
-  const s=[...arr].sort((a,b)=>a-b);
-  const pos=(s.length-1)*q;
-  const lo=Math.floor(pos), hi=Math.ceil(pos);
-  return s[lo]+(s[hi]-s[lo])*(pos-lo);
-}
-
-// Generate correlated Y from X using Cholesky-like approach
-function generateCorrelatedY(xArr, rho, muY, sigmaY){
-  const muX = mean(xArr);
-  const sdX = stddev(xArr);
-  return xArr.map(x => {
-    const zx = (x - muX) / sdX;
-    const eps = randn();
-    const zy = rho * zx + Math.sqrt(Math.max(0, 1 - rho*rho)) * eps;
-    return muY + sigmaY * zy;
-  });
-}
-
-// ════════════════════════════════════════════════════
-// STATE
-// ════════════════════════════════════════════════════
-const state = {
-  tr: { data:[], dataClean:[], outlierOn:false, charts:{hist:null,scatter:null} },
-  en: { data:[], dataClean:[], outlierOn:false, charts:{hist:null,scatter:null} }
-};
-
-// ════════════════════════════════════════════════════
-// LANG SWITCH
-// ════════════════════════════════════════════════════
-function switchLang(lang, ev){
-  document.querySelectorAll('.lang-panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('panel-'+lang).classList.add('active');
-  if(ev) ev.target.classList.add('active');
-  if(!state[lang].data.length) generate(lang);
-}
-
-// ════════════════════════════════════════════════════
-// PRESETS
-// ════════════════════════════════════════════════════
-function loadPreset(type, lang){
-  const skewEl = document.getElementById(lang+'-skew');
-  const sigEl  = document.getElementById(lang+'-sigma');
-  const outEl  = document.getElementById(lang+'-out');
-  const nEl    = document.getElementById(lang+'-n');
-
-  if(type==='sym')   { skewEl.value=0;    sigEl.value=5;  outEl.value=0; nEl.value=80; }
-  if(type==='right') { skewEl.value=2.0;  sigEl.value=6;  outEl.value=0; nEl.value=80; }
-  if(type==='left')  { skewEl.value=-2.0; sigEl.value=6;  outEl.value=0; nEl.value=80; }
-  if(type==='bi')    { skewEl.value=0;    sigEl.value=3;  outEl.value=0; nEl.value=120; }
-
-  updateLabel(lang+'-skew', lang+'-skew-lbl', 1);
-  updateLabel(lang+'-sigma', lang+'-sigma-lbl', 1);
-  updateLabel(lang+'-out', lang+'-out-lbl', 0);
-  updateLabel(lang+'-n', lang+'-n-lbl', 0);
-
-  generate(lang, type==='bi');
-}
-
-function updateLabel(sliderId, labelId, dec){
-  const v = parseFloat(document.getElementById(sliderId).value);
-  document.getElementById(labelId).textContent = v.toFixed(dec);
-}
-
-// ════════════════════════════════════════════════════
-// DATA GENERATION — Income & Consumption (bin ₺)
-// ════════════════════════════════════════════════════
-function generate(lang, bimodal){
-  const n      = parseInt(document.getElementById(lang+'-n').value);
-  const sigma  = parseFloat(document.getElementById(lang+'-sigma').value);
-  const skew   = parseFloat(document.getElementById(lang+'-skew').value);
-  const nOut   = parseInt(document.getElementById(lang+'-out').value);
-  const muIncome = 20; // ortalama gelir 20 bin TL
-
-  let data = [];
-
-  if(bimodal){
-    // İki grup: düşük gelir ~12k ve yüksek gelir ~30k
-    for(let i=0;i<Math.floor(n/2);i++) data.push(muIncome - 8 + randn()*sigma*0.6);
-    for(let i=0;i<Math.ceil(n/2);i++)  data.push(muIncome + 10 + randn()*sigma*0.6);
-  } else {
-    for(let i=0;i<n;i++){
-      data.push(muIncome + skewedNormal(skew)*sigma);
+// ══════════════════════════════════════════════
+// SCENE 0
+// ══════════════════════════════════════════════
+function drawScene0(){
+  const n=parseInt(document.getElementById('s0-n').value);
+  const noise=parseFloat(document.getElementById('s0-noise').value);
+  const d=genData(n,noise);
+  globalData=d;
+  const{x,y}=d;
+  const pts=x.map((xi,i)=>({x:xi,y:y[i]}));
+  destroyChart('c0');
+  const ctx=document.getElementById('c0-scatter').getContext('2d');
+  charts['c0']=new Chart(ctx,{
+    type:'scatter',
+    data:{datasets:[{
+      data:pts,
+      backgroundColor:C_ECO+'0.3)',
+      borderColor:C_ECO+'0.7)',
+      borderWidth:1,pointRadius:3
+    }]},
+    options:{
+      responsive:true,animation:{duration:200},
+      plugins:{legend:{display:false},
+        tooltip:{callbacks:{label:i=>lang==='tr'?`Gelir:${i.parsed.x.toFixed(1)}, Tük:${i.parsed.y.toFixed(1)}`:`Income:${i.parsed.x.toFixed(1)}, Cons:${i.parsed.y.toFixed(1)}`}}
+      },
+      scales:{
+        x:{title:{display:true,text:lang==='tr'?'Gelir X (bin ₺)':'Income X (k₺)',color:'rgba(255,255,255,.5)',font:{size:11}},
+          grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'rgba(255,255,255,.4)'}},
+        y:{title:{display:true,text:lang==='tr'?'Tüketim Y (bin ₺)':'Consumption Y (k₺)',color:'rgba(255,255,255,.5)',font:{size:11}},
+          grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'rgba(255,255,255,.4)'}}
+      }
     }
+  });
+}
+
+// ══════════════════════════════════════════════
+// SCENE 1 — Correlation
+// ══════════════════════════════════════════════
+function drawScene1(){
+  const rho=parseFloat(document.getElementById('s1-rho').value);
+  const n=100;
+  const muX=15,sdX=4,b1=0.74,noise=3;
+  const x=[],y=[];
+  for(let i=0;i<n;i++){
+    const xi=muX+randn()*sdX;
+    const eps=randn();
+    const yi=2+b1*xi+noise*(rho*((xi-muX)/sdX)+Math.sqrt(1-rho*rho)*eps);
+    x.push(xi);y.push(Math.max(0.5,yi));
   }
+  const ols=olsSimple(x,y);
+  document.getElementById('c1-r').textContent=fmtNum(ols.r,3);
+  document.getElementById('c1-r2').textContent=fmtNum(ols.r2,3);
 
-  // Negatif gelir olmaz
-  data = data.map(v => Math.max(1, v));
-
-  state[lang].dataClean = [...data];
-
-  // Çok varlıklı bireyler: geliri 5-10× ortalama
-  if(nOut > 0){
-    for(let i=0;i<nOut;i++){
-      data.push(muIncome * (5 + Math.random()*5));
+  const pts=x.map((xi,i)=>({x:xi,y:y[i]}));
+  destroyChart('c1');
+  const ctx=document.getElementById('c1-scatter').getContext('2d');
+  const mx=Math.min(...x),Mx=Math.max(...x);
+  charts['c1']=new Chart(ctx,{
+    type:'scatter',
+    data:{datasets:[
+      {data:pts,backgroundColor:C_STAT+'0.3)',borderColor:C_STAT+'0.7)',borderWidth:1,pointRadius:3,order:2},
+      {type:'line',data:[{x:mx,y:ols.b0+ols.b1*mx},{x:Mx,y:ols.b0+ols.b1*Mx}],
+       borderColor:C_STAT+'0.9)',borderWidth:2,pointRadius:0,fill:false,order:1}
+    ]},
+    options:{
+      responsive:true,animation:{duration:200},
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{title:{display:true,text:lang==='tr'?'Gelir X':'Income X',color:'rgba(255,255,255,.5)',font:{size:10}},
+          grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'rgba(255,255,255,.4)'}},
+        y:{title:{display:true,text:lang==='tr'?'Tüketim Y':'Consumption Y',color:'rgba(255,255,255,.5)',font:{size:10}},
+          grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'rgba(255,255,255,.4)'}}
+      }
     }
-    document.getElementById(lang+'-outlier-badge').classList.remove('hidden');
-    state[lang].outlierOn = true;
-  } else {
-    document.getElementById(lang+'-outlier-badge').classList.add('hidden');
-    state[lang].outlierOn = false;
-  }
-
-  state[lang].data = data;
-  update(lang);
-}
-
-// ════════════════════════════════════════════════════
-// STATS & UPDATE
-// ════════════════════════════════════════════════════
-function animVal(id, val, decimals){
-  const el = document.getElementById(id);
-  if(!el) return;
-  const prev = parseFloat(el.dataset.prev||val);
-  el.textContent = typeof val==='string' ? val : val.toFixed(decimals);
-  el.classList.remove('up','down');
-  if(typeof val==='number'){
-    if(val > prev+0.001) el.classList.add('up');
-    else if(val < prev-0.001) el.classList.add('down');
-    setTimeout(()=>el.classList.remove('up','down'),600);
-    el.dataset.prev = val;
-  }
-}
-
-function update(lang){
-  const d  = state[lang].data;
-  const dc = state[lang].dataClean;
-  if(!d.length) return;
-
-  const mn   = mean(d);
-  const md   = median(d);
-  const mo   = mode(d);
-  const va   = variance(d);
-  const sd   = stddev(d);
-  const sk   = skewnessCoef(d);
-  const cv   = (sd/Math.abs(mn)*100);
-  const rngV = Math.max(...d)-Math.min(...d);
-  const q1   = quantile(d,0.25), q3=quantile(d,0.75);
-  const iqr  = q3-q1;
-
-  animVal(lang+'-mean', mn, 2);
-  animVal(lang+'-med',  md, 2);
-  animVal(lang+'-mode', mo, 1);
-  animVal(lang+'-var',  va,  2);
-  animVal(lang+'-std',  sd,  2);
-  animVal(lang+'-cv',   cv,  1);
-  animVal(lang+'-range',rngV,2);
-  animVal(lang+'-iqr',  iqr, 2);
-  animVal(lang+'-skewstat', sk, 3);
-
-  // Çarpıklık mesajı
-  const msg = document.getElementById(lang+'-skew-msg');
-  if(Math.abs(sk)<0.5){
-    msg.className='info-box';
-    msg.innerHTML = lang==='tr'
-      ? 'Veri <strong>simetrik</strong> — ortalama, medyan ve mod birbirine yakın.'
-      : 'Data is <strong>symmetric</strong> — mean, median and mode are close.';
-  } else if(sk>0){
-    msg.className='warn-box';
-    msg.innerHTML = lang==='tr'
-      ? '⚠ <strong>Sağa çarpık dağılım</strong> — ortalama, medyanın <em>sağına</em> çekilir. Yüksek gelirli bireyler ortalamanın bozulmasına neden olur.'
-      : '⚠ <strong>Right-skewed distribution</strong> — the mean is pulled <em>above</em> the median. High-income individuals distort the mean.';
-  } else {
-    msg.className='warn-box';
-    msg.innerHTML = lang==='tr'
-      ? '⚠ <strong>Sola çarpık dağılım</strong> — ortalama, medyanın <em>soluna</em> çekilir.'
-      : '⚠ <strong>Left-skewed distribution</strong> — the mean is pulled <em>below</em> the median.';
-  }
-
-  // Normallik mesajı — n artınca CLT
-  const n = d.length;
-  const normMsg = document.getElementById(lang+'-normality-msg');
-  const hasOutlier = state[lang].outlierOn;
-  if(hasOutlier){
-    normMsg.className='warn-box';
-    normMsg.innerHTML = lang==='tr'
-      ? `⚠ <strong>n = ${n}</strong> — Çok varlıklı birey(ler) dağılımı sağa çarpıtıyor. Normal eğriden <em>uzaklaşma</em> gözlemleyin!`
-      : `⚠ <strong>n = ${n}</strong> — Wealthy outlier(s) are right-skewing the distribution. Notice the deviation from the normal curve!`;
-  } else if(n < 50){
-    normMsg.className='highlight-box';
-    normMsg.innerHTML = lang==='tr'
-      ? `📊 <strong>n = ${n}</strong> — Küçük örneklem. n'i artırınca dağılım normale yaklaşır.`
-      : `📊 <strong>n = ${n}</strong> — Small sample. Increase n to approach the normal shape.`;
-  } else if(n < 100){
-    normMsg.className='highlight-box';
-    normMsg.innerHTML = lang==='tr'
-      ? `📊 <strong>n = ${n}</strong> — Orta büyüklükte örneklem. Normal eğriyle uyum iyileşiyor.`
-      : `📊 <strong>n = ${n}</strong> — Medium sample. Agreement with the normal curve is improving.`;
-  } else {
-    normMsg.className='info-box';
-    normMsg.innerHTML = lang==='tr'
-      ? `✅ <strong>n = ${n}</strong> — Büyük örneklem! Büyük sayılar yasası (CLT) devreye giriyor — histogram normal eğrisine <em>yakınsamaktadır</em>.`
-      : `✅ <strong>n = ${n}</strong> — Large sample! CLT kicks in — the histogram is <em>converging to the normal curve</em>.`;
-  }
-
-  // Duyarlılık delta
-  const mnC = mean(dc), mdC = median(dc), moC = mode(dc);
-  if(state[lang].outlierOn && dc.length>0){
-    animVal(lang+'-delta-mean', Math.abs(mn-mnC), 2);
-    animVal(lang+'-delta-med',  Math.abs(md-mdC), 2);
-    animVal(lang+'-delta-mode', Math.abs(mo-moC), 1);
-  } else {
-    document.getElementById(lang+'-delta-mean').textContent='—';
-    document.getElementById(lang+'-delta-med').textContent='—';
-    document.getElementById(lang+'-delta-mode').textContent='—';
-  }
-
-  // Korelasyon kaydırıcısından Y üret
-  const rho = parseFloat(document.getElementById(lang+'-corr').value);
-  const muY  = mn * 0.75;    // tüketim gelirin ~%75'i
-  const sigY = sd * 0.8;
-  const yData = generateCorrelatedY(d, rho, muY, sigY);
-
-  const covXY = d.reduce((s,x,i)=>s+(x-mn)*(yData[i]-mean(yData)),0)/(n-1);
-  const sdy   = stddev(yData);
-  const corrActual = covXY/(sd*sdy);
-
-  const covEl = document.getElementById(lang+'-cov');
-  const corEl = document.getElementById(lang+'-cor');
-  const r2El  = document.getElementById(lang+'-r2');
-  if(covEl) covEl.textContent = covXY.toFixed(3);
-  if(corEl){
-    corEl.textContent = corrActual.toFixed(3);
-    corEl.className = corrActual>0 ? 'cov-pos' : 'cov-neg';
-  }
-  if(r2El) r2El.textContent = (corrActual**2).toFixed(3);
-
-  // Korelasyon açıklama mesajı
-  const corrDesc = document.getElementById(lang+'-corr-desc');
-  const ar = Math.abs(rho);
-  if(ar >= 0.8){
-    corrDesc.className = 'info-box';
-    corrDesc.innerHTML = lang==='tr'
-      ? `<strong>r = ${rho.toFixed(2)}</strong> — Çok güçlü ${rho>=0?'pozitif':'negatif'} korelasyon. Noktalar <strong>45° çizgisine</strong> çok yakın — gelir arttıkça tüketim de belirgin biçimde artıyor.`
-      : `<strong>r = ${rho.toFixed(2)}</strong> — Very strong ${rho>=0?'positive':'negative'} correlation. Points tightly cluster around the <strong>45° line</strong>.`;
-  } else if(ar >= 0.5){
-    corrDesc.className = 'info-box';
-    corrDesc.innerHTML = lang==='tr'
-      ? `<strong>r = ${rho.toFixed(2)}</strong> — Orta düzey ${rho>=0?'pozitif':'negatif'} korelasyon. Noktalar 45° etrafında görülür ama yayılma belirginleşiyor.`
-      : `<strong>r = ${rho.toFixed(2)}</strong> — Moderate ${rho>=0?'positive':'negative'} correlation. Points loosely follow the 45° direction but scatter is visible.`;
-  } else if(ar >= 0.2){
-    corrDesc.className = 'highlight-box';
-    corrDesc.innerHTML = lang==='tr'
-      ? `<strong>r = ${rho.toFixed(2)}</strong> — Zayıf korelasyon. Serpilme diyagramında belirgin bir yön yok — noktalar geniş alana dağılıyor.`
-      : `<strong>r = ${rho.toFixed(2)}</strong> — Weak correlation. No clear direction in the scatter plot — points spread widely.`;
-  } else {
-    corrDesc.className = 'warn-box';
-    corrDesc.innerHTML = lang==='tr'
-      ? `<strong>r ≈ 0</strong> — Korelasyon yok. Noktalar tamamıyla dağılmış; gelir ile tüketim arasında doğrusal ilişki gözükmiyor.`
-      : `<strong>r ≈ 0</strong> — No correlation. Points are completely scattered; no linear relationship between income and consumption.`;
-  }
-
-  drawHistogram(lang, d, mn, md, mo);
-  drawScatter(lang, d, yData, rho);
-}
-
-// ════════════════════════════════════════════════════
-// HISTOGRAM with Normal Density Overlay
-// ════════════════════════════════════════════════════
-function drawHistogram(lang, data, mn, md, mo){
-  const canvasId = lang+'-hist';
-  const bins = Math.max(10, Math.min(30, Math.floor(Math.sqrt(data.length)*1.5)));
-  const minV = Math.min(...data), maxV = Math.max(...data);
-  const bw   = (maxV-minV)/bins;
-  const counts = Array(bins).fill(0);
-  data.forEach(v=>{
-    let b = Math.floor((v-minV)/bw);
-    if(b>=bins) b=bins-1;
-    counts[b]++;
   });
-  const labels = counts.map((_,i)=>(minV+i*bw+bw/2).toFixed(1));
-  const midpoints = counts.map((_,i)=>minV+i*bw+bw/2);
+}
 
-  // Normal density scaled to histogram
-  const n = data.length;
-  const sd = stddev(data);
-  const normalCurve = midpoints.map(x => {
-    const z = (x - mn)/sd;
-    return (n * bw) * (1/(sd*Math.sqrt(2*Math.PI))) * Math.exp(-0.5*z*z);
+// ══════════════════════════════════════════════
+// SCENE 2 — OLS
+// ══════════════════════════════════════════════
+function drawScene2(){
+  const b1True=parseFloat(document.getElementById('s2-beta').value);
+  const noise=parseFloat(document.getElementById('s2-noise').value);
+  const n=100;
+  const d=genData(n,noise,0.87,b1True,0);
+  const{x,y}=d;
+  const ols=olsSimple(x,y);
+
+  document.getElementById('c2-b0').textContent=fmtNum(ols.b0,3);
+  document.getElementById('c2-b1').textContent=fmtNum(ols.b1,3);
+  document.getElementById('c2-r2').textContent=fmtNum(ols.r2,3);
+  document.getElementById('c2-se').textContent=fmtNum(ols.se,4);
+  document.getElementById('c2-t').textContent=fmtNum(ols.t,2);
+  const sig=Math.abs(ols.t)>2.576?'p < 0.01 ✓':Math.abs(ols.t)>1.96?'p < 0.05 ✓':'p > 0.05 ✗';
+  const sigEl=document.getElementById('c2-sig');
+  const sigBox=document.getElementById('c2-sig-box');
+  sigEl.textContent=sig;
+  sigEl.className='output-val '+(sig.includes('✓')?'ok-col':'warn-col');
+  sigBox.className='output-box '+(sig.includes('✓')?'ok-box':'warn-box');
+
+  const pts=x.map((xi,i)=>({x:xi,y:y[i]}));
+  const mx=Math.min(...x),Mx=Math.max(...x);
+  destroyChart('c2');
+  const ctx=document.getElementById('c2-scatter').getContext('2d');
+  charts['c2']=new Chart(ctx,{
+    type:'scatter',
+    data:{datasets:[
+      {data:pts,backgroundColor:C_ECO+'0.25)',borderColor:C_ECO+'0.6)',borderWidth:1,pointRadius:3,order:2},
+      {type:'line',data:[{x:mx,y:ols.b0+ols.b1*mx},{x:Mx,y:ols.b0+ols.b1*Mx}],
+       borderColor:C_ECO+'1)',borderWidth:2.5,pointRadius:0,fill:false,order:1,label:'OLS'}
+    ]},
+    options:{
+      responsive:true,animation:{duration:200},
+      plugins:{legend:{display:false},
+        tooltip:{callbacks:{
+          label:i=>i.dataset.label==='OLS'?`ŷ = ${fmtNum(ols.b0)}+${fmtNum(ols.b1)}x`:`(${fmtNum(i.parsed.x,1)}, ${fmtNum(i.parsed.y,1)})`
+        }}
+      },
+      scales:{
+        x:{title:{display:true,text:lang==='tr'?'Gelir X (bin ₺)':'Income X (k₺)',color:'rgba(255,255,255,.5)',font:{size:10}},
+          grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'rgba(255,255,255,.4)'}},
+        y:{title:{display:true,text:lang==='tr'?'Tüketim Y (bin ₺)':'Consumption Y (k₺)',color:'rgba(255,255,255,.5)',font:{size:10}},
+          grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'rgba(255,255,255,.4)'}}
+      }
+    }
   });
+}
 
-  const vertLine = (val, color, labelText) => ({
-    id: 'vline_'+lang+'_'+labelText,
-    afterDraw(chart){
-      const x = chart.scales.x.getPixelForValue(val.toFixed(1));
-      if(!x) return;
-      const ctx = chart.ctx;
-      ctx.save();
-      ctx.beginPath();
-      ctx.moveTo(x, chart.chartArea.top);
-      ctx.lineTo(x, chart.chartArea.bottom);
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 2.5;
-      ctx.setLineDash([5,3]);
-      ctx.stroke();
-      ctx.setLineDash([]);
-      ctx.fillStyle = color;
-      ctx.font = 'bold 11px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(labelText, x, chart.chartArea.top+12);
-      ctx.restore();
+// ══════════════════════════════════════════════
+// SCENE 3 — Heteroskedasticity
+// ══════════════════════════════════════════════
+function drawScene3(){
+  const het=parseFloat(document.getElementById('s3-het').value);
+  const n=120;
+  const d=genData(n,2,0.87,0.74,het);
+  const{x,y}=d;
+  const ols=olsSimple(x,y);
+
+  document.getElementById('c3-r2').textContent=fmtNum(ols.r2,3);
+
+  // Scatter + fit
+  const pts=x.map((xi,i)=>({x:xi,y:y[i]}));
+  const mx=Math.min(...x),Mx=Math.max(...x);
+  destroyChart('c3s');
+  const ctx3s=document.getElementById('c3-scatter').getContext('2d');
+  charts['c3s']=new Chart(ctx3s,{
+    type:'scatter',
+    data:{datasets:[
+      {data:pts,backgroundColor:C_STAT+'0.25)',borderColor:C_STAT+'0.6)',borderWidth:1,pointRadius:3,order:2},
+      {type:'line',data:[{x:mx,y:ols.b0+ols.b1*mx},{x:Mx,y:ols.b0+ols.b1*Mx}],
+       borderColor:C_STAT+'0.9)',borderWidth:2,pointRadius:0,fill:false,order:1}
+    ]},
+    options:{responsive:true,animation:{duration:200},plugins:{legend:{display:false}},
+      scales:{
+        x:{title:{display:true,text:lang==='tr'?'Gelir X':'Income X',color:'rgba(255,255,255,.5)',font:{size:10}},
+          grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'rgba(255,255,255,.4)'}},
+        y:{title:{display:true,text:lang==='tr'?'Tüketim Y':'Consumption Y',color:'rgba(255,255,255,.5)',font:{size:10}},
+          grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'rgba(255,255,255,.4)'}}
+      }
     }
   });
 
-  const s = state[lang].charts;
-  if(s.hist){ s.hist.destroy(); s.hist=null; }
+  // Residual plot
+  const residPts=x.map((xi,i)=>({x:xi,y:ols.resid[i]}));
+  destroyChart('c3r');
+  const ctx3r=document.getElementById('c3-resid').getContext('2d');
 
-  const ctx = document.getElementById(canvasId).getContext('2d');
-  s.hist = new Chart(ctx,{
+  // Color residuals by size — red if big
+  const absr=ols.resid.map(Math.abs);
+  const maxr=Math.max(...absr);
+  const bgColors=absr.map(a=>{
+    const t=a/maxr;
+    const r=Math.round(248*t+34*(1-t));
+    const g=Math.round(113*t+211*(1-t));
+    const b=Math.round(113*t+238*(1-t));
+    return `rgba(${r},${g},${b},0.55)`;
+  });
+
+  charts['c3r']=new Chart(ctx3r,{
+    type:'scatter',
+    data:{datasets:[
+      {data:residPts,backgroundColor:bgColors,borderColor:bgColors,borderWidth:1,pointRadius:3},
+      {type:'line',data:[{x:mx,y:0},{x:Mx,y:0}],borderColor:'rgba(255,255,255,.2)',borderWidth:1,pointRadius:0,fill:false}
+    ]},
+    options:{responsive:true,animation:{duration:200},plugins:{legend:{display:false}},
+      scales:{
+        x:{title:{display:true,text:lang==='tr'?'Gelir X (yhat)':'Income X (fitted)',color:'rgba(255,255,255,.5)',font:{size:10}},
+          grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'rgba(255,255,255,.4)'}},
+        y:{title:{display:true,text:lang==='tr'?'Artıklar ê':'Residuals ê',color:'rgba(255,255,255,.5)',font:{size:10}},
+          grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'rgba(255,255,255,.4)'}}
+      }
+    }
+  });
+
+  // Breusch-Pagan proxy: regress resid² on x
+  const resid2=ols.resid.map(e=>e*e);
+  const bpOls=olsSimple(x,resid2);
+  const bpStat=(n*bpOls.r2).toFixed(2);
+  const bpSignif=parseFloat(bpStat)>3.84;
+  const bpEl=document.getElementById('c3-bp');
+  bpEl.textContent=`χ²=${bpStat} ${bpSignif?'⚠ RED':'✓ KAB'}`;
+  bpEl.className='output-val '+(bpSignif?'warn-col':'ok-col');
+}
+
+// ══════════════════════════════════════════════
+// SCENE 4 — Inference / Monte Carlo
+// ══════════════════════════════════════════════
+function drawScene4(){
+  const nsims=parseInt(document.getElementById('s4-sims').value);
+  const n=parseInt(document.getElementById('s4-n').value);
+  const b1True=0.74;
+  const noise=2.5;
+
+  // Monte Carlo: collect b1 estimates
+  const b1s=[];
+  for(let s=0;s<nsims;s++){
+    const d=genData(n,noise,0.87,b1True,0);
+    const ols=olsSimple(d.x,d.y);
+    b1s.push(ols.b1);
+  }
+  const mb1=mean(b1s);
+  const sb1=std(b1s);
+  const bias=mb1-b1True;
+  const ci95lo=mb1-1.96*sb1;
+  const ci95hi=mb1+1.96*sb1;
+
+  document.getElementById('c4-b1').textContent=fmtNum(mb1,4);
+  document.getElementById('c4-ci-val').textContent=`[${fmtNum(ci95lo,3)}, ${fmtNum(ci95hi,3)}]`;
+  document.getElementById('c4-bias').textContent=fmtNum(bias,5);
+  const h0reject=ci95lo>0;
+  const h0el=document.getElementById('c4-h0');
+  const h0box=document.getElementById('c4-h0-box');
+  h0el.textContent=h0reject?'Red ✓':'Reddedilemez';
+  h0el.className='output-val '+(h0reject?'ok-col':'warn-col');
+  h0box.className='output-box '+(h0reject?'ok-box':'warn-box');
+
+  // CI chart — one OLS result visualised
+  const singleD=genData(n,noise,0.87,b1True,0);
+  const singleOls=olsSimple(singleD.x,singleD.y);
+  const ciLo=singleOls.b1-1.96*singleOls.se;
+  const ciHi=singleOls.b1+1.96*singleOls.se;
+
+  destroyChart('c4ci');
+  const ctx4ci=document.getElementById('c4-ci').getContext('2d');
+  charts['c4ci']=new Chart(ctx4ci,{
     type:'bar',
     data:{
-      labels,
+      labels:['β̂₁'],
       datasets:[
-        {
-          label: lang==='tr'?'Frekans':'Frequency',
-          data: counts,
-          backgroundColor:'rgba(24,95,165,0.35)',
-          borderColor:'rgba(24,95,165,0.7)',
-          borderWidth:1,
-          order:2
-        },
-        {
-          label: lang==='tr'?'Normal eğri':'Normal curve',
-          data: normalCurve,
-          type:'line',
-          borderColor:'rgba(226,75,74,0.9)',
-          backgroundColor:'rgba(226,75,74,0.08)',
-          borderWidth:2.5,
-          pointRadius:0,
-          tension:0.4,
-          fill:true,
-          order:1
-        }
+        {label:'Tahmin',data:[singleOls.b1],backgroundColor:C_ECO+'0.5)',borderColor:C_ECO+'1)',borderWidth:2,barThickness:40},
+        {label:'Gerçek β₁',data:[b1True],backgroundColor:C_STAT+'0.7)',borderColor:C_STAT+'1)',borderWidth:2,barThickness:20}
       ]
     },
     options:{
-      responsive:true,
-      animation:{duration:300},
+      indexAxis:'y',responsive:true,animation:{duration:300},
       plugins:{
-        legend:{display:false},
-        tooltip:{
-          callbacks:{
-            title: items => (lang==='tr'?'Değer: ':'Value: ')+items[0].label+' k₺'
-          }
-        }
+        legend:{labels:{color:'rgba(255,255,255,.5)',font:{size:10}}},
+        tooltip:{enabled:true},
+        annotation:{annotations:{
+          ciLine:{type:'line',xMin:ciLo,xMax:ciHi,yMin:-0.5,yMax:0.5,
+            borderColor:C_ECO+'0.8)',borderWidth:3,borderDash:[6,3]}
+        }}
       },
       scales:{
-        x:{
-          title:{display:true,text:lang==='tr'?'Gelir (bin ₺)':'Income (k₺)',font:{size:11}},
-          grid:{display:false},
-          ticks:{maxTicksLimit:8,font:{size:10}}
-        },
-        y:{
-          title:{display:true,text:lang==='tr'?'Frekans':'Frequency',font:{size:11}},
-          grid:{color:'rgba(0,0,0,0.05)'}
-        }
+        x:{min:0,max:1.2,title:{display:true,text:lang==='tr'?'Katsayı değeri':'Coefficient value',color:'rgba(255,255,255,.5)',font:{size:10}},
+          grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'rgba(255,255,255,.4)'}},
+        y:{grid:{display:false},ticks:{color:'rgba(255,255,255,.4)'}}
       }
-    },
-    plugins:[
-      vertLine(mn,'#185FA5', lang==='tr'?'Ort.':'Mean'),
-      vertLine(md,'#3B6D11', lang==='tr'?'Med.':'Med.'),
-      vertLine(mo,'#7B3FA0', lang==='tr'?'Mod':'Mode')
-    ]
+    }
   });
-}
 
-// ════════════════════════════════════════════════════
-// SCATTER — Income vs Consumption
-// ════════════════════════════════════════════════════
-function drawScatter(lang, xData, yData, rho){
-  const canvasId = lang+'-scatter';
-  const pts = xData.map((x,i)=>({x, y:yData[i]}));
+  // Sampling distribution histogram
+  const bins=25;
+  const minB=Math.min(...b1s),maxB=Math.max(...b1s);
+  const bw=(maxB-minB)/bins;
+  const counts=Array(bins).fill(0);
+  b1s.forEach(v=>{let b=Math.floor((v-minB)/bw);if(b>=bins)b=bins-1;counts[b]++;});
+  const lbls=counts.map((_,i)=>(minB+i*bw+bw/2).toFixed(3));
 
-  // 45° reference line (min to max of both axes)
-  const allX = xData, allY = yData;
-  const minAll = Math.min(Math.min(...allX), Math.min(...allY));
-  const maxAll = Math.max(Math.max(...allX), Math.max(...allY));
-  const refLine = [
-    {x: minAll, y: minAll},
-    {x: maxAll, y: maxAll}
-  ];
-
-  // Color based on correlation
-  const ar = Math.abs(rho);
-  const pointColor = ar > 0.7 ? 'rgba(24,95,165,0.5)' :
-                     ar > 0.4 ? 'rgba(59,109,17,0.5)' :
-                                'rgba(123,63,160,0.4)';
-
-  const s = state[lang].charts;
-  if(s.scatter){ s.scatter.destroy(); s.scatter=null; }
-
-  const ctx = document.getElementById(canvasId).getContext('2d');
-  s.scatter = new Chart(ctx,{
-    type:'scatter',
-    data:{
-      datasets:[
-        {
-          label: lang==='tr'?'Gözlemler':'Observations',
-          data: pts,
-          backgroundColor: pointColor,
-          borderColor: pointColor.replace('0.5','0.8').replace('0.4','0.7'),
-          borderWidth:1,
-          pointRadius: xData.length > 100 ? 3 : 4,
-          pointHoverRadius:6,
-          order:2
-        },
-        {
-          label: lang==='tr'?'45° çizgisi':'45° reference',
-          data: refLine,
-          type:'line',
-          borderColor:'rgba(226,75,74,0.5)',
-          borderWidth:1.5,
-          borderDash:[6,4],
-          pointRadius:0,
-          fill:false,
-          order:1
-        }
-      ]
-    },
+  destroyChart('c4dist');
+  const ctx4d=document.getElementById('c4-dist').getContext('2d');
+  charts['c4dist']=new Chart(ctx4d,{
+    type:'bar',
+    data:{labels:lbls,datasets:[{
+      data:counts,
+      backgroundColor:b1s.map((_,i)=>{
+        const mid=minB+(i%bins)*bw+bw/2;
+        return mid>=ciLo&&mid<=ciHi?C_STAT+'0.55)':C_ECO+'0.4)';
+      }),
+      borderColor:C_ECO+'0.6)',borderWidth:1
+    }]},
     options:{
-      responsive:true,
-      animation:{duration:200},
-      plugins:{
-        legend:{display:false},
-        tooltip:{
-          callbacks:{
-            label:item=>`Gelir: ${item.parsed.x.toFixed(1)} k₺, Tüketim: ${item.parsed.y.toFixed(1)} k₺`
-          }
-        }
-      },
+      responsive:true,animation:{duration:300},
+      plugins:{legend:{display:false}},
       scales:{
-        x:{
-          title:{display:true,text:lang==='tr'?'Gelir X (bin ₺)':'Income X (k₺)',font:{size:11}},
-          grid:{color:'rgba(0,0,0,0.05)'}
-        },
-        y:{
-          title:{display:true,text:lang==='tr'?'Tüketim Y (bin ₺)':'Consumption Y (k₺)',font:{size:11}},
-          grid:{color:'rgba(0,0,0,0.05)'}
-        }
+        x:{title:{display:true,text:lang==='tr'?'β̂₁ dağılımı (Monte Carlo)':'β̂₁ distribution (Monte Carlo)',color:'rgba(255,255,255,.5)',font:{size:10}},
+          grid:{display:false},ticks:{maxTicksLimit:6,color:'rgba(255,255,255,.4)'}},
+        y:{title:{display:true,text:lang==='tr'?'Frekans':'Frequency',color:'rgba(255,255,255,.5)',font:{size:10}},
+          grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'rgba(255,255,255,.4)'}}
       }
     }
   });
 }
 
-// ════════════════════════════════════════════════════
-// SLIDER LISTENERS
-// ════════════════════════════════════════════════════
-['tr','en'].forEach(lang=>{
-  ['n','sigma','skew','out'].forEach(key=>{
-    const dec = key==='skew'?1:key==='sigma'?1:0;
-    const el = document.getElementById(lang+'-'+key);
-    if(el) el.addEventListener('input',function(){
-      document.getElementById(lang+'-'+key+'-lbl').textContent = parseFloat(this.value).toFixed(dec);
-      generate(lang);
-    });
-  });
+// ══════════════════════════════════════════════
+// SCENE NAVIGATION
+// ══════════════════════════════════════════════
+let currentScene=0;
+const TOTAL=6;
 
-  // Korelasyon kaydırıcısı
-  const corrEl = document.getElementById(lang+'-corr');
-  if(corrEl) corrEl.addEventListener('input',function(){
-    document.getElementById(lang+'-corr-lbl').textContent = parseFloat(this.value).toFixed(2);
-    update(lang);
+function goToScene(n){
+  document.getElementById('scene-'+currentScene).classList.remove('active');
+  currentScene=n;
+  document.getElementById('scene-'+n).classList.add('active');
+  updateProgress();
+  drawCurrentScene();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function updateProgress(){
+  for(let i=0;i<TOTAL;i++){
+    const circle=document.getElementById('circle-'+i);
+    const node=document.getElementById('node-'+i);
+    circle.className='step-circle';
+    node.className='step-node';
+    if(i<currentScene){
+      circle.classList.add('done');
+    } else if(i===currentScene){
+      const cls=i<3?'stat-active':'eco-active';
+      circle.classList.add(cls);
+      node.classList.add(cls);
+    }
+    if(i<TOTAL-1){
+      const conn=document.getElementById('conn-'+i);
+      conn.className='step-connector'+(i<currentScene?' lit':'');
+    }
+  }
+}
+
+function drawCurrentScene(){
+  if(currentScene===0) drawScene0();
+  else if(currentScene===1) drawScene1();
+  else if(currentScene===2) drawScene2();
+  else if(currentScene===3) drawScene3();
+  else if(currentScene===4) drawScene4();
+}
+
+// ══════════════════════════════════════════════
+// SLIDER LIVE UPDATES
+// ══════════════════════════════════════════════
+function bindSlider(id,lblId,dec,fn){
+  const el=document.getElementById(id);
+  const lbl=document.getElementById(lblId);
+  if(!el)return;
+  el.addEventListener('input',function(){
+    lbl.textContent=parseFloat(this.value).toFixed(dec);
+    fn();
   });
+}
+bindSlider('s0-n','s0-n-lbl',0,drawScene0);
+bindSlider('s0-noise','s0-noise-lbl',1,drawScene0);
+bindSlider('s1-rho','s1-rho-lbl',2,drawScene1);
+bindSlider('s2-beta','s2-beta-lbl',2,drawScene2);
+bindSlider('s2-noise','s2-noise-lbl',1,drawScene2);
+bindSlider('s3-het','s3-het-lbl',1,drawScene3);
+bindSlider('s4-sims','s4-sims-lbl',0,drawScene4);
+bindSlider('s4-n','s4-n-lbl',0,drawScene4);
+
+// ══════════════════════════════════════════════
+// i18n
+// ══════════════════════════════════════════════
+const dict={
+  tr:{
+    eyebrow:"Illustrating the Invisible · Görsel Sezgi",
+    h1_stat:"İstatistik",h1_eco:"Ekonometri",
+    header_sub:"Aynı veri. Farklı sorular. Farklı araçlar.",
+    step0:"Veri & Soru",step1:"Korelasyon",step2:"OLS",step3:"Varsayımlar",step4:"Çıkarım",step5:"Özet",
+    badge_stat:"İSTATİSTİK",badge_eco:"EKONOMETRİ",
+    scene0_step:"Adım 1 / 6 — Veriyi Tanıyalım",
+    scene0_h2a:"Aynı veri,",scene0_h2b:"farklı sorular.",
+    scene0_p:"100 haneye ait aylık gelir (X) ve tüketim (Y) verisi elimizde. İki disiplin bu veriye çok farklı gözlerle bakar.",
+    q_stat_label:"📊 İstatistik sorar:",q_stat_q:"\"Bu iki değişken arasında ilişki var mı? Ne kadar güçlü?\"",q_stat_sub:"→ Tanımlama, özetleme, örüntü arama",
+    q_eco_label:"📐 Ekonometri sorar:",q_eco_q:"\"Gelir 1 birim artarsa tüketim gerçekten ne kadar artar? Varsayımlar sağlıklı mı?\"",q_eco_sub:"→ Nedensellik, katsayı, politika çıkarımı",
+    ctrl_n:"n (gözlem)",ctrl_noise:"Gürültü σ",
+    scene0_insight_title:"💡 Fark nerede başlar?",
+    scene0_insight_body:"İstatistik bu grafiğe bakıp \"ilişki var\" der ve işi biter. Ekonometri ise \"ne kadar?\", \"neden?\", \"bu tahmin güvenilir mi?\", \"politika tasarımında kullanabilir miyiz?\" diye sormaya devam eder.",
+    nav_prev:"Geri",nav_next:"İleri",nav_restart:"Başa dön",
+    scene1_step:"Adım 2 / 6 — İstatistiğin Cevabı: Korelasyon",
+    scene1_h2:"\"r = 0.87 — güçlü pozitif ilişki.\"",
+    scene1_p:"İstatistik bu noktada tatmin olabilir. Korelasyon katsayısı r, iki değişkenin birlikte ne kadar hareket ettiğini ölçer. Ama bu yeterli mi?",
+    panel_stat_finds:"İstatistiğin bulduğu",panel_eco_asks:"Ekonometrinin sorusu",
+    c1_r_sub:"Güçlü pozitif ilişki",c1_r2_sub:"Açıklanan varyans",
+    c1_stat_note:"\"R² yüksek, p küçük — bitti!\" diyebilir istatistik.",
+    eco_q1_label:"Ekonometri henüz tatmin olmaz:",eco_q1:"\"r yüksek ama bu nedensellik mi? X, Y'yi mi etkiliyor, yoksa Y, X'i mi? Üçüncü bir değişken var mı?\"",
+    eco_q2_label:"Asıl soru:",eco_q2:"\"Gelir 1 TL arttığında tüketim tam olarak kaç TL artar? Bu tahminin standart hatası nedir?\"",
+    corr_vs_cause_title:"Korelasyon ≠ Nedensellik",
+    corr_vs_cause_body:"Buz dondurma satışı ile boğulma ölümleri arasında r ≈ 0.85. İkisi de sıcak hava ile ilgili. Korelasyon yüksek ama nedensellik yok.",
+    ctrl_corr:"Korelasyon gücü",
+    scene2_step:"Adım 3 / 6 — Ekonometrinin Cevabı: OLS",
+    scene2_h2:"\"β̂₁ = 0.74 — her 1 bin TL gelir artışı, tüketimi 740 TL artırıyor.\"",
+    scene2_p:"Ekonometri bir adım öteye geçer: OLS ile katsayıları tahmin eder, güven aralığı hesaplar, anlamlılık testi yapar.",
+    panel_ols:"OLS Regresyon Doğrusu",panel_what_adds:"Ekonometri ne ekliyor?",
+    c2_b0_sub:"Kesişim noktası",c2_b1_sub:"Marjinal tüketim eğilimi",c2_se_sub:"Standart hata",
+    c2_sig_label:"Anlamlılık",
+    ctrl_mpc:"MTC (β₁ gerçek)",ctrl_noise2:"Gürültü σ",
+    ols_insight_title:"OLS'nin gücü:",
+    ols_insight_body:"Korelasyon \"ilişki var\" der. OLS \"1 birim X, Y'yi tam olarak β̂₁ kadar değiştiriyor — ve bu tahmin % 95 güven aralığıyla şu aralıkta\" der. Bu fark politika için kritiktir.",
+    scene3_step:"Adım 4 / 6 — İstatistiğin Görmediği: Varsayımlar",
+    scene3_h2a:"İstatistik yüksek R² görür.",scene3_h2b:"Ekonometri artıkları inceler.",
+    scene3_p:"OLS'nin BLUE (En İyi Doğrusal Sapmasız Tahminci) olması için Gauss-Markov koşullarının sağlanması gerekir. Artıklar bu koşulları test eder.",
+    panel_stat_sees:"İstatistik görür: Yüksek R²",panel_eco_sees:"Ekonometri görür: Huni Şekilli Artıklar!",
+    c3_r2_sub:"\"Model iyi uyum sağlıyor\"",c3_p_sub:"\"İlişki anlamlı\"",
+    c3_stat_stop:"\"R² yüksek, p küçük — bitti!\" diyebilir istatistik.",
+    c3_hetero_label:"Heteroskedastisite",c3_hetero_sub:"Varyans sabit değil",
+    c3_se_problem:"SE sorunu",c3_se_problem_val:"Güvenilmez",c3_se_problem_sub:"t-testleri bozulmuş",
+    ctrl_hetero:"Heteroskedastisite gücü",
+    hetero_insight_title:"Heteroskedastisite neden önemli?",
+    hetero_insight_body:"Gelir arttıkça tüketim örüntüsü de genişler (zenginler daha değişken harcama yapar). Bu durumda OLS standart hataları güvenilmez — t-testleri yanıltıcı olur. Ekonometri bunu görüp HAC/WLS kullanır.",
+    scene4_step:"Adım 5 / 6 — Çıkarım: Politika Ne Olmalı?",
+    scene4_h2:"\"Vergi indirimi tüketimi gerçekten artırır mı? β̂₁ bize ne söylüyor?\"",
+    scene4_p:"Ekonometrinin nihai hedefi: katsayı tahminlerini politika çıkarımına dönüştürmek. Güven aralığı ve hipotez testi burada kritik rol oynar.",
+    panel_ci:"Güven Aralığı — β̂₁",panel_sampling:"Örnekleme Dağılımı (β̂₁)",
+    c4_bias_label:"Sapma",c4_bias_sub:"E[β̂₁] − β₁",
+    ctrl_samples:"Tekrar sayısı (Monte Carlo)",ctrl_n4:"n (gözlem)",
+    inference_insight_title:"Ekonometrinin çıkarımı:",
+    inference_insight_body:"β̂₁ = 0.74 → \"Ortalama bir hanede gelir 1 bin TL artarsa tüketim yaklaşık 740 TL artar.\" Bu bulgu; vergi politikası, teşvik programı, refah transferi gibi kararlar için doğrudan kullanılabilir. İstatistik bize \"r yüksek\" dedi — ekonometri bize karar verdirir.",
+    scene5_step:"Adım 6 / 6 — Özet Karşılaştırma",
+    scene5_h2a:"İstatistik temeli sağlar.",scene5_h2b:"Ekonometri ekonomik anlam kurar.",
+    th_dim:"Boyut",th_stat:"📊 İstatistik",th_eco:"📐 Ekonometri",
+    row_q:"Temel soru",row_q_stat:"\"İlişki var mı? Ne kadar güçlü?\"",row_q_eco:"\"Nedensellik var mı? Katsayı nedir? Politika ne olmalı?\"",
+    row_tool:"Ana araç",row_tool_stat:"Korelasyon, betimsel istatistik, dağılım",row_tool_eco:"OLS, hipotez testi, diagnostik testler, güven aralığı",
+    row_output:"Çıktı",row_output_stat:"r = 0.87, R² = 0.76",row_output_eco:"β̂₁ = 0.74 (SE=0.03), t=24.7, %95 GA [0.68, 0.80]",
+    row_assump:"Varsayım kontrolü",row_assump_stat:"Genellikle sorgulanmaz",row_assump_eco:"BP, BG, DW, VIF, Zivot-Andrews — zorunlu",
+    row_policy:"Politika çıkarımı",row_policy_stat:"Doğrudan yapılmaz",row_policy_eco:"\"1 TL vergi indirimi → 0.74 TL tüketim artışı\"",
+    row_meta:"Ekonometri + İstatistik",row_meta_val:"Ekonometri, istatistiğin üzerine inşa edilir — onu reddeder değil, ekonomik içerikle zenginleştirir.",
+    final_insight_title:"🎓 Özet cümle:",
+    final_insight_body:"İstatistik \"ne\" sorusunu cevaplar. Ekonometri \"ne kadar\", \"neden\" ve \"ne yapmalı\" sorularını cevaplar. Gelir–tüketim örneğinde istatistik korelasyonu buldu; ekonometri onu marjinal tüketim eğilimine, güven aralığına ve politika tavsiyesine dönüştürdü.",
+    lbl_b0:"β̂₀ (sabit)",lbl_b1:"β̂₁ (eğim)",lbl_tstat:"t istatistiği",lbl_pval:"p-değeri",
+    lbl_b1est:"β̂₁ tahmini",lbl_ci95:"%95 GA",
+  },
+  en:{
+    eyebrow:"Illustrating the Invisible · Visual Intuitions",
+    h1_stat:"Statistics",h1_eco:"Econometrics",
+    header_sub:"Same data. Different questions. Different tools.",
+    step0:"Data & Question",step1:"Correlation",step2:"OLS",step3:"Assumptions",step4:"Inference",step5:"Summary",
+    badge_stat:"STATISTICS",badge_eco:"ECONOMETRICS",
+    scene0_step:"Step 1 / 6 — Meet the Data",
+    scene0_h2a:"Same data,",scene0_h2b:"different questions.",
+    scene0_p:"We have monthly income (X) and consumption (Y) data for 100 households. Two disciplines look at this data through very different lenses.",
+    q_stat_label:"📊 Statistics asks:",q_stat_q:"\"Is there a relationship between these two variables? How strong is it?\"",q_stat_sub:"→ Description, summarization, pattern search",
+    q_eco_label:"📐 Econometrics asks:",q_eco_q:"\"If income rises by 1 unit, how much does consumption actually increase? Are the assumptions valid?\"",q_eco_sub:"→ Causality, coefficients, policy inference",
+    ctrl_n:"n (obs)",ctrl_noise:"Noise σ",
+    scene0_insight_title:"💡 Where does the difference begin?",
+    scene0_insight_body:"Statistics looks at this chart, says \"there is a relationship\" and stops. Econometrics keeps asking: \"How much?\", \"Why?\", \"Is this estimate reliable?\", \"Can we use it for policy design?\"",
+    nav_prev:"Back",nav_next:"Next",nav_restart:"Restart",
+    scene1_step:"Step 2 / 6 — Statistics' Answer: Correlation",
+    scene1_h2:"\"r = 0.87 — strong positive relationship.\"",
+    scene1_p:"Statistics can be satisfied here. The correlation coefficient r measures how much two variables move together. But is this enough?",
+    panel_stat_finds:"What statistics finds",panel_eco_asks:"Econometrics' question",
+    c1_r_sub:"Strong positive relationship",c1_r2_sub:"Explained variance",
+    c1_stat_note:"\"High R², small p — done!\" statistics might say.",
+    eco_q1_label:"Econometrics is not yet satisfied:",eco_q1:"\"r is high, but is this causality? Does X affect Y or Y affect X? Is there a third variable?\"",
+    eco_q2_label:"The real question:",eco_q2:"\"When income increases by 1 TL, how many TL does consumption increase exactly? What is the standard error of this estimate?\"",
+    corr_vs_cause_title:"Correlation ≠ Causality",
+    corr_vs_cause_body:"The correlation between ice cream sales and drowning deaths is r ≈ 0.85. Both are related to hot weather. High correlation, no causality.",
+    ctrl_corr:"Correlation strength",
+    scene2_step:"Step 3 / 6 — Econometrics' Answer: OLS",
+    scene2_h2:"\"β̂₁ = 0.74 — every 1k TL income rise increases consumption by 740 TL.\"",
+    scene2_p:"Econometrics goes further: it estimates coefficients with OLS, computes confidence intervals, and runs significance tests.",
+    panel_ols:"OLS Regression Line",panel_what_adds:"What does econometrics add?",
+    c2_b0_sub:"Intercept",c2_b1_sub:"Marginal propensity to consume",c2_se_sub:"Standard error",
+    c2_sig_label:"Significance",
+    ctrl_mpc:"MPC (true β₁)",ctrl_noise2:"Noise σ",
+    ols_insight_title:"The power of OLS:",
+    ols_insight_body:"Correlation says \"there is a relationship\". OLS says \"1 unit of X changes Y by exactly β̂₁ — and this estimate lies within this 95% confidence interval.\" This difference is critical for policy.",
+    scene3_step:"Step 4 / 6 — What Statistics Misses: Assumptions",
+    scene3_h2a:"Statistics sees a high R².",scene3_h2b:"Econometrics inspects residuals.",
+    scene3_p:"For OLS to be BLUE (Best Linear Unbiased Estimator), the Gauss-Markov conditions must hold. Residuals test these conditions.",
+    panel_stat_sees:"Statistics sees: High R²",panel_eco_sees:"Econometrics sees: Fan-shaped residuals!",
+    c3_r2_sub:"\"Model fits well\"",c3_p_sub:"\"Relationship is significant\"",
+    c3_stat_stop:"\"High R², small p — done!\" statistics might say.",
+    c3_hetero_label:"Heteroskedasticity",c3_hetero_sub:"Variance is not constant",
+    c3_se_problem:"SE problem",c3_se_problem_val:"Unreliable",c3_se_problem_sub:"t-tests are distorted",
+    ctrl_hetero:"Heteroskedasticity strength",
+    hetero_insight_title:"Why does heteroskedasticity matter?",
+    hetero_insight_body:"As income rises, spending patterns widen (wealthier households vary more). OLS standard errors become unreliable — t-tests mislead. Econometrics detects this and uses HAC/WLS corrections.",
+    scene4_step:"Step 5 / 6 — Inference: What Should Policy Be?",
+    scene4_h2:"\"Does a tax cut really increase consumption? What does β̂₁ tell us?\"",
+    scene4_p:"Econometrics' ultimate goal: translate coefficient estimates into policy inference. Confidence intervals and hypothesis tests play a critical role here.",
+    panel_ci:"Confidence Interval — β̂₁",panel_sampling:"Sampling Distribution (β̂₁)",
+    c4_bias_label:"Bias",c4_bias_sub:"E[β̂₁] − β₁",
+    ctrl_samples:"Repetitions (Monte Carlo)",ctrl_n4:"n (obs)",
+    inference_insight_title:"Econometrics' inference:",
+    inference_insight_body:"β̂₁ = 0.74 → \"For an average household, a 1k TL income increase raises consumption by ~740 TL.\" This finding is directly applicable to tax policy, incentive programs, welfare transfers. Statistics told us \"r is high\" — econometrics tells us what to decide.",
+    scene5_step:"Step 6 / 6 — Summary Comparison",
+    scene5_h2a:"Statistics provides the foundation.",scene5_h2b:"Econometrics builds economic meaning.",
+    th_dim:"Dimension",th_stat:"📊 Statistics",th_eco:"📐 Econometrics",
+    row_q:"Core question",row_q_stat:"\"Is there a relationship? How strong?\"",row_q_eco:"\"Is there causality? What is the coefficient? What should policy be?\"",
+    row_tool:"Main tool",row_tool_stat:"Correlation, descriptive stats, distributions",row_tool_eco:"OLS, hypothesis tests, diagnostic tests, confidence intervals",
+    row_output:"Output",row_output_stat:"r = 0.87, R² = 0.76",row_output_eco:"β̂₁ = 0.74 (SE=0.03), t=24.7, 95% CI [0.68, 0.80]",
+    row_assump:"Assumption checks",row_assump_stat:"Usually not questioned",row_assump_eco:"BP, BG, DW, VIF, Zivot-Andrews — mandatory",
+    row_policy:"Policy inference",row_policy_stat:"Not directly made",row_policy_eco:"\"1 TL tax cut → 0.74 TL consumption increase\"",
+    row_meta:"Econometrics + Statistics",row_meta_val:"Econometrics is built on statistics — it does not reject it, but enriches it with economic content.",
+    final_insight_title:"🎓 Summary:",
+    final_insight_body:"Statistics answers \"what\". Econometrics answers \"how much\", \"why\", and \"what should we do\". In the income–consumption example, statistics found correlation; econometrics transformed it into the marginal propensity to consume, a confidence interval, and a policy recommendation.",
+    lbl_b0:"β̂₀ (intercept)",lbl_b1:"β̂₁ (slope)",lbl_tstat:"t statistic",lbl_pval:"p-value",
+    lbl_b1est:"β̂₁ estimate",lbl_ci95:"95% CI",
+  }
+};
+
+let lang='tr';
+function setLang(l){
+  lang=l;
+  const d=dict[l];
+  document.documentElement.lang = l==='en' ? 'en' : 'tr';
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const k=el.getAttribute('data-i18n');
+    if(d[k]!=null) el.innerHTML=d[k];
+  });
+  localStorage.setItem('sim_lang',l);
+}
+
+document.getElementById('langBtn').addEventListener('click',()=>{
+  setLang(lang==='tr'?'en':'tr');
 });
 
-// ════════════════════════════════════════════════════
+// ══════════════════════════════════════════════
 // INIT
-// ════════════════════════════════════════════════════
-generate('tr');
+// ══════════════════════════════════════════════
+const saved=localStorage.getItem('sim_lang')||'tr';
+setLang(saved);
+drawScene0();
 </script>
+
+<style>
+@media(max-width:640px){
+  .two-col-responsive{grid-template-columns:1fr !important;}
+}
+</style>
 </body>
 </html>
