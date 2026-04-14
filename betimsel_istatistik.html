@@ -521,7 +521,7 @@ input[type=range].eco-range::-webkit-slider-thumb{background:var(--eco);}
     <div class="controls">
       <div class="slider-group">
         <label data-i18n="ctrl_n">n (gözlem)</label>
-        <input type="range" id="s0-n" class="eco-range" min="30" max="200" step="10" value="100">
+        <input type="range" id="s0-n" class="eco-range" min="30" max="1000" step="50" value="100">
         <span class="slider-val eco-col" id="s0-n-lbl">100</span>
       </div>
       <div class="slider-group">
@@ -683,7 +683,7 @@ input[type=range].eco-range::-webkit-slider-thumb{background:var(--eco);}
       </div>
       <div class="slider-group">
         <label data-i18n="ctrl_noise2">Gürültü σ</label>
-        <input type="range" id="s2-noise" class="stat-range" min="0.5" max="8" step="0.5" value="2.5">
+        <input type="range" id="s2-noise" class="stat-range" min="0.5" max="20" step="0.5" value="2.5">
         <span class="slider-val stat-col" id="s2-noise-lbl">2.5</span>
       </div>
     </div>
@@ -822,7 +822,7 @@ input[type=range].eco-range::-webkit-slider-thumb{background:var(--eco);}
       </div>
       <div class="slider-group">
         <label data-i18n="ctrl_n4">n (gözlem)</label>
-        <input type="range" id="s4-n" class="stat-range" min="20" max="200" step="10" value="80">
+        <input type="range" id="s4-n" class="stat-range" min="20" max="1000" step="50" value="80">
         <span class="slider-val stat-col" id="s4-n-lbl">80</span>
       </div>
     </div>
@@ -1065,7 +1065,7 @@ function drawScene2(){
   document.getElementById('c2-r2').textContent=fmtNum(ols.r2,3);
   document.getElementById('c2-se').textContent=fmtNum(ols.se,4);
   document.getElementById('c2-t').textContent=fmtNum(ols.t,2);
-  const sig=Math.abs(ols.t)>2.576?'p < 0.01 ✓':Math.abs(ols.t)>1.96?'p < 0.05 ✓':'p > 0.05 ✗';
+  const sig=Math.abs(ols.t)>1.96?'p < 0.05 ✓':'p > 0.05 ✗';
   const sigEl=document.getElementById('c2-sig');
   const sigBox=document.getElementById('c2-sig-box');
   sigEl.textContent=sig;
