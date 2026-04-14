@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Betimsel İstatistikler — Yayılım ve Dağılım</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --blue:#185FA5; --blue-light:#E6F1FB;
+    --red:#E24B4A;  --red-light:#FCEBEB;
+    --orange:#D85A30; --green:#3B6D11; --green-light:#EAF3DE;
+    --purple:#7B3FA0; --purple-light:#F3EBF9;
+    --text:#1a1a1a; --text2:#5F5E5A;
+    --border:rgba(0,0,0,0.12); --bg:#ffffff; --bg2:#F8F7F4;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    background:var(--bg2);color:var(--text);padding:16px;max-width:1300px;margin:0 auto;}
+
+  .tabs{display:flex;gap:0;margin-bottom:18px;border-bottom:2px solid var(--border);}
+  .tab{padding:10px 22px;font-size:14px;font-weight:500;cursor:pointer;
+    border:none;background:none;color:var(--text2);border-bottom:3px solid transparent;
+    margin-bottom:-2px;transition:all 0.2s;}
+  .tab.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:600;}
+  .tab:hover:not(.active){color:var(--text);}
+  .lang-panel{display:none;}
+  .lang-panel.active{display:block;}
+
+  h1{font-size:18px;font-weight:600;margin-bottom:4px;}
+  .subtitle{font-size:13px;color:var(--text2);margin-bottom:16px;}
+  .card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px;}
+  .section-title{font-size:14px;font-weight:600;margin-bottom:12px;}
+
+  .page-layout{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start;}
+  .col-left{min-width:0;}
+  .col-right{min-width:0;position:sticky;top:12px;}
+  @media(max-width:820px){.page-layout{grid-template-columns:1fr;}.col-right{position:static;}}
+
+  .measure-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;}
+  .measure-box{border-radius:8px;padding:10px 12px;text-align:center;border:2px solid;}
+  .measure-box .m-label{font-size:11px;font-weight:600;margin-bottom:3px;text-transform:uppercase;letter-spacing:.5px;}
+  .measure-box .m-val{font-size:22px;font-weight:700;}
+  .m-mean{background:#E6F1FB;border-color:#185FA5;color:#185FA5;}
+  .m-median{background:#EAF3DE;border-color:#3B6D11;color:#3B6D11;}
+  .m-mode{background:#F3EBF9;border-color:#7B3FA0;color:#7B3FA0;}
+
+  .spread-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+  .spread-box{border-radius:8px;padding:10px 12px;background:var(--bg2);border:0.5px solid var(--border);}
+  .spread-box .s-label{font-size:11px;color:var(--text2);margin-bottom:2px;}
+  .spread-box .s-val{font-size:18px;font-weight:600;color:var(--text);transition:color 0.3s;}
+  .s-val.up{color:#E24B4A;} .s-val.down{color:#3B6D11;}
+
+  .slider-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+  .slider-label{font-size:13px;color:var(--text2);min-width:130px;line-height:1.3;}
+  input[type=range]{flex:1;height:4px;accent-color:var(--blue);
+    -webkit-appearance:none;appearance:none;background:var(--border);border-radius:2px;outline:none;}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;
+    background:var(--blue);border-radius:50%;cursor:pointer;}
+  .slider-val{font-size:13px;font-weight:600;min-width:48px;text-align:right;}
+
+  .btn-row{display:flex;gap:8px;margin-bottom:12px;}
+  .btn{flex:1;padding:11px;border:none;border-radius:var(--radius);
+    font-size:13px;font-weight:500;cursor:pointer;transition:opacity .15s;}
+  .btn:active{opacity:0.8;}
+  .btn-blue{background:var(--blue);color:white;}
+  .btn-outline{background:var(--bg);color:var(--blue);border:1.5px solid var(--blue);}
+  .btn-red{background:var(--red);color:white;}
+  .btn-outline-red{background:var(--bg);color:var(--red);border:1.5px solid var(--red);}
+
+  .preset-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
+  .preset-btn{padding:5px 12px;border-radius:999px;font-size:12px;font-weight:500;cursor:pointer;
+    border:1.5px solid;transition:all .15s;}
+  .preset-btn:hover{opacity:0.8;}
+  .pb-sym{background:#E6F1FB;border-color:#185FA5;color:#185FA5;}
+  .pb-right{background:#FCEBEB;border-color:#E24B4A;color:#A32D2D;}
+  .pb-left{background:#EAF3DE;border-color:#3B6D11;color:#3B6D11;}
+  .pb-bi{background:#F3EBF9;border-color:#7B3FA0;color:#7B3FA0;}
+
+  .info-box{background:var(--blue-light);border-left:3px solid var(--blue);
+    border-radius:0 var(--radius) var(--radius) 0;padding:11px 14px;
+    font-size:13px;color:#0C447C;line-height:1.7;margin-bottom:10px;}
+  .warn-box{background:var(--red-light);border-left:3px solid var(--red);
+    border-radius:0 var(--radius) var(--radius) 0;padding:11px 14px;
+    font-size:13px;color:#791F1F;line-height:1.7;margin-bottom:10px;}
+  .note-box{background:var(--bg2);border-left:3px solid var(--text2);
+    border-radius:0 var(--radius) var(--radius) 0;padding:11px 14px;
+    font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:10px;}
+  .highlight-box{background:#FFF8E1;border-left:3px solid #F59E0B;
+    border-radius:0 var(--radius) var(--radius) 0;padding:11px 14px;
+    font-size:13px;color:#7C5700;line-height:1.7;margin-bottom:10px;}
+
+  .formula-block{background:var(--bg2);border-radius:var(--radius);
+    padding:12px 16px;margin:8px 0;font-size:13px;line-height:2.0;}
+  .formula-line{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;}
+  .fvar{font-family:"Georgia",serif;font-size:14px;}
+
+  .legend{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--text2);margin-bottom:8px;}
+  .legend-item{display:flex;align-items:center;gap:5px;}
+  .leg-line{width:22px;height:3px;}
+
+  .cov-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px;}
+  .cov-table th{background:var(--blue);color:white;padding:7px 10px;font-weight:600;text-align:center;}
+  .cov-table td{padding:6px 10px;text-align:center;border-bottom:0.5px solid var(--border);}
+  .cov-table tr:nth-child(even) td{background:var(--bg2);}
+  .cov-pos{color:var(--green);font-weight:600;}
+  .cov-neg{color:var(--red);font-weight:600;}
+
+  .outlier-badge{display:inline-flex;align-items:center;gap:5px;
+    background:var(--red-light);border:1px solid var(--red);border-radius:999px;
+    padding:3px 10px;font-size:12px;font-weight:700;color:#A32D2D;
+    transition:opacity .3s;margin-bottom:8px;}
+  .outlier-badge.hidden{opacity:0;pointer-events:none;}
+
+  .sens-compare{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:6px;}
+  .sens-item{border-radius:8px;padding:8px;text-align:center;}
+  .sens-item .si-label{font-size:11px;margin-bottom:2px;}
+  .sens-item .si-delta{font-size:15px;font-weight:700;}
+  .si-blue{background:#E6F1FB;color:#185FA5;}
+  .si-green{background:#EAF3DE;color:#3B6D11;}
+  .si-purple{background:#F3EBF9;color:#7B3FA0;}
+
+  .corr-badge{display:inline-block;padding:4px 14px;border-radius:999px;
+    font-size:13px;font-weight:700;margin-left:8px;}
+  .corr-strong{background:#EAF3DE;color:#3B6D11;}
+  .corr-mod{background:#E6F1FB;color:#185FA5;}
+  .corr-weak{background:#F3EBF9;color:#7B3FA0;}
+  .corr-none{background:var(--bg2);color:var(--text2);}
+  .corr-neg{background:#FCEBEB;color:#A32D2D;}
+</style>
+</head>
+<body>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchLang('tr',event)">🇹🇷 Türkçe</button>
+  <button class="tab" onclick="switchLang('en',event)">🇬🇧 English</button>
+</div>
+
+<!-- ═══════════════════════════════ TÜRKÇE ═══════════════════════════════ -->
+<div class="lang-panel active" id="panel-tr">
+<h1>Betimsel İstatistikler — Gelir ve Tüketim Örneği</h1>
+<p class="subtitle">Doç. Dr. Erkan Ağaslan — Kütahya Dumlupınar Üniversitesi</p>
+
+<div class="page-layout">
+<div class="col-left">
+
+  <!-- SENARYOLAR -->
+  <div class="card">
+    <div class="section-title">Hazır senaryolar</div>
+    <div class="preset-row">
+      <button class="preset-btn pb-sym" onclick="loadPreset('sym','tr')">Simetrik gelir</button>
+      <button class="preset-btn pb-right" onclick="loadPreset('right','tr')">Sağa çarpık gelir</button>
+      <button class="preset-btn pb-left" onclick="loadPreset('left','tr')">Sola çarpık gelir</button>
+      <button class="preset-btn pb-bi" onclick="loadPreset('bi','tr')">Bimodal</button>
+    </div>
+
+    <div class="slider-row">
+      <span class="slider-label">Örneklem büyüklüğü n</span>
+      <input type="range" id="tr-n" min="10" max="300" step="5" value="60">
+      <span class="slider-val" id="tr-n-lbl">60</span>
+    </div>
+    <div class="slider-row">
+      <span class="slider-label">Gelir std. sapması (bin ₺)</span>
+      <input type="range" id="tr-sigma" min="1" max="15" step="0.5" value="5">
+      <span class="slider-val" id="tr-sigma-lbl">5.0</span>
+    </div>
+    <div class="slider-row">
+      <span class="slider-label">Çarpıklık kuvveti</span>
+      <input type="range" id="tr-skew" min="-3" max="3" step="0.1" value="0">
+      <span class="slider-val" id="tr-skew-lbl">0.0</span>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-blue" onclick="generate('tr')">Yeni veri üret</button>
+    </div>
+
+    <!-- OUTLIER TOGGLE -->
+    <div style="background:#FFF3E0;border:1.5px dashed #D85A30;border-radius:var(--radius);padding:12px;margin-bottom:8px;">
+      <div style="font-size:13px;font-weight:600;color:#A03010;margin-bottom:6px;">
+        💰 Çok varlıklı bireyler örnekleme girsin mi?
+      </div>
+      <div style="font-size:12px;color:#7C3A10;margin-bottom:10px;">
+        Geliri ≥ 5× ortalama olan 1–5 aşırı yüksek gelirli birey ekler. 
+        Ortalamanın nasıl bozulduğunu gözlemleyin — medyan yerinde kalır!
+      </div>
+      <div class="slider-row" style="margin-bottom:6px;">
+        <span class="slider-label" style="color:#7C3A10;">Çok varlıklı sayısı</span>
+        <input type="range" id="tr-out" min="0" max="5" step="1" value="0" style="accent-color:#D85A30;">
+        <span class="slider-val" id="tr-out-lbl" style="color:#D85A30;">0</span>
+      </div>
+    </div>
+
+    <div id="tr-outlier-badge" class="outlier-badge hidden">⚠ Çok varlıklı birey(ler) aktif</div>
+  </div>
+
+  <!-- MERKEZİ EĞİLİM -->
+  <div class="card">
+    <div class="section-title">Merkezi eğilim ölçüleri — Gelir (X)</div>
+    <div class="measure-grid">
+      <div class="measure-box m-mean">
+        <div class="m-label">Ortalama x̄</div>
+        <div class="m-val" id="tr-mean">—</div>
+      </div>
+      <div class="measure-box m-median">
+        <div class="m-label">Medyan</div>
+        <div class="m-val" id="tr-med">—</div>
+      </div>
+      <div class="measure-box m-mode">
+        <div class="m-label">Mod</div>
+        <div class="m-val" id="tr-mode">—</div>
+      </div>
+    </div>
+    <div style="font-size:11px;color:var(--text2);margin-bottom:8px;">(bin ₺ cinsinden)</div>
+
+    <div class="info-box" id="tr-skew-msg">
+      Veri simetrik — ortalama, medyan ve mod birbirine yakın.
+    </div>
+
+    <div class="section-title" style="margin-top:10px;">Ortalama ne kadar hassas?</div>
+    <div class="note-box">
+      Gelir verilerinde <strong>çok varlıklı bireyler</strong> örnekleme girdiğinde
+      ortalama yukarı çekilir, oysa medyan neredeyse değişmez. 
+      Bu yüzden gelir istatistiklerinde çoğunlukla <em>medyan tercih edilir</em>.
+    </div>
+
+    <div style="font-size:12px;color:var(--text2);margin-bottom:4px;">Çok varlıklı eklendiğinde ölçülerin kayma miktarı</div>
+    <div class="sens-compare">
+      <div class="sens-item si-blue">
+        <div class="si-label">Ortalama Δ</div>
+        <div class="si-delta" id="tr-delta-mean">—</div>
+      </div>
+      <div class="sens-item si-green">
+        <div class="si-label">Medyan Δ</div>
+        <div class="si-delta" id="tr-delta-med">—</div>
+      </div>
+      <div class="sens-item si-purple">
+        <div class="si-label">Mod Δ</div>
+        <div class="si-delta" id="tr-delta-mode">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- YAYILIM -->
+  <div class="card">
+    <div class="section-title">Yayılım ölçüleri — Gelir (X)</div>
+    <div class="spread-grid">
+      <div class="spread-box">
+        <div class="s-label">Varyans s²</div>
+        <div class="s-val" id="tr-var">—</div>
+      </div>
+      <div class="spread-box">
+        <div class="s-label">Standart Sapma s</div>
+        <div class="s-val" id="tr-std">—</div>
+      </div>
+      <div class="spread-box">
+        <div class="s-label">Değişim Katsayısı CV</div>
+        <div class="s-val" id="tr-cv">—</div>
+      </div>
+      <div class="spread-box">
+        <div class="s-label">Ranj (Maks − Min)</div>
+        <div class="s-val" id="tr-range">—</div>
+      </div>
+      <div class="spread-box">
+        <div class="s-label">IQR (Q3 − Q1)</div>
+        <div class="s-val" id="tr-iqr">—</div>
+      </div>
+      <div class="spread-box">
+        <div class="s-label">Çarpıklık (Skewness)</div>
+        <div class="s-val" id="tr-skewstat">—</div>
+      </div>
+    </div>
+    <div class="formula-block">
+      <div class="formula-line">
+        <span class="fvar">s²</span> =
+        <span class="fvar">1/(n−1) · Σ(xᵢ − x̄)²</span>
+        <span style="color:var(--text2);font-size:12px;">&nbsp;— örneklem varyansı</span>
+      </div>
+      <div class="formula-line">
+        <span class="fvar">s</span> =
+        <span class="fvar">√s²</span>
+        <span style="color:var(--text2);font-size:12px;">&nbsp;— standart sapma (x ile aynı birim)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- KOVARYANS / KORELASYON KAYDIRACIYLA -->
+  <div class="card">
+    <div class="section-title">Kovaryans ve Korelasyon — Gelir (X) &amp; Tüketim (Y)</div>
+    <div class="note-box">
+      Gelir (X) ve tüketim (Y) değişkenleri arasındaki ilişkiyi kontrol edin.
+      Korelasyon yükseldikçe noktalar <strong>45° çizgisine</strong> yaklaşır;
+      azaldıkça serpilme diyagramında <em>dağılır</em>.
+    </div>
+
+    <div class="slider-row">
+      <span class="slider-label" style="color:var(--blue);font-weight:600;">Korelasyon gücü r</span>
+      <input type="range" id="tr-corr" min="-1" max="1" step="0.05" value="0.75" style="accent-color:var(--blue);">
+      <span class="slider-val" id="tr-corr-lbl" style="color:var(--blue);">0.75</span>
+    </div>
+
+    <table class="cov-table" style="margin-top:6px;">
+      <tr><th>İstatistik</th><th>Değer</th></tr>
+      <tr><td>Cov(X, Y)</td><td id="tr-cov">—</td></tr>
+      <tr><td>Korelasyon r</td><td id="tr-cor">—</td></tr>
+      <tr><td>Belirlilik katsayısı r²</td><td id="tr-r2">—</td></tr>
+    </table>
+    <div class="formula-block" style="margin-top:10px;">
+      <div class="formula-line">
+        <span class="fvar">Cov(X,Y)</span> =
+        <span class="fvar">1/(n−1) · Σ(xᵢ−x̄)(yᵢ−ȳ)</span>
+      </div>
+      <div class="formula-line">
+        <span class="fvar">r</span> =
+        <span class="fvar">Cov(X,Y) / (sₓ · sᵧ)</span>
+      </div>
+    </div>
+  </div>
+
+</div><!-- col-left -->
+
+<!-- ─── SAĞ KOLON ─── -->
+<div class="col-right">
+
+  <!-- HISTOGRAM -->
+  <div class="card">
+    <div class="section-title">Gelir dağılımı — Histogram + Normal eğri</div>
+    <div class="highlight-box" id="tr-normality-msg">
+      n = 60 — Dağılımı gözlemleyin. n artırınca kırmızı normal eğrisine yaklaşır.
+    </div>
+    <div class="legend">
+      <div class="legend-item"><div class="leg-line" style="background:#185FA5;"></div>Ortalama</div>
+      <div class="legend-item"><div class="leg-line" style="background:#3B6D11;"></div>Medyan</div>
+      <div class="legend-item"><div class="leg-line" style="background:#7B3FA0;"></div>Mod</div>
+      <div class="legend-item"><div class="leg-line" style="background:#E24B4A;"></div>Normal eğri</div>
+    </div>
+    <canvas id="tr-hist"></canvas>
+  </div>
+
+  <!-- SCATTER -->
+  <div class="card">
+    <div class="section-title">Gelir–Tüketim Serpilme Diyagramı</div>
+    <div id="tr-corr-desc" class="info-box">Güçlü pozitif korelasyon — noktalar 45° çizgisine yakın.</div>
+    <canvas id="tr-scatter"></canvas>
+  </div>
+
+</div><!-- col-right -->
+</div><!-- page-layout -->
+</div><!-- panel-tr -->
+
+
+<!-- ═══════════════════════════════ ENGLISH ═══════════════════════════════ -->
+<div class="lang-panel" id="panel-en">
+<h1>Descriptive Statistics — Income &amp; Consumption Example</h1>
+<p class="subtitle">Assoc. Prof. Dr. Erkan Ağaslan — Kütahya Dumlupınar University</p>
+
+<div class="page-layout">
+<div class="col-left">
+
+  <div class="card">
+    <div class="section-title">Ready-made scenarios</div>
+    <div class="preset-row">
+      <button class="preset-btn pb-sym" onclick="loadPreset('sym','en')">Symmetric income</button>
+      <button class="preset-btn pb-right" onclick="loadPreset('right','en')">Right-skewed income</button>
+      <button class="preset-btn pb-left" onclick="loadPreset('left','en')">Left-skewed income</button>
+      <button class="preset-btn pb-bi" onclick="loadPreset('bi','en')">Bimodal</button>
+    </div>
+
+    <div class="slider-row">
+      <span class="slider-label">Sample size n</span>
+      <input type="range" id="en-n" min="10" max="300" step="5" value="60">
+      <span class="slider-val" id="en-n-lbl">60</span>
+    </div>
+    <div class="slider-row">
+      <span class="slider-label">Income std. dev. (k₺)</span>
+      <input type="range" id="en-sigma" min="1" max="15" step="0.5" value="5">
+      <span class="slider-val" id="en-sigma-lbl">5.0</span>
+    </div>
+    <div class="slider-row">
+      <span class="slider-label">Skewness strength</span>
+      <input type="range" id="en-skew" min="-3" max="3" step="0.1" value="0">
+      <span class="slider-val" id="en-skew-lbl">0.0</span>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-blue" onclick="generate('en')">Generate new data</button>
+    </div>
+
+    <div style="background:#FFF3E0;border:1.5px dashed #D85A30;border-radius:var(--radius);padding:12px;margin-bottom:8px;">
+      <div style="font-size:13px;font-weight:600;color:#A03010;margin-bottom:6px;">
+        💰 Add very wealthy individuals to the sample?
+      </div>
+      <div style="font-size:12px;color:#7C3A10;margin-bottom:10px;">
+        Adds 1–5 extremely high-income outliers (≥ 5× mean). 
+        Watch the mean get pulled up — the median barely moves!
+      </div>
+      <div class="slider-row" style="margin-bottom:6px;">
+        <span class="slider-label" style="color:#7C3A10;">Wealthy count</span>
+        <input type="range" id="en-out" min="0" max="5" step="1" value="0" style="accent-color:#D85A30;">
+        <span class="slider-val" id="en-out-lbl" style="color:#D85A30;">0</span>
+      </div>
+    </div>
+
+    <div id="en-outlier-badge" class="outlier-badge hidden">⚠ High-income outlier(s) active</div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Central tendency — Income (X)</div>
+    <div class="measure-grid">
+      <div class="measure-box m-mean">
+        <div class="m-label">Mean x̄</div>
+        <div class="m-val" id="en-mean">—</div>
+      </div>
+      <div class="measure-box m-median">
+        <div class="m-label">Median</div>
+        <div class="m-val" id="en-med">—</div>
+      </div>
+      <div class="measure-box m-mode">
+        <div class="m-label">Mode</div>
+        <div class="m-val" id="en-mode">—</div>
+      </div>
+    </div>
+    <div style="font-size:11px;color:var(--text2);margin-bottom:8px;">(in thousand ₺)</div>
+
+    <div class="info-box" id="en-skew-msg">
+      Symmetric data — mean, median and mode are close.
+    </div>
+
+    <div class="section-title" style="margin-top:10px;">How sensitive is the mean?</div>
+    <div class="note-box">
+      When <strong>very wealthy individuals</strong> enter the sample, the mean is pulled up, 
+      while the median barely moves. This is why <em>median income</em> is preferred in policy contexts.
+    </div>
+
+    <div style="font-size:12px;color:var(--text2);margin-bottom:4px;">Shift in measures when outlier is added</div>
+    <div class="sens-compare">
+      <div class="sens-item si-blue">
+        <div class="si-label">Mean Δ</div>
+        <div class="si-delta" id="en-delta-mean">—</div>
+      </div>
+      <div class="sens-item si-green">
+        <div class="si-label">Median Δ</div>
+        <div class="si-delta" id="en-delta-med">—</div>
+      </div>
+      <div class="sens-item si-purple">
+        <div class="si-label">Mode Δ</div>
+        <div class="si-delta" id="en-delta-mode">—</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Spread measures — Income (X)</div>
+    <div class="spread-grid">
+      <div class="spread-box">
+        <div class="s-label">Variance s²</div>
+        <div class="s-val" id="en-var">—</div>
+      </div>
+      <div class="spread-box">
+        <div class="s-label">Std. Deviation s</div>
+        <div class="s-val" id="en-std">—</div>
+      </div>
+      <div class="spread-box">
+        <div class="s-label">Coeff. of Variation CV</div>
+        <div class="s-val" id="en-cv">—</div>
+      </div>
+      <div class="spread-box">
+        <div class="s-label">Range (Max − Min)</div>
+        <div class="s-val" id="en-range">—</div>
+      </div>
+      <div class="spread-box">
+        <div class="s-label">IQR (Q3 − Q1)</div>
+        <div class="s-val" id="en-iqr">—</div>
+      </div>
+      <div class="spread-box">
+        <div class="s-label">Skewness</div>
+        <div class="s-val" id="en-skewstat">—</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Covariance &amp; Correlation — Income (X) &amp; Consumption (Y)</div>
+    <div class="note-box">
+      As correlation increases, points cluster along the <strong>45° line</strong>; 
+      as it decreases, the scatter plot disperses widely.
+    </div>
+
+    <div class="slider-row">
+      <span class="slider-label" style="color:var(--blue);font-weight:600;">Correlation strength r</span>
+      <input type="range" id="en-corr" min="-1" max="1" step="0.05" value="0.75" style="accent-color:var(--blue);">
+      <span class="slider-val" id="en-corr-lbl" style="color:var(--blue);">0.75</span>
+    </div>
+
+    <table class="cov-table" style="margin-top:6px;">
+      <tr><th>Statistic</th><th>Value</th></tr>
+      <tr><td>Cov(X, Y)</td><td id="en-cov">—</td></tr>
+      <tr><td>Correlation r</td><td id="en-cor">—</td></tr>
+      <tr><td>Coefficient of determination r²</td><td id="en-r2">—</td></tr>
+    </table>
+    <div class="formula-block" style="margin-top:10px;">
+      <div class="formula-line">
+        <span class="fvar">Cov(X,Y)</span> =
+        <span class="fvar">1/(n−1) · Σ(xᵢ−x̄)(yᵢ−ȳ)</span>
+      </div>
+      <div class="formula-line">
+        <span class="fvar">r</span> =
+        <span class="fvar">Cov(X,Y) / (sₓ · sᵧ)</span>
+      </div>
+    </div>
+  </div>
+
+</div><!-- col-left -->
+
+<div class="col-right">
+
+  <div class="card">
+    <div class="section-title">Income distribution — Histogram + Normal curve</div>
+    <div class="highlight-box" id="en-normality-msg">
+      n = 60 — Increase n to see the distribution approach the normal curve.
+    </div>
+    <div class="legend">
+      <div class="legend-item"><div class="leg-line" style="background:#185FA5;"></div>Mean</div>
+      <div class="legend-item"><div class="leg-line" style="background:#3B6D11;"></div>Median</div>
+      <div class="legend-item"><div class="leg-line" style="background:#7B3FA0;"></div>Mode</div>
+      <div class="legend-item"><div class="leg-line" style="background:#E24B4A;"></div>Normal curve</div>
+    </div>
+    <canvas id="en-hist"></canvas>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Income–Consumption Scatter Plot</div>
+    <div id="en-corr-desc" class="info-box">Strong positive correlation — points cluster near the 45° line.</div>
+    <canvas id="en-scatter"></canvas>
+  </div>
+
+</div><!-- col-right -->
+</div><!-- page-layout -->
+</div><!-- panel-en -->
+
+
+<script>
+// ════════════════════════════════════════════════════
+// UTILITIES
+// ════════════════════════════════════════════════════
+function randn() {
+  let u=0,v=0;
+  while(u===0) u=Math.random();
+  while(v===0) v=Math.random();
+  return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);
+}
+
+function skewedNormal(skew){
+  const u1=randn(), u2=randn();
+  const delta = skew/Math.sqrt(1+skew*skew);
+  return delta*Math.abs(u1) + Math.sqrt(1-delta*delta)*u2;
+}
+
+function mean(arr){ return arr.reduce((a,b)=>a+b,0)/arr.length; }
+
+function median(arr){
+  const s=[...arr].sort((a,b)=>a-b);
+  const m=Math.floor(s.length/2);
+  return s.length%2===0?(s[m-1]+s[m])/2:s[m];
+}
+
+function mode(arr){
+  const bins={};
+  arr.forEach(v=>{ const k=Math.round(v); bins[k]=(bins[k]||0)+1; });
+  let maxC=0,modeV=0;
+  Object.entries(bins).forEach(([k,c])=>{ if(c>maxC){maxC=c;modeV=+k;} });
+  return modeV;
+}
+
+function variance(arr){
+  const m=mean(arr);
+  return arr.reduce((s,v)=>s+(v-m)**2,0)/(arr.length-1);
+}
+
+function stddev(arr){ return Math.sqrt(variance(arr)); }
+
+function skewnessCoef(arr){
+  const m=mean(arr), s=stddev(arr), n=arr.length;
+  if(s===0) return 0;
+  return arr.reduce((a,v)=>a+((v-m)/s)**3,0) * n/((n-1)*(n-2));
+}
+
+function quantile(arr, q){
+  const s=[...arr].sort((a,b)=>a-b);
+  const pos=(s.length-1)*q;
+  const lo=Math.floor(pos), hi=Math.ceil(pos);
+  return s[lo]+(s[hi]-s[lo])*(pos-lo);
+}
+
+// Generate correlated Y from X using Cholesky-like approach
+function generateCorrelatedY(xArr, rho, muY, sigmaY){
+  const muX = mean(xArr);
+  const sdX = stddev(xArr);
+  return xArr.map(x => {
+    const zx = (x - muX) / sdX;
+    const eps = randn();
+    const zy = rho * zx + Math.sqrt(Math.max(0, 1 - rho*rho)) * eps;
+    return muY + sigmaY * zy;
+  });
+}
+
+// ════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════
+const state = {
+  tr: { data:[], dataClean:[], outlierOn:false, charts:{hist:null,scatter:null} },
+  en: { data:[], dataClean:[], outlierOn:false, charts:{hist:null,scatter:null} }
+};
+
+// ════════════════════════════════════════════════════
+// LANG SWITCH
+// ════════════════════════════════════════════════════
+function switchLang(lang, ev){
+  document.querySelectorAll('.lang-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+lang).classList.add('active');
+  if(ev) ev.target.classList.add('active');
+  if(!state[lang].data.length) generate(lang);
+}
+
+// ════════════════════════════════════════════════════
+// PRESETS
+// ════════════════════════════════════════════════════
+function loadPreset(type, lang){
+  const skewEl = document.getElementById(lang+'-skew');
+  const sigEl  = document.getElementById(lang+'-sigma');
+  const outEl  = document.getElementById(lang+'-out');
+  const nEl    = document.getElementById(lang+'-n');
+
+  if(type==='sym')   { skewEl.value=0;    sigEl.value=5;  outEl.value=0; nEl.value=80; }
+  if(type==='right') { skewEl.value=2.0;  sigEl.value=6;  outEl.value=0; nEl.value=80; }
+  if(type==='left')  { skewEl.value=-2.0; sigEl.value=6;  outEl.value=0; nEl.value=80; }
+  if(type==='bi')    { skewEl.value=0;    sigEl.value=3;  outEl.value=0; nEl.value=120; }
+
+  updateLabel(lang+'-skew', lang+'-skew-lbl', 1);
+  updateLabel(lang+'-sigma', lang+'-sigma-lbl', 1);
+  updateLabel(lang+'-out', lang+'-out-lbl', 0);
+  updateLabel(lang+'-n', lang+'-n-lbl', 0);
+
+  generate(lang, type==='bi');
+}
+
+function updateLabel(sliderId, labelId, dec){
+  const v = parseFloat(document.getElementById(sliderId).value);
+  document.getElementById(labelId).textContent = v.toFixed(dec);
+}
+
+// ════════════════════════════════════════════════════
+// DATA GENERATION — Income & Consumption (bin ₺)
+// ════════════════════════════════════════════════════
+function generate(lang, bimodal){
+  const n      = parseInt(document.getElementById(lang+'-n').value);
+  const sigma  = parseFloat(document.getElementById(lang+'-sigma').value);
+  const skew   = parseFloat(document.getElementById(lang+'-skew').value);
+  const nOut   = parseInt(document.getElementById(lang+'-out').value);
+  const muIncome = 20; // ortalama gelir 20 bin TL
+
+  let data = [];
+
+  if(bimodal){
+    // İki grup: düşük gelir ~12k ve yüksek gelir ~30k
+    for(let i=0;i<Math.floor(n/2);i++) data.push(muIncome - 8 + randn()*sigma*0.6);
+    for(let i=0;i<Math.ceil(n/2);i++)  data.push(muIncome + 10 + randn()*sigma*0.6);
+  } else {
+    for(let i=0;i<n;i++){
+      data.push(muIncome + skewedNormal(skew)*sigma);
+    }
+  }
+
+  // Negatif gelir olmaz
+  data = data.map(v => Math.max(1, v));
+
+  state[lang].dataClean = [...data];
+
+  // Çok varlıklı bireyler: geliri 5-10× ortalama
+  if(nOut > 0){
+    for(let i=0;i<nOut;i++){
+      data.push(muIncome * (5 + Math.random()*5));
+    }
+    document.getElementById(lang+'-outlier-badge').classList.remove('hidden');
+    state[lang].outlierOn = true;
+  } else {
+    document.getElementById(lang+'-outlier-badge').classList.add('hidden');
+    state[lang].outlierOn = false;
+  }
+
+  state[lang].data = data;
+  update(lang);
+}
+
+// ════════════════════════════════════════════════════
+// STATS & UPDATE
+// ════════════════════════════════════════════════════
+function animVal(id, val, decimals){
+  const el = document.getElementById(id);
+  if(!el) return;
+  const prev = parseFloat(el.dataset.prev||val);
+  el.textContent = typeof val==='string' ? val : val.toFixed(decimals);
+  el.classList.remove('up','down');
+  if(typeof val==='number'){
+    if(val > prev+0.001) el.classList.add('up');
+    else if(val < prev-0.001) el.classList.add('down');
+    setTimeout(()=>el.classList.remove('up','down'),600);
+    el.dataset.prev = val;
+  }
+}
+
+function update(lang){
+  const d  = state[lang].data;
+  const dc = state[lang].dataClean;
+  if(!d.length) return;
+
+  const mn   = mean(d);
+  const md   = median(d);
+  const mo   = mode(d);
+  const va   = variance(d);
+  const sd   = stddev(d);
+  const sk   = skewnessCoef(d);
+  const cv   = (sd/Math.abs(mn)*100);
+  const rngV = Math.max(...d)-Math.min(...d);
+  const q1   = quantile(d,0.25), q3=quantile(d,0.75);
+  const iqr  = q3-q1;
+
+  animVal(lang+'-mean', mn, 2);
+  animVal(lang+'-med',  md, 2);
+  animVal(lang+'-mode', mo, 1);
+  animVal(lang+'-var',  va,  2);
+  animVal(lang+'-std',  sd,  2);
+  animVal(lang+'-cv',   cv,  1);
+  animVal(lang+'-range',rngV,2);
+  animVal(lang+'-iqr',  iqr, 2);
+  animVal(lang+'-skewstat', sk, 3);
+
+  // Çarpıklık mesajı
+  const msg = document.getElementById(lang+'-skew-msg');
+  if(Math.abs(sk)<0.5){
+    msg.className='info-box';
+    msg.innerHTML = lang==='tr'
+      ? 'Veri <strong>simetrik</strong> — ortalama, medyan ve mod birbirine yakın.'
+      : 'Data is <strong>symmetric</strong> — mean, median and mode are close.';
+  } else if(sk>0){
+    msg.className='warn-box';
+    msg.innerHTML = lang==='tr'
+      ? '⚠ <strong>Sağa çarpık dağılım</strong> — ortalama, medyanın <em>sağına</em> çekilir. Yüksek gelirli bireyler ortalamanın bozulmasına neden olur.'
+      : '⚠ <strong>Right-skewed distribution</strong> — the mean is pulled <em>above</em> the median. High-income individuals distort the mean.';
+  } else {
+    msg.className='warn-box';
+    msg.innerHTML = lang==='tr'
+      ? '⚠ <strong>Sola çarpık dağılım</strong> — ortalama, medyanın <em>soluna</em> çekilir.'
+      : '⚠ <strong>Left-skewed distribution</strong> — the mean is pulled <em>below</em> the median.';
+  }
+
+  // Normallik mesajı — n artınca CLT
+  const n = d.length;
+  const normMsg = document.getElementById(lang+'-normality-msg');
+  const hasOutlier = state[lang].outlierOn;
+  if(hasOutlier){
+    normMsg.className='warn-box';
+    normMsg.innerHTML = lang==='tr'
+      ? `⚠ <strong>n = ${n}</strong> — Çok varlıklı birey(ler) dağılımı sağa çarpıtıyor. Normal eğriden <em>uzaklaşma</em> gözlemleyin!`
+      : `⚠ <strong>n = ${n}</strong> — Wealthy outlier(s) are right-skewing the distribution. Notice the deviation from the normal curve!`;
+  } else if(n < 50){
+    normMsg.className='highlight-box';
+    normMsg.innerHTML = lang==='tr'
+      ? `📊 <strong>n = ${n}</strong> — Küçük örneklem. n'i artırınca dağılım normale yaklaşır.`
+      : `📊 <strong>n = ${n}</strong> — Small sample. Increase n to approach the normal shape.`;
+  } else if(n < 100){
+    normMsg.className='highlight-box';
+    normMsg.innerHTML = lang==='tr'
+      ? `📊 <strong>n = ${n}</strong> — Orta büyüklükte örneklem. Normal eğriyle uyum iyileşiyor.`
+      : `📊 <strong>n = ${n}</strong> — Medium sample. Agreement with the normal curve is improving.`;
+  } else {
+    normMsg.className='info-box';
+    normMsg.innerHTML = lang==='tr'
+      ? `✅ <strong>n = ${n}</strong> — Büyük örneklem! Büyük sayılar yasası (CLT) devreye giriyor — histogram normal eğrisine <em>yakınsamaktadır</em>.`
+      : `✅ <strong>n = ${n}</strong> — Large sample! CLT kicks in — the histogram is <em>converging to the normal curve</em>.`;
+  }
+
+  // Duyarlılık delta
+  const mnC = mean(dc), mdC = median(dc), moC = mode(dc);
+  if(state[lang].outlierOn && dc.length>0){
+    animVal(lang+'-delta-mean', Math.abs(mn-mnC), 2);
+    animVal(lang+'-delta-med',  Math.abs(md-mdC), 2);
+    animVal(lang+'-delta-mode', Math.abs(mo-moC), 1);
+  } else {
+    document.getElementById(lang+'-delta-mean').textContent='—';
+    document.getElementById(lang+'-delta-med').textContent='—';
+    document.getElementById(lang+'-delta-mode').textContent='—';
+  }
+
+  // Korelasyon kaydırıcısından Y üret
+  const rho = parseFloat(document.getElementById(lang+'-corr').value);
+  const muY  = mn * 0.75;    // tüketim gelirin ~%75'i
+  const sigY = sd * 0.8;
+  const yData = generateCorrelatedY(d, rho, muY, sigY);
+
+  const covXY = d.reduce((s,x,i)=>s+(x-mn)*(yData[i]-mean(yData)),0)/(n-1);
+  const sdy   = stddev(yData);
+  const corrActual = covXY/(sd*sdy);
+
+  const covEl = document.getElementById(lang+'-cov');
+  const corEl = document.getElementById(lang+'-cor');
+  const r2El  = document.getElementById(lang+'-r2');
+  if(covEl) covEl.textContent = covXY.toFixed(3);
+  if(corEl){
+    corEl.textContent = corrActual.toFixed(3);
+    corEl.className = corrActual>0 ? 'cov-pos' : 'cov-neg';
+  }
+  if(r2El) r2El.textContent = (corrActual**2).toFixed(3);
+
+  // Korelasyon açıklama mesajı
+  const corrDesc = document.getElementById(lang+'-corr-desc');
+  const ar = Math.abs(rho);
+  if(ar >= 0.8){
+    corrDesc.className = 'info-box';
+    corrDesc.innerHTML = lang==='tr'
+      ? `<strong>r = ${rho.toFixed(2)}</strong> — Çok güçlü ${rho>=0?'pozitif':'negatif'} korelasyon. Noktalar <strong>45° çizgisine</strong> çok yakın — gelir arttıkça tüketim de belirgin biçimde artıyor.`
+      : `<strong>r = ${rho.toFixed(2)}</strong> — Very strong ${rho>=0?'positive':'negative'} correlation. Points tightly cluster around the <strong>45° line</strong>.`;
+  } else if(ar >= 0.5){
+    corrDesc.className = 'info-box';
+    corrDesc.innerHTML = lang==='tr'
+      ? `<strong>r = ${rho.toFixed(2)}</strong> — Orta düzey ${rho>=0?'pozitif':'negatif'} korelasyon. Noktalar 45° etrafında görülür ama yayılma belirginleşiyor.`
+      : `<strong>r = ${rho.toFixed(2)}</strong> — Moderate ${rho>=0?'positive':'negative'} correlation. Points loosely follow the 45° direction but scatter is visible.`;
+  } else if(ar >= 0.2){
+    corrDesc.className = 'highlight-box';
+    corrDesc.innerHTML = lang==='tr'
+      ? `<strong>r = ${rho.toFixed(2)}</strong> — Zayıf korelasyon. Serpilme diyagramında belirgin bir yön yok — noktalar geniş alana dağılıyor.`
+      : `<strong>r = ${rho.toFixed(2)}</strong> — Weak correlation. No clear direction in the scatter plot — points spread widely.`;
+  } else {
+    corrDesc.className = 'warn-box';
+    corrDesc.innerHTML = lang==='tr'
+      ? `<strong>r ≈ 0</strong> — Korelasyon yok. Noktalar tamamıyla dağılmış; gelir ile tüketim arasında doğrusal ilişki gözükmiyor.`
+      : `<strong>r ≈ 0</strong> — No correlation. Points are completely scattered; no linear relationship between income and consumption.`;
+  }
+
+  drawHistogram(lang, d, mn, md, mo);
+  drawScatter(lang, d, yData, rho);
+}
+
+// ════════════════════════════════════════════════════
+// HISTOGRAM with Normal Density Overlay
+// ════════════════════════════════════════════════════
+function drawHistogram(lang, data, mn, md, mo){
+  const canvasId = lang+'-hist';
+  const bins = Math.max(10, Math.min(30, Math.floor(Math.sqrt(data.length)*1.5)));
+  const minV = Math.min(...data), maxV = Math.max(...data);
+  const bw   = (maxV-minV)/bins;
+  const counts = Array(bins).fill(0);
+  data.forEach(v=>{
+    let b = Math.floor((v-minV)/bw);
+    if(b>=bins) b=bins-1;
+    counts[b]++;
+  });
+  const labels = counts.map((_,i)=>(minV+i*bw+bw/2).toFixed(1));
+  const midpoints = counts.map((_,i)=>minV+i*bw+bw/2);
+
+  // Normal density scaled to histogram
+  const n = data.length;
+  const sd = stddev(data);
+  const normalCurve = midpoints.map(x => {
+    const z = (x - mn)/sd;
+    return (n * bw) * (1/(sd*Math.sqrt(2*Math.PI))) * Math.exp(-0.5*z*z);
+  });
+
+  const vertLine = (val, color, labelText) => ({
+    id: 'vline_'+lang+'_'+labelText,
+    afterDraw(chart){
+      const x = chart.scales.x.getPixelForValue(val.toFixed(1));
+      if(!x) return;
+      const ctx = chart.ctx;
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(x, chart.chartArea.top);
+      ctx.lineTo(x, chart.chartArea.bottom);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2.5;
+      ctx.setLineDash([5,3]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = color;
+      ctx.font = 'bold 11px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(labelText, x, chart.chartArea.top+12);
+      ctx.restore();
+    }
+  });
+
+  const s = state[lang].charts;
+  if(s.hist){ s.hist.destroy(); s.hist=null; }
+
+  const ctx = document.getElementById(canvasId).getContext('2d');
+  s.hist = new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels,
+      datasets:[
+        {
+          label: lang==='tr'?'Frekans':'Frequency',
+          data: counts,
+          backgroundColor:'rgba(24,95,165,0.35)',
+          borderColor:'rgba(24,95,165,0.7)',
+          borderWidth:1,
+          order:2
+        },
+        {
+          label: lang==='tr'?'Normal eğri':'Normal curve',
+          data: normalCurve,
+          type:'line',
+          borderColor:'rgba(226,75,74,0.9)',
+          backgroundColor:'rgba(226,75,74,0.08)',
+          borderWidth:2.5,
+          pointRadius:0,
+          tension:0.4,
+          fill:true,
+          order:1
+        }
+      ]
+    },
+    options:{
+      responsive:true,
+      animation:{duration:300},
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          callbacks:{
+            title: items => (lang==='tr'?'Değer: ':'Value: ')+items[0].label+' k₺'
+          }
+        }
+      },
+      scales:{
+        x:{
+          title:{display:true,text:lang==='tr'?'Gelir (bin ₺)':'Income (k₺)',font:{size:11}},
+          grid:{display:false},
+          ticks:{maxTicksLimit:8,font:{size:10}}
+        },
+        y:{
+          title:{display:true,text:lang==='tr'?'Frekans':'Frequency',font:{size:11}},
+          grid:{color:'rgba(0,0,0,0.05)'}
+        }
+      }
+    },
+    plugins:[
+      vertLine(mn,'#185FA5', lang==='tr'?'Ort.':'Mean'),
+      vertLine(md,'#3B6D11', lang==='tr'?'Med.':'Med.'),
+      vertLine(mo,'#7B3FA0', lang==='tr'?'Mod':'Mode')
+    ]
+  });
+}
+
+// ════════════════════════════════════════════════════
+// SCATTER — Income vs Consumption
+// ════════════════════════════════════════════════════
+function drawScatter(lang, xData, yData, rho){
+  const canvasId = lang+'-scatter';
+  const pts = xData.map((x,i)=>({x, y:yData[i]}));
+
+  // 45° reference line (min to max of both axes)
+  const allX = xData, allY = yData;
+  const minAll = Math.min(Math.min(...allX), Math.min(...allY));
+  const maxAll = Math.max(Math.max(...allX), Math.max(...allY));
+  const refLine = [
+    {x: minAll, y: minAll},
+    {x: maxAll, y: maxAll}
+  ];
+
+  // Color based on correlation
+  const ar = Math.abs(rho);
+  const pointColor = ar > 0.7 ? 'rgba(24,95,165,0.5)' :
+                     ar > 0.4 ? 'rgba(59,109,17,0.5)' :
+                                'rgba(123,63,160,0.4)';
+
+  const s = state[lang].charts;
+  if(s.scatter){ s.scatter.destroy(); s.scatter=null; }
+
+  const ctx = document.getElementById(canvasId).getContext('2d');
+  s.scatter = new Chart(ctx,{
+    type:'scatter',
+    data:{
+      datasets:[
+        {
+          label: lang==='tr'?'Gözlemler':'Observations',
+          data: pts,
+          backgroundColor: pointColor,
+          borderColor: pointColor.replace('0.5','0.8').replace('0.4','0.7'),
+          borderWidth:1,
+          pointRadius: xData.length > 100 ? 3 : 4,
+          pointHoverRadius:6,
+          order:2
+        },
+        {
+          label: lang==='tr'?'45° çizgisi':'45° reference',
+          data: refLine,
+          type:'line',
+          borderColor:'rgba(226,75,74,0.5)',
+          borderWidth:1.5,
+          borderDash:[6,4],
+          pointRadius:0,
+          fill:false,
+          order:1
+        }
+      ]
+    },
+    options:{
+      responsive:true,
+      animation:{duration:200},
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          callbacks:{
+            label:item=>`Gelir: ${item.parsed.x.toFixed(1)} k₺, Tüketim: ${item.parsed.y.toFixed(1)} k₺`
+          }
+        }
+      },
+      scales:{
+        x:{
+          title:{display:true,text:lang==='tr'?'Gelir X (bin ₺)':'Income X (k₺)',font:{size:11}},
+          grid:{color:'rgba(0,0,0,0.05)'}
+        },
+        y:{
+          title:{display:true,text:lang==='tr'?'Tüketim Y (bin ₺)':'Consumption Y (k₺)',font:{size:11}},
+          grid:{color:'rgba(0,0,0,0.05)'}
+        }
+      }
+    }
+  });
+}
+
+// ════════════════════════════════════════════════════
+// SLIDER LISTENERS
+// ════════════════════════════════════════════════════
+['tr','en'].forEach(lang=>{
+  ['n','sigma','skew','out'].forEach(key=>{
+    const dec = key==='skew'?1:key==='sigma'?1:0;
+    const el = document.getElementById(lang+'-'+key);
+    if(el) el.addEventListener('input',function(){
+      document.getElementById(lang+'-'+key+'-lbl').textContent = parseFloat(this.value).toFixed(dec);
+      generate(lang);
+    });
+  });
+
+  // Korelasyon kaydırıcısı
+  const corrEl = document.getElementById(lang+'-corr');
+  if(corrEl) corrEl.addEventListener('input',function(){
+    document.getElementById(lang+'-corr-lbl').textContent = parseFloat(this.value).toFixed(2);
+    update(lang);
+  });
+});
+
+// ════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════
+generate('tr');
+</script>
+</body>
+</html>
