@@ -144,7 +144,6 @@
     .cat-title {
       font-size: 13px; font-weight: 700;
       color: var(--muted);
-      text-transform: uppercase;
       letter-spacing: .8px;
       margin: 28px 0 10px;
       padding-left: 4px;
@@ -306,37 +305,25 @@
           <span>/</span>
           <span class="current" data-i18n="breadcrumb_current">Açık Materyaller</span>
         </div>
-
         <h1 data-i18n="page_title">📚 Açık Materyaller</h1>
         <p data-i18n="page_desc">İnteraktif simülatörler, ders notları, kod dosyaları ve veri setleri. Tüm materyaller serbestçe erişilebilir; aktif içeriklere tıklayarak ulaşabilirsiniz.</p>
-
         <div class="header-meta">
-          <div class="meta-chip">
-            <div class="dot-sm"></div>
-            <span data-i18n="meta_author">Doç. Dr. Erkan Ağaslan</span>
-          </div>
-          <div class="meta-chip">
-            <div class="dot-sm blue"></div>
-            <span data-i18n="meta_uni">Kütahya Dumlupınar Üniversitesi</span>
-          </div>
-          <div class="meta-chip">
-            <div class="dot-sm orange"></div>
-            <span data-i18n="meta_update">Sürekli güncellenir</span>
-          </div>
+          <div class="meta-chip"><div class="dot-sm"></div><span data-i18n="meta_author">Doç. Dr. Erkan Ağaslan</span></div>
+          <div class="meta-chip"><div class="dot-sm blue"></div><span data-i18n="meta_uni">Kütahya Dumlupınar Üniversitesi</span></div>
+          <div class="meta-chip"><div class="dot-sm orange"></div><span data-i18n="meta_update">Sürekli güncellenir</span></div>
         </div>
       </div>
     </div>
 
-    <!-- İNTERAKTİF GÖRSELLER -->
     <div class="cat-title" data-i18n="cat_interactive">İnteraktif görseller</div>
     <div class="mat-list">
 
-      <!-- 1 — YENİ: Betimsel İstatistikler -->
+      <!-- 1 -->
       <a class="mat-item interaktif" href="./betimsel_istatistik.html">
         <div class="mat-icon">📊</div>
         <div class="mat-content">
           <div class="mat-title" data-i18n="sim0_title">Betimsel İstatistikler: Gelir–Tüketim Örneği</div>
-          <div class="mat-desc" data-i18n="sim0_desc">Gelir (X) ve tüketim (Y) verisi üzerinden merkezi eğilim, yayılım ve korelasyon ölçülerini etkileşimli olarak inceleyin. Çok varlıklı bireylerin ortalamanın bozulmasına yol açtığını, n artıkça histogramın normal dağılıma yaklaştığını ve korelasyon katsayısının serpilme diyagramını nasıl şekillendirdiğini gözlemleyin.</div>
+          <div class="mat-desc" data-i18n="sim0_desc">Gelir (X) ve tüketim (Y) verisi üzerinden merkezi eğilim, yayılım ve korelasyon ölçülerini etkileşimli olarak inceleyin.</div>
           <div class="mat-tags">
             <span class="mat-tag teal" data-i18n="tag_interactive">İnteraktif</span>
             <span class="mat-tag blue" data-i18n="tag_descriptive">Betimsel İstatistik</span>
@@ -345,18 +332,15 @@
             <span class="mat-tag blue" data-i18n="tag_normal">Normal Dağılım</span>
           </div>
         </div>
-        <div class="mat-right">
-          <div class="mat-badge yeni" data-i18n="badge_new">Yeni</div>
-          <div class="arrow">→</div>
-        </div>
+        <div class="mat-right"><div class="mat-badge yeni" data-i18n="badge_new">Yeni</div><div class="arrow">→</div></div>
       </a>
 
-      <!-- 2 — Regresyon -->
+      <!-- 2 -->
       <a class="mat-item interaktif" href="./hata_terimi.html">
         <div class="mat-icon">📈</div>
         <div class="mat-content">
           <div class="mat-title" data-i18n="sim1_title">Regresyon Simülatörü: Hata Terimi ve Güven Aralıkları</div>
-          <div class="mat-desc" data-i18n="sim1_desc">Anakütle regresyon doğrusu, OLS tahmini ve hata terimlerini interaktif olarak inceleyin. σ kaydırıcısıyla varyansı değiştirin, noktalara dokunarak εᵢ değerini görün.</div>
+          <div class="mat-desc" data-i18n="sim1_desc">Anakütle regresyon doğrusu, OLS tahmini ve hata terimlerini interaktif olarak inceleyin.</div>
           <div class="mat-tags">
             <span class="mat-tag teal" data-i18n="tag_interactive">İnteraktif</span>
             <span class="mat-tag blue">OLS</span>
@@ -365,18 +349,15 @@
             <span class="mat-tag blue" data-i18n="tag_t_stat">t istatistiği</span>
           </div>
         </div>
-        <div class="mat-right">
-          <div class="mat-badge yeni" data-i18n="badge_new">Yeni</div>
-          <div class="arrow">→</div>
-        </div>
+        <div class="mat-right"><div class="mat-badge yeni" data-i18n="badge_new">Yeni</div><div class="arrow">→</div></div>
       </a>
 
-      <!-- 3 — Mevsimsellik -->
+      <!-- 3 -->
       <a class="mat-item interaktif" href="./mevsimsellik_welch.html">
         <div class="mat-icon">🌊</div>
         <div class="mat-content">
           <div class="mat-title" data-i18n="sim2_title">Mevsimsellik, Mevsimsellik Testi ve Sahte Regresyon Simülatörü</div>
-          <div class="mat-desc" data-i18n="sim2_desc">Aylık, çeyreklik ve yarı-yıllık frekanslarda mevsimsel seriler üretin. Welch ANOVA ile mevsimselliği test edin, ham OLS'nin sahte R² ve t istatistikleri ürettiğini gözlemleyin, TRAMO-SEATS arındırması sonrası ilişkinin nasıl değiştiğini karşılaştırın.</div>
+          <div class="mat-desc" data-i18n="sim2_desc">Welch ANOVA ile mevsimselliği test edin, TRAMO-SEATS arındırması sonrası ilişkinin nasıl değiştiğini karşılaştırın.</div>
           <div class="mat-tags">
             <span class="mat-tag teal" data-i18n="tag_interactive">İnteraktif</span>
             <span class="mat-tag blue" data-i18n="tag_seasonality">Mevsimsellik</span>
@@ -385,18 +366,15 @@
             <span class="mat-tag blue">TRAMO-SEATS</span>
           </div>
         </div>
-        <div class="mat-right">
-          <div class="mat-badge yeni" data-i18n="badge_new">Yeni</div>
-          <div class="arrow">→</div>
-        </div>
+        <div class="mat-right"><div class="mat-badge yeni" data-i18n="badge_new">Yeni</div><div class="arrow">→</div></div>
       </a>
 
-      <!-- 4 — Birim Kök -->
+      <!-- 4 -->
       <a class="mat-item interaktif" href="./birim_kok_adf_za.html">
         <div class="mat-icon">📉</div>
         <div class="mat-content">
           <div class="mat-title" data-i18n="sim3_title">Etkileşimli Birim Kök Simülatörü: ADF ve Zivot-Andrews Testleri</div>
-          <div class="mat-desc" data-i18n="sim3_desc">I(1) seri simülasyonu, ADF birim kök testi ve kırılmalı Zivot-Andrews testi. Kesişim, trend, gürültü ve yapısal kırılma parametrelerini kaydırıcılarla ayarlayın; test istatistikleri anlık güncellenir.</div>
+          <div class="mat-desc" data-i18n="sim3_desc">I(1) seri simülasyonu, ADF birim kök testi ve kırılmalı Zivot-Andrews testi.</div>
           <div class="mat-tags">
             <span class="mat-tag teal" data-i18n="tag_interactive">İnteraktif</span>
             <span class="mat-tag blue" data-i18n="tag_unit_root">Birim kök</span>
@@ -405,18 +383,15 @@
             <span class="mat-tag blue" data-i18n="tag_struct_break">Yapısal kırılma</span>
           </div>
         </div>
-        <div class="mat-right">
-          <div class="mat-badge yeni" data-i18n="badge_new">Yeni</div>
-          <div class="arrow">→</div>
-        </div>
+        <div class="mat-right"><div class="mat-badge yeni" data-i18n="badge_new">Yeni</div><div class="arrow">→</div></div>
       </a>
 
-      <!-- 5 — Eşbütünleşme -->
+      <!-- 5 -->
       <a class="mat-item interaktif" href="./esbutunlesme.html">
         <div class="mat-icon">🔗</div>
         <div class="mat-content">
           <div class="mat-title" data-i18n="sim4_title">Eşbütünleşme Simülatörü: I(1) Seriler &amp; Engle-Granger Testi</div>
-          <div class="mat-desc" data-i18n="sim4_desc">Eşbütünleşik, eşbütünleşik olmayan ve farklı bütünleşme derecesine sahip seri çiftlerini simüle edin. ADF durağanlık testleri, uzun dönem OLS regresyonu ve Engle-Granger artık testi adım adım gösterilir; sahte regresyon ve doğrusal kombinasyon durağanlığı kavramları görsel olarak pekiştirilir.</div>
+          <div class="mat-desc" data-i18n="sim4_desc">Eşbütünleşik ve eşbütünleşik olmayan seri çiftlerini simüle edin; Engle-Granger artık testi adım adım gösterilir.</div>
           <div class="mat-tags">
             <span class="mat-tag teal" data-i18n="tag_interactive">İnteraktif</span>
             <span class="mat-tag blue" data-i18n="tag_cointegration">Eşbütünleşme</span>
@@ -425,18 +400,15 @@
             <span class="mat-tag blue" data-i18n="tag_spurious">Sahte Regresyon</span>
           </div>
         </div>
-        <div class="mat-right">
-          <div class="mat-badge yeni" data-i18n="badge_new">Yeni</div>
-          <div class="arrow">→</div>
-        </div>
+        <div class="mat-right"><div class="mat-badge yeni" data-i18n="badge_new">Yeni</div><div class="arrow">→</div></div>
       </a>
 
-      <!-- 6 — Tanısal Testler -->
+      <!-- 6 -->
       <a class="mat-item interaktif" href="./tanisal_testler_sapmasizlik.html">
         <div class="mat-icon">🧪</div>
         <div class="mat-content">
           <div class="mat-title" data-i18n="sim5_title">Tanısal Testler Simülatörü — Sapmasızlık, Değişen Varyans ve Otokorelasyon</div>
-          <div class="mat-desc" data-i18n="sim5_desc">R mantığıyla veri üretimi üzerinden OLS varsayımlarını inceleyin. Sapmasızlığın neden kaybolmadığını görün; Breusch–Pagan, Breusch–Godfrey ve Durbin–Watson çıktılarıyla değişen varyans ve otokorelasyonu hem görsel hem de hipotez testleriyle değerlendirin.</div>
+          <div class="mat-desc" data-i18n="sim5_desc">Breusch–Pagan, Breusch–Godfrey ve Durbin–Watson çıktılarıyla OLS varsayımlarını inceleyin.</div>
           <div class="mat-tags">
             <span class="mat-tag teal" data-i18n="tag_interactive">İnteraktif</span>
             <span class="mat-tag blue" data-i18n="tag_diag_tests">Tanısal Testler</span>
@@ -445,18 +417,15 @@
             <span class="mat-tag blue" data-i18n="tag_autocorr">Otokorelasyon</span>
           </div>
         </div>
-        <div class="mat-right">
-          <div class="mat-badge yeni" data-i18n="badge_new">Yeni</div>
-          <div class="arrow">→</div>
-        </div>
+        <div class="mat-right"><div class="mat-badge yeni" data-i18n="badge_new">Yeni</div><div class="arrow">→</div></div>
       </a>
 
-      <!-- 7 — Çoklu Regresyon -->
+      <!-- 7 -->
       <a class="mat-item interaktif" href="./coklu_regresyon_katsayi.html">
         <div class="mat-icon">🧮</div>
         <div class="mat-content">
           <div class="mat-title" data-i18n="sim6_title">Çoklu Regresyon Simülatörü: Katsayı Yorumu ve Çoklu Doğrusal Bağlantı</div>
-          <div class="mat-desc" data-i18n="sim6_desc">Çoklu regresyonda bireysel t testleri, F testi, VIF ve çoklu doğrusal bağlantı sorununu etkileşimli olarak inceleyin. Temiz model, paradoks ve tam çakışma senaryoları arasında geçiş yaparak katsayıların neden anlamsızlaşabildiğini gözlemleyin.</div>
+          <div class="mat-desc" data-i18n="sim6_desc">t testleri, F testi, VIF ve çoklu doğrusal bağlantı sorununu etkileşimli olarak inceleyin.</div>
           <div class="mat-tags">
             <span class="mat-tag teal" data-i18n="tag_interactive">İnteraktif</span>
             <span class="mat-tag blue" data-i18n="tag_multi_reg">Çoklu regresyon</span>
@@ -465,10 +434,7 @@
             <span class="mat-tag blue">VIF</span>
           </div>
         </div>
-        <div class="mat-right">
-          <div class="mat-badge yeni" data-i18n="badge_new">Yeni</div>
-          <div class="arrow">→</div>
-        </div>
+        <div class="mat-right"><div class="mat-badge yeni" data-i18n="badge_new">Yeni</div><div class="arrow">→</div></div>
       </a>
 
       <!-- 8 — Heteroskedastisite (yakında) -->
@@ -482,17 +448,30 @@
             <span class="mat-tag" data-i18n="tag_heterosk">Heteroskedastisite</span>
           </div>
         </div>
-        <div class="mat-right">
-          <div class="mat-badge beklemede" data-i18n="badge_soon">Yakında</div>
-        </div>
+        <div class="mat-right"><div class="mat-badge beklemede" data-i18n="badge_soon">Yakında</div></div>
       </div>
+
+      <!-- 9 — Statistics vs Econometrics -->
+      <a class="mat-item interaktif" href="./istatistik_vs_ekonometri.html">
+        <div class="mat-icon">⚖️</div>
+        <div class="mat-content">
+          <div class="mat-title" data-i18n="sim8_title">İstatistik mi, Ekonometri mi? — Adım Adım Görsel Sezgi</div>
+          <div class="mat-desc" data-i18n="sim8_desc">Aynı gelir–tüketim verisi üzerinden iki disiplinin farkını 6 adımda keşfedin. İstatistik korelasyonu bulur; ekonometri OLS katsayısı, heteroskedastisite testi ve Monte Carlo örnekleme dağılımıyla politika çıkarımına ulaşır.</div>
+          <div class="mat-tags">
+            <span class="mat-tag teal" data-i18n="tag_interactive">İnteraktif</span>
+            <span class="mat-tag blue" data-i18n="tag_stat_vs_eco">İstatistik vs Ekonometri</span>
+            <span class="mat-tag blue">OLS</span>
+            <span class="mat-tag blue" data-i18n="tag_heterosk">Heteroskedastisite</span>
+            <span class="mat-tag blue" data-i18n="tag_monte_carlo">Monte Carlo</span>
+          </div>
+        </div>
+        <div class="mat-right"><div class="mat-badge yeni" data-i18n="badge_new">Yeni</div><div class="arrow">→</div></div>
+      </a>
 
     </div>
 
-    <!-- DERS NOTLARI -->
     <div class="cat-title" data-i18n="cat_notes">Ders notları</div>
     <div class="mat-list">
-
       <div class="mat-item pdf passive">
         <div class="mat-icon">📄</div>
         <div class="mat-content">
@@ -500,11 +479,8 @@
           <div class="mat-desc" data-i18n="coming_soon_desc">Yakında eklenecek.</div>
           <div class="mat-tags"><span class="mat-tag orange">PDF</span></div>
         </div>
-        <div class="mat-right">
-          <div class="mat-badge beklemede" data-i18n="badge_soon">Yakında</div>
-        </div>
+        <div class="mat-right"><div class="mat-badge beklemede" data-i18n="badge_soon">Yakında</div></div>
       </div>
-
       <div class="mat-item pdf passive">
         <div class="mat-icon">📄</div>
         <div class="mat-content">
@@ -512,17 +488,12 @@
           <div class="mat-desc" data-i18n="coming_soon_desc">Yakında eklenecek.</div>
           <div class="mat-tags"><span class="mat-tag orange">PDF</span></div>
         </div>
-        <div class="mat-right">
-          <div class="mat-badge beklemede" data-i18n="badge_soon">Yakında</div>
-        </div>
+        <div class="mat-right"><div class="mat-badge beklemede" data-i18n="badge_soon">Yakında</div></div>
       </div>
-
     </div>
 
-    <!-- KOD DOSYALARI -->
     <div class="cat-title" data-i18n="cat_code">Kod dosyaları</div>
     <div class="mat-list">
-
       <div class="mat-item kod passive">
         <div class="mat-icon">💻</div>
         <div class="mat-content">
@@ -530,17 +501,12 @@
           <div class="mat-desc" data-i18n="coming_soon_desc">Yakında eklenecek.</div>
           <div class="mat-tags"><span class="mat-tag purple">R</span></div>
         </div>
-        <div class="mat-right">
-          <div class="mat-badge beklemede" data-i18n="badge_soon">Yakında</div>
-        </div>
+        <div class="mat-right"><div class="mat-badge beklemede" data-i18n="badge_soon">Yakında</div></div>
       </div>
-
     </div>
 
-    <!-- VERİ SETLERİ -->
     <div class="cat-title" data-i18n="cat_data">Veri setleri</div>
     <div class="mat-list">
-
       <div class="mat-item veri passive">
         <div class="mat-icon">🗄️</div>
         <div class="mat-content">
@@ -548,28 +514,17 @@
           <div class="mat-desc" data-i18n="coming_soon_desc">Yakında eklenecek.</div>
           <div class="mat-tags"><span class="mat-tag teal">CSV</span></div>
         </div>
-        <div class="mat-right">
-          <div class="mat-badge beklemede" data-i18n="badge_soon">Yakında</div>
-        </div>
+        <div class="mat-right"><div class="mat-badge beklemede" data-i18n="badge_soon">Yakında</div></div>
       </div>
-
     </div>
 
     <div class="info-box" data-i18n="info_box">
-      💡 <strong>Nasıl kullanılır:</strong> İnteraktif görseller doğrudan tarayıcıda açılır — uygulama veya kurulum gerekmez. Telefon ve tabletlerde de çalışır. PDF dosyaları için telefonunuzda PDF okuyucu yüklü olması yeterlidir.
+      💡 <strong>Nasıl kullanılır:</strong> İnteraktif görseller doğrudan tarayıcıda açılır — uygulama veya kurulum gerekmez. Telefon ve tabletlerde de çalışır.
     </div>
 
-    <div style="
-      margin-top: 24px;
-      padding: 14px 18px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,.08);
-      background: rgba(255,255,255,.03);
-      display: flex; align-items: center; gap: 12px;
-      flex-wrap: wrap;
-    ">
-      <span style="font-size: 18px; flex-shrink:0;">©</span>
-      <p style="margin:0; font-size: 12.5px; color: var(--muted); line-height: 1.7;" data-i18n="copyright_text">
+    <div style="margin-top:24px;padding:14px 18px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+      <span style="font-size:18px;flex-shrink:0;">©</span>
+      <p style="margin:0;font-size:12.5px;color:var(--muted);line-height:1.7;" data-i18n="copyright_text">
         Bu sayfadaki tüm materyaller — interaktif simülatörler, ders notları, kod dosyaları ve görseller dahil —
         <strong style="color:var(--text);">Doç. Dr. Erkan Ağaslan</strong>'a aittir.
         Materyaller yalnızca eğitim amaçlı kişisel kullanım için serbestçe erişilebilir;
@@ -602,44 +557,36 @@
         meta_author: "Doç. Dr. Erkan Ağaslan",
         meta_uni: "Kütahya Dumlupınar Üniversitesi",
         meta_update: "Sürekli güncellenir",
-
         cat_interactive: "İnteraktif görseller",
         cat_notes: "Ders notları",
         cat_code: "Kod dosyaları",
         cat_data: "Veri setleri",
-
         sim0_title: "Betimsel İstatistikler: Gelir–Tüketim Örneği",
         sim0_desc: "Gelir (X) ve tüketim (Y) verisi üzerinden merkezi eğilim, yayılım ve korelasyon ölçülerini etkileşimli olarak inceleyin. Çok varlıklı bireylerin ortalamanın bozulmasına yol açtığını, n artıkça histogramın normal dağılıma yaklaştığını ve korelasyon katsayısının serpilme diyagramını nasıl şekillendirdiğini gözlemleyin.",
-
         sim1_title: "Regresyon Simülatörü: Hata Terimi ve Güven Aralıkları",
         sim1_desc: "Anakütle regresyon doğrusu, OLS tahmini ve hata terimlerini interaktif olarak inceleyin. σ kaydırıcısıyla varyansı değiştirin, noktalara dokunarak εᵢ değerini görün.",
-
         sim2_title: "Mevsimsellik, Mevsimsellik Testi ve Sahte Regresyon Simülatörü",
         sim2_desc: "Aylık, çeyreklik ve yarı-yıllık frekanslarda mevsimsel seriler üretin. Welch ANOVA ile mevsimselliği test edin, ham OLS'nin sahte R² ve t istatistikleri ürettiğini gözlemleyin, TRAMO-SEATS arındırması sonrası ilişkinin nasıl değiştiğini karşılaştırın.",
-
         sim3_title: "Etkileşimli Birim Kök Simülatörü: ADF ve Zivot-Andrews Testleri",
         sim3_desc: "I(1) seri simülasyonu, ADF birim kök testi ve kırılmalı Zivot-Andrews testi. Kesişim, trend, gürültü ve yapısal kırılma parametrelerini kaydırıcılarla ayarlayın; test istatistikleri anlık güncellenir.",
-
         sim4_title: "Eşbütünleşme Simülatörü: I(1) Seriler &amp; Engle-Granger Testi",
         sim4_desc: "Eşbütünleşik, eşbütünleşik olmayan ve farklı bütünleşme derecesine sahip seri çiftlerini simüle edin. ADF durağanlık testleri, uzun dönem OLS regresyonu ve Engle-Granger artık testi adım adım gösterilir; sahte regresyon ve doğrusal kombinasyon durağanlığı kavramları görsel olarak pekiştirilir.",
-
         sim5_title: "Tanısal Testler Simülatörü — Sapmasızlık, Değişen Varyans ve Otokorelasyon",
         sim5_desc: "R mantığıyla veri üretimi üzerinden OLS varsayımlarını inceleyin. Sapmasızlığın neden kaybolmadığını görün; Breusch–Pagan, Breusch–Godfrey ve Durbin–Watson çıktılarıyla değişen varyans ve otokorelasyonu hem görsel hem de hipotez testleriyle değerlendirin.",
-
         sim6_title: "Çoklu Regresyon Simülatörü: Katsayı Yorumu ve Çoklu Doğrusal Bağlantı",
         sim6_desc: "Çoklu regresyonda bireysel t testleri, F testi, VIF ve çoklu doğrusal bağlantı sorununu etkileşimli olarak inceleyin. Temiz model, paradoks ve tam çakışma senaryoları arasında geçiş yaparak katsayıların neden anlamsızlaşabildiğini gözlemleyin.",
-
         sim7_title: "Heteroskedastisite simülatörü",
-
+        sim8_title: "İstatistik mi, Ekonometri mi? — Adım Adım Görsel Sezgi",
+        sim8_desc: "Aynı gelir–tüketim verisi üzerinden iki disiplinin farkını 6 adımda keşfedin. İstatistik korelasyonu bulur; ekonometri OLS katsayısı, heteroskedastisite testi ve Monte Carlo örnekleme dağılımıyla politika çıkarımına ulaşır.",
         tag_coef_interp: "Katsayı Yorumu",
         tag_multicollinearity: "Çoklu bağlantı",
-
+        tag_stat_vs_eco: "İstatistik vs Ekonometri",
+        tag_monte_carlo: "Monte Carlo",
         note1_title: "Hafta 1 — Temel kavramlar",
         note2_title: "Hafta 2 — OLS tahmincisi",
         code1_title: "OLS tahmini — R kodu",
         data1_title: "Uygulama veri seti 1",
         coming_soon_desc: "Yakında eklenecek.",
-
         tag_interactive: "İnteraktif",
         tag_descriptive: "Betimsel İstatistik",
         tag_central: "Merkezi Eğilim",
@@ -659,14 +606,10 @@
         tag_heterosk: "Heteroskedastisite",
         tag_autocorr: "Otokorelasyon",
         tag_multi_reg: "Çoklu regresyon",
-
         badge_new: "Yeni",
         badge_soon: "Yakında",
-
         info_box: "💡 <strong>Nasıl kullanılır:</strong> İnteraktif görseller doğrudan tarayıcıda açılır — uygulama veya kurulum gerekmez. Telefon ve tabletlerde de çalışır. PDF dosyaları için telefonunuzda PDF okuyucu yüklü olması yeterlidir.",
-
         copyright_text: `Bu sayfadaki tüm materyaller — interaktif simülatörler, ders notları, kod dosyaları ve görseller dahil — <strong style="color:var(--text);">Doç. Dr. Erkan Ağaslan</strong>'a aittir. Materyaller yalnızca eğitim amaçlı kişisel kullanım için serbestçe erişilebilir; <strong style="color:var(--text);">kaynak gösterilmeksizin çoğaltılması, dağıtılması, yayımlanması veya ticari amaçla kullanılması yasaktır.</strong> Akademik atıf için: <em>Ağaslan, E. (<span class="yr-inline"></span>). erkanagaslan.com</em>`,
-
         footer_name: "Doç. Dr. Erkan Ağaslan",
       },
 
@@ -681,44 +624,36 @@
         meta_author: "Assoc. Prof. Dr. Erkan Ağaslan",
         meta_uni: "Kütahya Dumlupınar University",
         meta_update: "Continuously updated",
-
         cat_interactive: "Interactive visuals",
         cat_notes: "Lecture notes",
         cat_code: "Code files",
         cat_data: "Datasets",
-
         sim0_title: "Descriptive Statistics: Income–Consumption Example",
         sim0_desc: "Explore central tendency, spread, and correlation measures interactively using income (X) and consumption (Y) data. Observe how very wealthy individuals distort the mean, how the histogram converges to the normal distribution as n increases, and how the correlation coefficient shapes the scatter plot.",
-
         sim1_title: "Regression Simulator: Error Term and Confidence Intervals",
         sim1_desc: "Explore the population regression line, OLS estimates, and error terms interactively. Adjust the σ slider to change variance; hover over points to inspect individual εᵢ values.",
-
         sim2_title: "Seasonality, Seasonality Test, and Spurious Regression Simulator",
         sim2_desc: "Generate seasonal series at monthly, quarterly, and semi-annual frequencies. Test for seasonality with Welch ANOVA, observe the spurious R² and t-statistics produced by raw OLS, and compare how the relationship changes after TRAMO-SEATS adjustment.",
-
         sim3_title: "Interactive Unit Root Simulator: ADF and Zivot-Andrews Tests",
         sim3_desc: "Simulate I(1) series and run ADF and Zivot-Andrews unit root tests with structural breaks. Adjust intercept, trend, noise, and break parameters via sliders — test statistics update in real time.",
-
         sim4_title: "Cointegration Simulator: I(1) Series &amp; Engle-Granger Test",
         sim4_desc: "Simulate pairs of cointegrated, non-cointegrated, or differently integrated series. ADF stationarity tests, long-run OLS regression, and the Engle-Granger residual test are shown step by step.",
-
         sim5_title: "Diagnostic Tests Simulator — Unbiasedness, Heteroskedasticity, and Autocorrelation",
         sim5_desc: "Examine OLS assumptions through data generation following R logic. Evaluate heteroskedasticity and autocorrelation via Breusch–Pagan, Breusch–Godfrey, and Durbin–Watson tests.",
-
         sim6_title: "Multiple Regression Simulator: Coefficient Interpretation and Multicollinearity",
         sim6_desc: "Interactively examine individual t-tests, the F-test, VIF, and the multicollinearity problem in multiple regression. Switch between clean model, paradox, and near-perfect overlap scenarios.",
-
         sim7_title: "Heteroskedasticity simulator",
-
+        sim8_title: "Statistics vs Econometrics — Step-by-Step Visual Intuition",
+        sim8_desc: "Discover the difference between the two disciplines in 6 steps using the same income–consumption data. Statistics finds the correlation; econometrics delivers the OLS coefficient, heteroskedasticity test, and Monte Carlo sampling distribution for policy inference.",
         tag_coef_interp: "Coefficient interpretation",
         tag_multicollinearity: "Multicollinearity",
-
+        tag_stat_vs_eco: "Statistics vs Econometrics",
+        tag_monte_carlo: "Monte Carlo",
         note1_title: "Week 1 — Basic concepts",
         note2_title: "Week 2 — OLS estimator",
         code1_title: "OLS estimation — R code",
         data1_title: "Applied dataset 1",
         coming_soon_desc: "Coming soon.",
-
         tag_interactive: "Interactive",
         tag_descriptive: "Descriptive Statistics",
         tag_central: "Central Tendency",
@@ -738,14 +673,10 @@
         tag_heterosk: "Heteroskedasticity",
         tag_autocorr: "Autocorrelation",
         tag_multi_reg: "Multiple regression",
-
         badge_new: "New",
         badge_soon: "Coming soon",
-
         info_box: "💡 <strong>How to use:</strong> Interactive visuals open directly in your browser — no installation required. They also work on phones and tablets. For PDF files, a PDF reader on your device is sufficient.",
-
         copyright_text: `All materials on this page — including interactive simulators, lecture notes, code files, and visuals — are the intellectual property of <strong style="color:var(--text);">Assoc. Prof. Dr. Erkan Ağaslan</strong>. Materials are freely accessible for personal educational use only; <strong style="color:var(--text);">reproduction, distribution, publication, or commercial use without attribution is prohibited.</strong> For academic citation: <em>Ağaslan, E. (<span class="yr-inline"></span>). erkanagaslan.com</em>`,
-
         footer_name: "Assoc. Prof. Dr. Erkan Ağaslan",
       }
     };
