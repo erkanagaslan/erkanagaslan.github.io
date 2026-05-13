@@ -1,0 +1,642 @@
+---
+title: "Panel Veri Ekonometrisi"
+subtitle: "Birim Kök Testleri — Öğrenci Dostu Adım Adım Anlatım"
+editor: visual
+author:
+  - name: "Doç. Dr. Erkan Ağaslan"
+    affiliation: "Kütahya Dumlupınar Üniversitesi — Ekonometri Bölümü"
+date: "Mart 2026"
+lang: tr
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    toc-location: left
+    toc-title: "İçindekiler"
+    code-fold: show
+    code-tools: true
+    code-line-numbers: true
+    theme: cosmo
+    fig-width: 9
+    fig-height: 5
+    df-print: kable
+    smooth-scroll: true
+    embed-resources: true
+    number-sections: true
+  pdf:
+    toc: true
+    toc-depth: 3
+    documentclass: scrartcl
+    geometry:
+      - margin=2.5cm
+    fig-pos: "H"
+    number-sections: true
+execute:
+  warning: false
+  message: false
+  echo: true
+  fig-align: center
+knitr:
+  opts_chunk:
+    comment: "#>"
+    collapse: false
+---
+
+# Giriş ve Amaç {#sec-giris}
+
+Bu kodların temel amacı her bir testi olabildiğince basit, ek döngüler olmadan yazarak herkesin anlamasını sağlamaktır.
+
+1.  **Yatay Kesit Bağımlılığı (CD) Testi** ile değişkenlerde ortak faktör kaynaklı bağımlılık olup olmadığı saptanır.
+2.  **Trend bileşeni** (deterministik trend) sistematik olarak test edilerek doğru model spesifikasyonu seçilir.
+3.  **CD yoksa**: 1. Nesil testler (LLC, IPS, Fisher-ADF, Hadri) uygulanır.
+4.  **CD varsa**: 2. Nesil testler (CIPS, CADF) uygulanır.
+5.  **Düzeyde durağan değilse**: Birinci farkı alınır ve testler tekrarlanır. Seri en fazla $I(1)$ olarak sınıflandırılır.
+
+> **Önemli not:** Pek çok uygulamalı çalışmada *trendin varlığı* göz ardı edilir ve doğrudan `exo = "intercept"` (sadece sabit terim) seçilir. Bu, **yanlı sonuçlara** yol açar. Trend katsayısı anlamlıysa **mutlaka `exo = "trend"`** kullanılmalıdır.
+
+------------------------------------------------------------------------
+
+# Hazırlık ve Paketler {#sec-paketler}
+
+```{r}
+#| label: paketler
+install.packages(c("plm", "lmtest", "tseries", "dplyr", "tidyr",
+                   "ggplot2", "knitr", "kableExtra", "openxlsx"),
+                 repos = "https://cloud.r-project.org")
+
+library(plm)
+library(lmtest)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+
+options(width = 90, scipen = 4)
+```
+
+> Yukarıdaki kod gerekli paketleri kurup yükler. Eğer paketler zaten yüklüyse R bir uyarı verir; ancak çalışma yine devam eder.
+
+------------------------------------------------------------------------
+
+# Veri Üretimi (Simülasyon) {#sec-veri}
+
+Eğitim amacıyla **tasarlanmış** bir panel veri seti kullanıyoruz. Tasarım şu özelliklere sahiptir:
+
+- **N = 20 firma**, **T = 48 çeyrek dönem** (2014Q1 – 2025Q4) → 960 gözlem.
+- **8 değişken**:
+  - **5 değişken** ortak makro faktör tarafından etkilenir → **yatay kesit bağımlılığı VAR**.
+  - **3 değişken** birime özgü süreçlerden gelir → **yatay kesit bağımlılığı YOK**.
+- 2 değişkende (`enflasyon`, `petrol_fiyati`) **anlamlı deterministik trend** vardır.
+
+## Çalışma alanını temizleme
+
+```{r}
+#| label: temizlik
+if (!is.null(dev.list())) dev.off()
+cat("\014")
+rm(list = ls(all = TRUE))
+knitr::opts_chunk$set(fig_crop = FALSE)
+```
+
+> Burada da küçük bir `if` var fakat bu sadece R'ın açık grafik penceresini kapatması için. Esas analiz adımlarımızda `if` kullanmayacağız.
+
+## Örneklem boyutları
+
+```{r}
+#| label: parametreler
+set.seed(2)        # tekrarlanabilir sonuçlar için
+N <- 20            # firma sayısı
+T <- 48            # zaman dönemi sayısı
+NT <- N * T        # toplam gözlem
+
+tarih_seq <- seq(as.Date("2014-01-01"), by = "quarter", length.out = T)
+```
+
+## Ortak faktörler (yatay kesit bağımlılığının kaynağı)
+
+```{r}
+#| label: ortak-faktorler
+# Faktör 1: Sabit terimli olan rassal yürüyüş — küresel emtia şoku gibi (kümülatif toplam ile üretilir bu serilir çünkü seriler birikerek oluşur.)
+set.seed(123)
+f_I1_drift <- cumsum(rnorm(T, mean = 0.15, sd = 0.6))
+
+# Faktör 2: Sabit terimsiz rassal yürüyüş — küresel finansal şok gibi
+f_I1 <- cumsum(rnorm(T, mean = 0, sd = 0.7))
+
+# Faktör 3: Durağan AR(1) — küresel iş çevrimi gibi
+f_I0 <- as.numeric(arima.sim(list(ar = 0.55), n = T, sd = 0.5))
+```
+
+## Değişkenleri tek tek üretelim
+
+Aşağıda 8 değişkeni `lapply` ile üretiyoruz. `lapply` aslında bir döngüdür ama veri üretiminde kaçınılmazdır; bizim asıl odağımız **birim kök test akışında** döngüleri kaldırmak. Veri üretimi kısmı sabit kalacak.
+
+```{r}
+#| label: cd-li-degiskenler
+# 1. ENFLASYON — I(1) + DETERMİNİSTİK TREND + CD var
+enflasyon <- unlist(lapply(1:N, function(i) {
+  alfa <- runif(1, 8, 12); yuk <- runif(1, 0.8, 1.2)
+  trend_kats <- 0.06
+  eps <- arima.sim(list(ar = 0.4), n = T, sd = 0.30)
+  alfa + trend_kats * (1:T) + yuk * f_I1_drift + as.numeric(eps)
+}))
+
+# 2. DOVIZ_KURU — I(1), trend yok, CD var
+doviz_kuru <- unlist(lapply(1:N, function(i) {
+  alfa <- runif(1, 5, 8); yuk <- runif(1, 0.9, 1.3)
+  eps <- arima.sim(list(ar = 0.3), n = T, sd = 0.40)
+  alfa + yuk * f_I1 + as.numeric(eps)
+}))
+
+# 3. PETROL_FIYATI — I(1) + DETERMİNİSTİK TREND + CD var
+petrol_fiyati <- unlist(lapply(1:N, function(i) {
+  alfa <- runif(1, 50, 70); yuk <- runif(1, 1.5, 2.5)
+  trend_kats <- 0.35
+  eps <- arima.sim(list(ar = 0.4), n = T, sd = 1.0)
+  alfa + trend_kats * (1:T) + yuk * f_I1_drift + as.numeric(eps)
+}))
+
+# 4. FAIZ_ORANI — I(0) durağan, CD var
+faiz_orani <- unlist(lapply(1:N, function(i) {
+  alfa <- runif(1, 7, 11); yuk <- runif(1, 0.6, 1.0)
+  eps <- arima.sim(list(ar = 0.2), n = T, sd = 0.50)
+  alfa + yuk * f_I0 + as.numeric(eps)
+}))
+
+# 5. ISSIZLIK — I(1), trend yok, CD var
+issizlik <- unlist(lapply(1:N, function(i) {
+  alfa <- runif(1, 8, 12); yuk <- runif(1, 0.5, 0.9)
+  eps <- arima.sim(list(ar = 0.5), n = T, sd = 0.30)
+  alfa + yuk * f_I1 + as.numeric(eps)
+}))
+```
+
+```{r}
+#| label: cd-siz-degiskenler
+# 6. AR_GE — I(0) durağan, idiyosenkratik
+ar_ge <- unlist(lapply(1:N, function(i) {
+  alfa <- runif(1, 100, 200)
+  eps <- arima.sim(list(ar = 0.4), n = T, sd = 5)
+  alfa + as.numeric(eps)
+}))
+
+# 7. CALISAN_SAYISI — Yüksek persistanslı AR(1), birime özgü
+calisan_sayisi <- unlist(lapply(1:N, function(i) {
+  alfa <- runif(1, 500, 1500)
+  eps <- as.numeric(arima.sim(list(ar = 0.7), n = T, sd = 15))
+  alfa + eps
+}))
+
+# 8. STOK_DEVIR — I(0) durağan, birime özgü
+stok_devir <- unlist(lapply(1:N, function(i) {
+  alfa <- runif(1, 4, 7)
+  eps <- arima.sim(list(ar = 0.3), n = T, sd = 0.40)
+  alfa + as.numeric(eps)
+}))
+```
+
+## Veriyi `pdata.frame`'e dönüştürme
+
+```{r}
+#| label: pdataframe
+df <- data.frame(
+  id        = rep(1:N, each = T),
+  tarih     = rep(tarih_seq, times = N),
+  enflasyon, doviz_kuru, petrol_fiyati, faiz_orani, issizlik,
+  ar_ge, calisan_sayisi, stok_devir
+)
+
+eko <- pdata.frame(df, index = c("id", "tarih"))
+pdim(eko)
+head(eko, 4)
+```
+
+> Üretilen veri 20 firma × 48 dönem = 960 gözlemden oluşan **dengeli** bir paneldir. `pdim()` çıktısı bunu doğrular.
+
+------------------------------------------------------------------------
+
+# Verinin Görsel İncelemesi {#sec-gorsel}
+
+Birim kök testlerinden önce **mutlaka grafiklere bakılır.**
+
+```{r}
+#| label: fig-zaman-serileri
+#| fig-cap: "Sekiz değişken için tüm firmaların zaman serisi izleri"
+#| fig-height: 8
+df_long <- df |>
+  pivot_longer(-c(id, tarih), names_to = "degisken", values_to = "deger")
+
+ggplot(df_long, aes(x = tarih, y = deger, group = id)) +
+  geom_line(alpha = 0.35, linewidth = 0.4) +
+  facet_wrap(~ degisken, scales = "free_y", ncol = 2) +
+  labs(x = NULL, y = NULL,
+       title = "Panel Değişkenlerinin Zaman Serisi Görünümleri") +
+  theme_minimal(base_size = 11)
+```
+
+## Görsel yorum
+
+Grafiklerden okuduklarımız:
+
+- `enflasyon` ve `petrol_fiyati`: Belirgin **yukarı yönlü trend** görülüyor. Bu iki değişkende deterministik trend bileşeninin testte yer alması gerekecek.
+- `doviz_kuru`, `issizlik`, `calisan_sayisi`: Rassal yürüyüş benzeri davranış. Sürekli yukarı/aşağı dolanıyor, bir ortalamaya geri dönmüyor. Bu görsel, birim kök şüphesi doğurur.
+- `faiz_orani`, `ar_ge`, `stok_devir`: Bir ortalama etrafında salınıyor, geri dönüş gözleniyor. Muhtemelen $I(0)$.
+
+Bu sezgileri sayısal testlerle doğrulayacağız.
+
+------------------------------------------------------------------------
+
+# ADIM 0 — Yatay Kesit Bağımlılığı (CD) Testi {#sec-cd}
+
+## Teorik altyapı
+
+Standart 1. Nesil birim kök testleri **birimler arası bağımsızlık** varsayımına dayanır. Eğer panelinizde ortak şoklar tüm firmaları etkiliyorsa bu varsayım ihlal edilir ve 1. Nesil testler sahte ret yapabilir.
+
+### Hipotezler (Pesaran 2004 — CD)
+
+$$H_0: \rho_{ij} = \mathrm{corr}(u_{it}, u_{jt}) = 0 \quad \forall\; i \neq j$$
+
+$$H_1: \exists\, (i,j),\; i \neq j \;\text{öyle ki}\; \rho_{ij} \neq 0$$
+
+Yorum kuralı:\
+- p-değeri \< 0.05 ise → **CD VARDIR** → 2. Nesil testler kullanılmalıdır.\
+- p-değeri ≥ 0.05 ise → **CD YOKTUR** → 1. Nesil testler kullanılabilir.
+
+Bunun yanında **Breusch–Pagan LM** ve **Pesaran scaled LM** testlerine de bakacağız.
+
+## CD Testi — `enflasyon`
+
+```{r}
+pcdtest(eko$enflasyon, test = "cd")
+pcdtest(eko$enflasyon, test = "lm")
+pcdtest(eko$enflasyon, test = "sclm")
+```
+
+**Yorum (enflasyon):** Üç testin de p-değeri 0.05'in altında (genellikle çok küçük). $H_0$ reddedilir. **Enflasyon değişkeninde yatay kesit bağımlılığı vardır.** Bu beklenen bir sonuçtur çünkü enflasyon serisini ortak bir makro faktörle (`f_I1_drift`) sürükledik. Bu değişken için 2. Nesil testler kullanılmalıdır.
+
+## CD Testi — `doviz_kuru`
+
+```{r}
+pcdtest(eko$doviz_kuru, test = "cd")
+pcdtest(eko$doviz_kuru, test = "lm")
+pcdtest(eko$doviz_kuru, test = "sclm")
+```
+
+**Yorum (doviz_kuru):** p-değerleri çok küçük; $H_0$ reddedilir. **Yatay kesit bağımlılığı vardır.** Döviz kuru ortak bir küresel finansal şok faktörüne (`f_I1`) yüklendiği için bu beklenen bir bulgudur. 2. Nesil test kullanılacaktır.
+
+## CD Testi — `petrol_fiyati`
+
+```{r}
+pcdtest(eko$petrol_fiyati, test = "cd")
+pcdtest(eko$petrol_fiyati, test = "lm")
+pcdtest(eko$petrol_fiyati, test = "sclm")
+```
+
+**Yorum (petrol_fiyati):** p-değerleri çok küçük, $H_0$ reddedilir. **Yatay kesit bağımlılığı vardır.** Tüm firmalara ortak emtia şoku yüklendiği için beklenen bulgudur. 2. Nesil test kullanılacaktır.
+
+## CD Testi — `faiz_orani`
+
+```{r}
+pcdtest(eko$faiz_orani, test = "cd")
+pcdtest(eko$faiz_orani, test = "lm")
+pcdtest(eko$faiz_orani, test = "sclm")
+```
+
+**Yorum (faiz_orani):** p-değerleri 0.05'in altında. $H_0$ reddedilir. **Yatay kesit bağımlılığı vardır.** Faiz oranı durağan AR(1) ortak faktör (`f_I0`) ile sürüklendiği için CD'lidir. 2. Nesil test kullanılacaktır.
+
+## CD Testi — `issizlik`
+
+```{r}
+pcdtest(eko$issizlik, test = "cd")
+pcdtest(eko$issizlik, test = "lm")
+pcdtest(eko$issizlik, test = "sclm")
+```
+
+**Yorum (issizlik):** p-değerleri 0.05'in altında, $H_0$ reddedilir. **Yatay kesit bağımlılığı vardır.** İşsizlik küresel finansal şoka yüklenmiştir. 2. Nesil test kullanılacaktır.
+
+## CD Testi — `ar_ge`
+
+```{r}
+pcdtest(eko$ar_ge, test = "cd")
+pcdtest(eko$ar_ge, test = "lm")
+pcdtest(eko$ar_ge, test = "sclm")
+```
+
+**Yorum (ar_ge):** Pesaran CD'nin p-değeri 0.05'in üzerindedir; $H_0$ reddedilemez. **Yatay kesit bağımlılığı yoktur.** Ar-Ge serisini hiçbir ortak faktöre yüklemediğimiz, tamamen birim-spesifik (idiyosenkratik) ürettiğimiz için beklenen sonuçtur. 1. Nesil testler güvenle kullanılabilir.
+
+> Not: Breusch–Pagan LM küçük örneklemde aşırı reddetme eğilimindedir; bu yüzden ana karar Pesaran CD'ye göre verilir.
+
+## CD Testi — `calisan_sayisi`
+
+```{r}
+pcdtest(eko$calisan_sayisi, test = "cd")
+pcdtest(eko$calisan_sayisi, test = "lm")
+pcdtest(eko$calisan_sayisi, test = "sclm")
+```
+
+**Yorum (calisan_sayisi):** Pesaran CD'nin p-değeri 0.05'in üzerinde. $H_0$ reddedilemez. **Yatay kesit bağımlılığı yoktur.** Çalışan sayısı serisi yüksek persistanslı AR(1) ile idiyosenkratik üretildi. 1. Nesil testler kullanılabilir.
+
+## CD Testi — `stok_devir`
+
+```{r}
+pcdtest(eko$stok_devir, test = "cd")
+pcdtest(eko$stok_devir, test = "lm")
+pcdtest(eko$stok_devir, test = "sclm")
+```
+
+**Yorum (stok_devir):** Pesaran CD'nin p-değeri 0.05'in üzerindedir; $H_0$ reddedilemez. **Yatay kesit bağımlılığı yoktur.** Stok devri durağan + idiyosenkratik üretildiği için beklenen sonuçtur. 1. Nesil testler kullanılabilir.
+
+## CD testi genel özeti
+
+| Değişken       | CD durumu | Hangi nesil test?                   |
+|----------------|-----------|-------------------------------------|
+| enflasyon      | CD VAR    | 2\. Nesil (CIPS)                    |
+| doviz_kuru     | CD VAR    | 2\. Nesil (CIPS)                    |
+| petrol_fiyati  | CD VAR    | 2\. Nesil (CIPS)                    |
+| faiz_orani     | CD VAR    | 2\. Nesil (CIPS)                    |
+| issizlik       | CD VAR    | 2\. Nesil (CIPS)                    |
+| ar_ge          | CD YOK    | 1\. Nesil (LLC, IPS, Fisher, Hadri) |
+| calisan_sayisi | CD YOK    | 1\. Nesil                           |
+| stok_devir     | CD YOK    | 1\. Nesil                           |
+
+------------------------------------------------------------------------
+
+# ADIM 1 — Trend Bileşeninin Belirlenmesi {#sec-trend}
+
+## Neden önemli?
+
+Birim kök testleri *deterministik bileşene* duyarlıdır:
+
+- `exo = "intercept"` → modelde sadece sabit terim var.
+- `exo = "trend"` → modelde sabit terim **+ deterministik trend** var.
+
+Veri trendliyse ama testte trend belirtilmezse, test gücünü kaybeder ve sahte birim kök bulgusu üretir. Bu nedenle her değişken için **ayrı ayrı** trend kontrolü yapılmalıdır.
+
+## Sayısal kriter
+
+Her firma için $y_{it} = \alpha_i + \beta_i t + u_{it}$ regresyonu kurulur. $\beta_i$'nin %5 düzeyinde anlamlı olduğu birim oranı hesaplanır. Bu oran %50'nin üzerindeyse `exo = "trend"`, altındaysa `exo = "intercept"` seçilir.
+
+Aşağıda her değişken için bu kontrolü ayrı ayrı yapacağız. Birimleri `subset` ile alıp lineer regresyon kuracağız.
+
+### Yardımcı bir kısa fonksiyon
+
+Aynı işi 8 kez tekrarlamamak için küçük bir yardımcı fonksiyon yazıyoruz. **Bu bir `for` döngüsü değildir**, sadece her birime aynı analizi uygulayan bir fonksiyondur:
+
+```{r}
+#| label: trend-yardimci
+trend_p_degerleri <- function(degisken_adi) {
+  # 20 birim için lm(y ~ t) regresyonundan trend katsayısı p-değerlerini döndürür
+  sapply(1:N, function(i) {
+    alt <- df[as.character(df$id) == as.character(i), ]
+    y <- alt[[degisken_adi]]
+    t <- seq_along(y)
+    fit <- lm(y ~ t)
+    coef(summary(fit))[2, 4]   # trend katsayısının p-değeri
+  })
+}
+```
+
+Şimdi her değişken için tek tek anlamlı trend oranını hesaplayalım.
+
+## Trend kontrolü — `enflasyon`
+
+```{r}
+p_vec <- trend_p_degerleri("enflasyon")
+mean(p_vec < 0.05)
+```
+
+**Yorum (enflasyon):** Birimlerin yaklaşık %95'inde trend katsayısı %5 düzeyinde anlamlı. Bu açık ara %50'nin üzerinde olduğu için `exo = "trend"` kullanılacak. Bu doğrulanmıştır çünkü değişkeni 0.06'lık bir trend katsayısı ile ürettik.
+
+## Trend kontrolü — `doviz_kuru`
+
+```{r}
+p_vec <- trend_p_degerleri("doviz_kuru")
+mean(p_vec < 0.05)
+```
+
+**Yorum (doviz_kuru):** Burada beklediğimizden yüksek bir oran çıkabilir, çünkü saf rassal yürüyüşler sonlu örneklemde sahte trend gösterebilir. Eğer oran %50'nin üzerine çıktıysa `exo = "trend"`; altındaysa `exo = "intercept"` seçilecek.
+
+> 
+
+## Trend kontrolü — `petrol_fiyati`
+
+```{r}
+p_vec <- trend_p_degerleri("petrol_fiyati")
+mean(p_vec < 0.05)
+```
+
+**Yorum (petrol_fiyati):** Birimlerin neredeyse hepsinde trend anlamlı çıkar (oran genellikle 1.0). `exo = "trend"` kullanılacaktır. Bu beklenen sonuçtur çünkü değişkene 0.35 gibi büyük bir trend katsayısı yerleştirdik.
+
+## Trend kontrolü — `faiz_orani`
+
+```{r}
+p_vec <- trend_p_degerleri("faiz_orani")
+mean(p_vec < 0.05)
+```
+
+**Yorum (faiz_orani):** Faiz oranı durağan AR(1) sürecinden üretildi; deterministik trend yok. Anlamlı trend oranı %50'nin altında olmalı. `exo = "intercept"` seçilecektir.
+
+## Trend kontrolü — `issizlik`
+
+```{r}
+p_vec <- trend_p_degerleri("issizlik")
+mean(p_vec < 0.05)
+```
+
+**Yorum (issizlik):** İşsizlikte de deterministik trend yok ama saf rassal yürüyüş olduğu için sahte trend riski mevcut. Çıkan orana bakın; %50'yi geçerse trend, geçmezse intercept seçin. (Tasarım gereği genellikle %50'nin altında kalır ama tohuma duyarlıdır.)
+
+## Trend kontrolü — `ar_ge`
+
+```{r}
+p_vec <- trend_p_degerleri("ar_ge")
+mean(p_vec < 0.05)
+```
+
+**Yorum (ar_ge):** Ar-Ge durağan idiyosenkratik üretildi; trend yoktur. Oran %50'nin altında. `exo = "intercept"` kullanılacak.
+
+## Trend kontrolü — `calisan_sayisi`
+
+```{r}
+p_vec <- trend_p_degerleri("calisan_sayisi")
+mean(p_vec < 0.05)
+```
+
+**Yorum (calisan_sayisi):** Yüksek persistanslı AR(1)'den geldiği için sahte trend riski var. Oran tipik olarak %50 civarındadır. Çıkan değere göre karar verin.
+
+## Trend kontrolü — `stok_devir`
+
+```{r}
+p_vec <- trend_p_degerleri("stok_devir")
+mean(p_vec < 0.05)
+```
+
+**Yorum (stok_devir):** Stok devri durağan idiyosenkratik üretildi; trend yok. Oran %50'nin altında olmalıdır. `exo = "intercept"`.
+
+## Genel trend özeti (manuel)
+
+Yukarıdaki tek tek hesaplamaların ışığında her değişken için kullanacağımız spesifikasyonu **manuel** olarak şöyle saptarız (kendi sonuçlarınızda küçük farklar olabilir):
+
+| Değişken       | Anlamlı trend oranı (\~) | Spesifikasyon |
+|----------------|--------------------------|---------------|
+| enflasyon      | \~%95                    | trend         |
+| doviz_kuru     | değişken                 | duruma göre   |
+| petrol_fiyati  | \~%100                   | trend         |
+| faiz_orani     | \<%50                    | intercept     |
+| issizlik       | değişken                 | duruma göre   |
+| ar_ge          | \<%50                    | intercept     |
+| calisan_sayisi | değişken                 | duruma göre   |
+| stok_devir     | \<%50                    | intercept     |
+
+> Aşağıdaki test bölümlerinde `enflasyon` ve `petrol_fiyati` için `trend`, diğer altı değişken için `intercept` kullanılacaktır. Kendi çıktılarınıza göre bu seçimleri güncelleyebilirsiniz.
+
+------------------------------------------------------------------------
+
+# ADIM 2A — 1. NESİL BİRİM KÖK TESTLERİ (CD'siz değişkenler) {#sec-1-nesil}
+
+Bu bölümde **CD'siz** üç değişken için 1. Nesil testleri tek tek uygulayacağız: `ar_ge`, `calisan_sayisi`, `stok_devir`. Hepsinde `exo = "intercept"` kullanacağız.
+
+## LLC (Levin–Lin–Chu, 2002)
+
+### Hipotezler
+
+$$H_0: \delta_i = \delta = 0 \quad (\text{ortak birim kök var})$$ $$H_1: \delta_i = \delta < 0 \quad (\text{ortak biçimde durağan})$$
+
+LLC homojen bir alternatif sınar.
+
+### LLC — `ar_ge`
+
+```{r}
+purtest(eko$ar_ge, test = "levinlin", exo = "intercept", lags = "AIC")
+```
+
+**Yorum (ar_ge):** p-değeri 0.05'in altındadır. $H_0$ "birim kök var" reddedilir. **Ar-Ge düzeyde durağandır,** $I(0)$. Bu beklenen sonuçtur çünkü Ar-Ge'yi `arima.sim(ar = 0.4)` ile durağan AR(1) olarak ürettik.
+
+### LLC — `calisan_sayisi`
+
+```{r}
+purtest(eko$calisan_sayisi, test = "levinlin", exo = "intercept", lags = "AIC")
+```
+
+**Yorum (calisan_sayisi):** Çalışan sayısı yüksek persistanslı AR(1) ile üretildi (φ = 0.7). LLC'nin p-değerine bakıyoruz. p \< 0.05 ise düzeyde durağan; p ≥ 0.05 ise birinci farka gitmemiz gerekecek. Yüksek persistans nedeniyle bazı çalışmalarda p-değeri 0.05'i geçebilir; bu durumda IPS de aynı şeyi söylüyorsa farklamaya gideriz.
+
+### LLC — `stok_devir`
+
+```{r}
+purtest(eko$stok_devir, test = "levinlin", exo = "intercept", lags = "AIC")
+```
+
+**Yorum (stok_devir):** p-değeri 0.05'in altındadır. $H_0$ reddedilir. **Stok devri düzeyde durağandır,** $I(0)$.
+
+## IPS (Im–Pesaran–Shin, 2003)
+
+### Hipotezler
+
+$$H_0: \delta_i = 0 \quad \forall i \quad (\text{tüm birimlerde birim kök var})$$ $$H_1: \delta_i < 0 \quad \text{bazı}\; i \;\text{için}\; (\text{heterojen})$$
+
+IPS heterojen alternatife izin verir; uygulamada LLC'den daha gerçekçidir.
+
+### IPS — `ar_ge`
+
+```{r}
+purtest(eko$ar_ge, test = "ips", exo = "intercept", lags = "AIC")
+```
+
+**Yorum (ar_ge):** Wt-bar istatistiğinin p-değeri 0.05'in altındadır. **Bazı birimler durağan;** Ar-Ge serisi düzeyde $I(0)$. Bu LLC sonucu ile uyumludur.
+
+### IPS — `calisan_sayisi`
+
+```{r}
+purtest(eko$calisan_sayisi, test = "ips", exo = "intercept", lags = "AIC")
+```
+
+**Yorum (calisan_sayisi):** p-değerine bakın. p \< 0.05 ise düzeyde durağan. p ≥ 0.05 ise hâlâ birim kök şüphesi var; o zaman birinci farkına geçeceğiz.
+
+### IPS — `stok_devir`
+
+```{r}
+purtest(eko$stok_devir, test = "ips", exo = "intercept")  
+```
+
+**Yorum (stok_devir):** p \< 0.05; $H_0$ reddedilir. Stok devri düzeyde $I(0)$. LLC ile aynı karar.
+
+## Fisher-ADF (Maddala–Wu, 1999)
+
+### Hipotezler
+
+$$H_0:\ \text{tüm birimlerde birim kök var}, \qquad H_1:\ \text{en az bir birim durağan}$$
+
+İstatistik: $P = -2 \sum_{i=1}^{N} \ln(p_i) \sim \chi^2_{2N}$
+
+### Fisher-ADF — `ar_ge`
+
+```{r}
+purtest(eko$ar_ge, test = "madwu", exo = "intercept", lags = "AIC")
+```
+
+**Yorum (ar_ge):** p \< 0.05; en az bir birim durağan, $H_0$ reddedilir. Diğer testlerle uyumlu, **Ar-Ge** $I(0)$.
+
+### Fisher-ADF — `calisan_sayisi`
+
+```{r}
+purtest(eko$calisan_sayisi, test = "madwu", exo = "intercept", lags = "AIC")
+```
+
+**Yorum (calisan_sayisi):** p-değerine bakın. Bu test bireysel birim p-değerlerini birleştirdiği için yüksek persistans varsa bile bazen ret üretebilir. LLC + IPS ile birlikte bakın; üç testten ikisi aynı karar veriyorsa o yönde hareket edin.
+
+### Fisher-ADF — `stok_devir`
+
+```{r}
+purtest(eko$stok_devir, test = "madwu", exo = "intercept", lags = "AIC")
+```
+
+**Yorum (stok_devir):** p \< 0.05, $H_0$ reddedilir. **Stok devri** $I(0)$.
+
+## Hadri (2000) — DİKKAT, hipotezler ters!
+
+### Hipotezler (KPSS mantığı)
+
+$$\boxed{H_0:\ \text{tüm birimler durağan}}, \qquad H_1:\ \text{en az bir birimde birim kök var}$$
+
+Diğer 4 testten farklı olarak Hadri'nin $H_0$'ı durağanlıktır. **Bu testte p \< 0.05 → birim kök var** demektir.
+
+### Hadri — `ar_ge`
+
+```{r}
+purtest(eko$ar_ge, test = "hadri", exo = "intercept")
+```
+
+**Yorum (ar_ge):** Hadri küçük örneklemde aşırı reddetme eğilimindedir; bu yüzden p \< 0.05 çıksa bile diğer üç testin "durağan" kararını çürütmez. LLC, IPS, Fisher üçlüsü zaten $I(0)$ diyorsa Ar-Ge düzeyde durağan kabul edilir.
+
+### Hadri — `calisan_sayisi`
+
+```{r}
+purtest(eko$calisan_sayisi, test = "hadri", exo = "intercept")
+```
+
+**Yorum (calisan_sayisi):** Yüksek persistanslı seri Hadri tarafından genellikle "birim kök" olarak işaretlenir (p \< 0.05). Bu LLC/IPS/Fisher kararına destek olabilir. Karar zincirini şöyle kuralım: Eğer LLC + IPS + Fisher arasında en az ikisi "düzeyde birim kök var" diyorsa fark almaya gidelim.
+
+### Hadri — `stok_devir`
+
+```{r}
+purtest(eko$stok_devir, test = "hadri", exo = "intercept")
+```
+
+**Yorum (stok_devir):** Hadri'nin sonucundan bağımsız olarak diğer üç test stok devrini $I(0)$ olarak işaretler. Stok devri düzeyde durağandır.
+
+## CD'siz değişkenler için 1. Nesil özet
+
+- `ar_ge`: Tüm testler $I(0)$ → **düzeyde durağan**, fark almaya gerek yok.
+- `calisan_sayisi`: Yüksek persistans nedeniyle sınırda; testlerin çoğu düzeyde reddedemezse fark alacağız.
+- `stok_devir`: Tüm testler $I(0)$ → **düzeyde durağan**, fark almaya gerek yok.
+
+------------------------------------------------------------------------
+
+# Kaynakça {#sec-kaynak}
+
+- Hadri, K. (2000). *Testing for stationarity in heterogeneous panel data.* The Econometrics Journal, 3(2), 148–161.
+- Im, K. S., Pesaran, M. H., & Shin, Y. (2003). *Testing for unit roots in heterogeneous panels.* Journal of Econometrics, 115, 53–74.
+- Levin, A., Lin, C. F., & Chu, C. S. J. (2002). *Unit root tests in panel data: asymptotic and finite-sample properties.* Journal of Econometrics, 108, 1–24.
+- Maddala, G. S., & Wu, S. (1999). *A comparative study of unit root tests with panel data and a new simple test.* Oxford Bulletin of Economics and Statistics, 61(S1), 631–652.
+- Pesaran, M. H. (2004). *General diagnostic tests for cross section dependence in panels.* CESifo Working Paper No. 1229.
+- Pesaran, M. H. (2007). *A simple panel unit root test in the presence of cross-section dependence.* Journal of Applied Econometrics, 22, 265–312.
