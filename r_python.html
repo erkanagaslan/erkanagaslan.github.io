@@ -29,7 +29,6 @@
     }
     a { color: inherit; text-decoration: none; }
 
-    /* TOPBAR */
     .topbar {
       position: sticky; top: 0; z-index: 50;
       backdrop-filter: blur(12px);
@@ -71,14 +70,12 @@
       transform: translateY(-1px);
     }
 
-    /* WRAP */
     .wrap {
       width: min(var(--max), calc(100% - 40px));
       margin: 0 auto;
       padding: 40px 0 60px;
     }
 
-    /* PAGE HEADER */
     .page-header {
       margin-bottom: 32px;
       padding: 28px 30px;
@@ -132,7 +129,6 @@
     .meta-chip .dot-sm.orange { background: #fb923c; }
     .meta-chip .dot-sm.red { background: #ff0000; }
 
-    /* LEGEND */
     .legend {
       display: flex; align-items: center; gap: 16px;
       flex-wrap: wrap;
@@ -148,7 +144,6 @@
       width: 8px; height: 8px; border-radius: 999px; flex: 0 0 auto;
     }
 
-    /* DOSYA LİSTESİ */
     .dosya-list {
       display: flex; flex-direction: column; gap: 10px;
     }
@@ -164,7 +159,6 @@
       overflow: hidden;
     }
 
-    /* Aktif dosya */
     .dosya-item.active {
       border-color: rgba(94,234,212,.30);
       background: rgba(94,234,212,.05);
@@ -184,13 +178,11 @@
       border-radius: 999px 0 0 999px;
     }
 
-    /* Pasif dosya */
     .dosya-item.passive {
       opacity: .55;
       cursor: default;
     }
 
-    /* Numara */
     .dosya-num {
       width: 38px; height: 38px; border-radius: 12px;
       display: flex; align-items: center; justify-content: center;
@@ -207,7 +199,6 @@
       color: var(--accent);
     }
 
-    /* İçerik */
     .dosya-content { flex: 1; min-width: 0; }
     .dosya-title {
       font-size: 15px; font-weight: 700;
@@ -220,7 +211,6 @@
       margin-top: 5px; font-size: 12.5px; color: var(--muted);
     }
 
-    /* Sağ taraf */
     .dosya-right {
       display: flex; align-items: center; gap: 10px;
       flex: 0 0 auto;
@@ -256,7 +246,6 @@
     }
     .dosya-item.passive .arrow { display: none; }
 
-    /* INFO KUTUSU */
     .info-box {
       margin-top: 24px;
       padding: 16px 18px;
@@ -267,7 +256,6 @@
     }
     .info-box strong { color: var(--text); }
 
-    /* YouTube Banner */
     .yt-banner {
       margin-top: 24px;
       padding: 18px 20px;
@@ -310,7 +298,6 @@
       transform: translateY(-1px);
     }
 
-    /* Footer */
     .foot {
       margin-top: 40px;
       padding-top: 18px;
@@ -440,9 +427,25 @@
         </div>
       </div>
 
-      <!-- DOSYA 4 — PASİF -->
-      <div class="dosya-item passive">
+      <!-- DOSYA 4 — AKTİF (YENİ) -->
+      <div class="dosya-item active" onclick="window.open('./panel_birim_kok_ogrenci_dostu.qmd')">
         <div class="dosya-num">4</div>
+        <div class="dosya-content">
+          <div class="dosya-title">Panel Veri Analizi 3. Video Quarto Dosyası</div>
+          <div class="dosya-meta">
+            <span>📁 QMD Dosyası</span>
+            <span>📊 Panel Birim Kök Testleri — CD, Trend, CIPS, CADF</span>
+          </div>
+        </div>
+        <div class="dosya-right">
+          <div class="status-badge acik">Aktif</div>
+          <div class="arrow">→</div>
+        </div>
+      </div>
+
+      <!-- DOSYA 5 — PASİF -->
+      <div class="dosya-item passive">
+        <div class="dosya-num">5</div>
         <div class="dosya-content">
           <div class="dosya-title">Zaman Serisi Analizi R Dosyası</div>
           <div class="dosya-meta"><span>Yakında eklenecek</span></div>
@@ -452,9 +455,9 @@
         </div>
       </div>
 
-      <!-- DOSYA 5 — PASİF -->
+      <!-- DOSYA 6 — PASİF -->
       <div class="dosya-item passive">
-        <div class="dosya-num">5</div>
+        <div class="dosya-num">6</div>
         <div class="dosya-content">
           <div class="dosya-title">GARCH Modelleri Python Dosyası</div>
           <div class="dosya-meta"><span>Yakında eklenecek</span></div>
@@ -482,7 +485,7 @@
 
     <!-- BİLGİ KUTUSU -->
     <div class="info-box">
-      💡 <strong>Kullanım:</strong> Dosyaları indirdikten sonra <strong>RStudio</strong> veya <strong>Jupyter Notebook</strong> ile açabilirsiniz. Excel dosyaları doğrudan R veya Python ile okunabilir formattadır.
+      💡 <strong>Kullanım:</strong> Dosyaları indirdikten sonra <strong>RStudio</strong> veya <strong>Jupyter Notebook</strong> ile açabilirsiniz. Excel dosyaları doğrudan R veya Python ile okunabilir formattadır. Quarto (<code>.qmd</code>) dosyaları RStudio'da doğrudan açılır.
     </div>
 
     <!-- FOOTER -->
