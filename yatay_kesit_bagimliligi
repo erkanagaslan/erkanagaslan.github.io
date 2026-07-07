@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yatay Kesit Bağımlılığı — Pesaran CD Testi ve Çıkarıma Etkisi</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --blue:#185FA5;--blue-light:#E6F1FB;--blue-dark:#0C447C;
+    --red:#E24B4A;--red-light:#FCEBEB;--red-dark:#791F1F;
+    --green:#3B6D11;--green-light:#EAF3DE;--green-dark:#27500A;
+    --amber:#BA7517;--amber-light:#FAEEDA;--amber-dark:#633806;
+    --purple:#6B3FA0;--purple-light:#F0EAFA;--purple-dark:#3E1F6B;
+    --text:#1a1a1a;--text2:#5F5E5A;
+    --border:rgba(0,0,0,0.12);--bg:#ffffff;--bg2:#F8F7F4;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg2);color:var(--text);padding:16px;max-width:1380px;margin:0 auto;}
+  .topbar-lang{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;}
+  .lang-btn{padding:6px 14px;border-radius:999px;border:1px solid var(--border);background:var(--bg);color:var(--text2);font-size:12.5px;cursor:pointer;transition:all 0.2s;}
+  .lang-btn:hover{background:var(--blue-light);border-color:var(--blue);color:var(--blue);}
+  h1{font-size:18px;font-weight:700;margin-bottom:4px}
+  .subtitle{font-size:13px;color:var(--text2);margin-bottom:16px}
+  .page-layout{display:grid;grid-template-columns:360px 1fr;gap:14px;align-items:start}
+  @media(max-width:860px){.page-layout{grid-template-columns:1fr}}
+  .col-right{position:sticky;top:12px;min-width:0}
+  @media(max-width:860px){.col-right{position:static}}
+  .card{background:var(--bg);border:.5px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin-bottom:12px}
+  .sec{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.55px;margin-bottom:10px}
+  .sr{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+  .sl{font-size:12.5px;color:var(--text2);min-width:132px;line-height:1.3}
+  input[type=range]{flex:1;height:4px;accent-color:var(--blue);-webkit-appearance:none;appearance:none;background:var(--border);border-radius:2px;outline:none}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;background:var(--blue);border-radius:50%;cursor:pointer}
+  .sv{font-size:13px;font-weight:700;min-width:48px;text-align:right;color:var(--text)}
+  .btn{display:block;width:100%;padding:11px;background:var(--blue);color:#fff;border:none;border-radius:var(--radius);font-size:13px;font-weight:600;cursor:pointer;margin-top:4px}
+  .btn:active{opacity:.88}
+  hr{border:none;border-top:.5px solid var(--border);margin:12px 0}
+  .metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+  .metric-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px}
+  @media(max-width:560px){.metric-grid-3{grid-template-columns:1fr 1fr}}
+  .metric{background:var(--bg2);border-radius:8px;padding:9px 12px;text-align:center}
+  .metric-lbl{font-size:10.5px;color:var(--text2);margin-bottom:2px;line-height:1.35}
+  .metric-val{font-size:17px;font-weight:700;color:var(--text)}
+  .pill{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:999px;font-size:11.5px;font-weight:700;border:1px solid;transition:all .3s}
+  .pill-red{background:var(--red-light);border-color:#F09595;color:var(--red-dark)}
+  .pill-grn{background:var(--green-light);border-color:#C0DD97;color:var(--green-dark)}
+  .pill-amber{background:var(--amber-light);border-color:#E8C97A;color:var(--amber-dark)}
+  .pill-purple{background:var(--purple-light);border-color:#C9A8E8;color:var(--purple-dark)}
+  .bar-wrap{height:5px;background:rgba(0,0,0,.07);border-radius:3px;overflow:hidden;margin:4px 0 10px}
+  .bar{height:100%;border-radius:3px;transition:width .5s,background .5s}
+  .info-box,.warn-box,.danger-box,.success-box,.note-box{border-left:3px solid;border-radius:0 var(--radius) var(--radius) 0;padding:10px 14px;font-size:12.5px;line-height:1.65;margin-top:6px}
+  .info-box{background:var(--blue-light);border-left-color:var(--blue);color:var(--blue-dark)}
+  .warn-box{background:var(--amber-light);border-left-color:var(--amber);color:var(--amber-dark)}
+  .danger-box{background:var(--red-light);border-left-color:var(--red);color:var(--red-dark)}
+  .success-box{background:var(--green-light);border-left-color:var(--green);color:var(--green-dark)}
+  .note-box{background:var(--bg2);border-left-color:var(--text2);color:var(--text2)}
+  .chart-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+  @media(max-width:760px){.chart-row{grid-template-columns:1fr}}
+  .legend{display:flex;gap:14px;font-size:11px;color:var(--text2);margin-top:6px;flex-wrap:wrap}
+  .leg-item{display:flex;align-items:center;gap:5px}
+  .leg-line{width:16px;height:2.5px;display:inline-block}
+  .step-list{display:flex;flex-direction:column;gap:10px}
+  .step{display:flex;gap:10px;align-items:flex-start}
+  .step-num{min-width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--blue);color:#fff;font-size:12px;font-weight:700;margin-top:1px}
+  .step-txt{font-size:12.5px;color:var(--text2);line-height:1.65}
+  .formula{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--bg2);padding:2px 6px;border-radius:6px;color:var(--blue-dark)}
+  table{width:100%;border-collapse:collapse;font-size:12.5px}
+  th{background:var(--bg2);padding:7px 10px;text-align:left;font-weight:600;border-bottom:1px solid var(--border)}
+  td{padding:7px 10px;border-bottom:.5px solid var(--border);vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  .center{text-align:center}
+  .val-bad{color:var(--red-dark);font-weight:700}
+  .val-ok{color:var(--green-dark);font-weight:700}
+  .heatmap-wrap{overflow-x:auto}
+  .heatmap{border-collapse:collapse}
+  .heatmap td{width:18px;height:18px;padding:0;border:1px solid rgba(255,255,255,0.6);border-radius:2px}
+  .heatmap th{font-size:8px;color:var(--text2);font-weight:400;padding:0 2px;text-align:center;border:none}
+  .hm-scale{display:flex;align-items:center;gap:6px;font-size:10.5px;color:var(--text2);margin-top:8px}
+  .hm-scale-bar{flex:1;height:8px;border-radius:4px;background:linear-gradient(90deg,#791F1F,#FCEBEB 45%,#ffffff 50%,#E6F1FB 55%,#0C447C)}
+</style>
+</head>
+<body>
+
+<div class="topbar-lang">
+  <div>
+    <h1 data-i18n="page_title">Yatay Kesit Bağımlılığı Simülatörü — Pesaran CD Testi ve Çıkarıma Etkisi</h1>
+    <p class="subtitle" data-i18n="page_subtitle">Doç. Dr. Erkan Ağaslan — Kütahya Dumlupınar Üniversitesi · Panel veride ortak faktör yapısı ve tanısal testler</p>
+  </div>
+  <button class="lang-btn" id="langBtn">TR/EN</button>
+</div>
+
+<div class="page-layout">
+  <div class="col-left">
+    <div class="card">
+      <div class="sec" data-i18n="sec_params">Panel ve veri üretim parametreleri</div>
+      <div class="sr"><span class="sl" data-i18n="sl_N">Birim sayısı N</span><input type="range" id="sl-N" min="5" max="30" step="1" value="15"><span class="sv" id="lbl-N">15</span></div>
+      <div class="sr"><span class="sl" data-i18n="sl_T">Zaman boyu T</span><input type="range" id="sl-T" min="10" max="60" step="5" value="25"><span class="sv" id="lbl-T">25</span></div>
+      <div class="sr"><span class="sl" data-i18n="sl_b1">β₁ eğim</span><input type="range" id="sl-b1" min="0.2" max="3.5" step="0.1" value="1.2"><span class="sv" id="lbl-b1">1.2</span></div>
+      <div class="sr"><span class="sl" data-i18n="sl_sig">İdiosinkratik hata σ</span><input type="range" id="sl-sig" min="0.2" max="3" step="0.1" value="1.0"><span class="sv" id="lbl-sig">1.0</span></div>
+      <div class="sr"><span class="sl" data-i18n="sl_lam">Yatay Kesit Bağ. Gücü λ</span><input type="range" id="sl-lam" min="0" max="3" step="0.1" value="1.5"><span class="sv" id="lbl-lam">1.5</span></div>
+      <hr>
+      <div class="warn-box" data-i18n="warn_data_gen">
+        <strong>R mantığıyla veri üretimi:</strong> her t için tek bir ortak faktör <span class="formula">f_t ~ N(0,1)</span> üretilir (tüm birimler için aynıdır). Her birime özgü yükleme <span class="formula">λ_i</span> ve idiosinkratik hata <span class="formula">ε_it ~ N(0,σ²)</span> ile <span class="formula">u_it = λ_i f_t + ε_it</span> kurulur. Son olarak <span class="formula">y_it = α_i + β₁x_it + u_it</span> elde edilir.
+      </div>
+      <div class="info-box" data-i18n="info_unbiased">
+        <strong>Tutarlılık notu:</strong> λ arttıkça hata terimleri birimler arasında ortak faktör üzerinden korelasyonlu hâle gelir; buna rağmen <span class="formula">within (LSDV)</span> tahmincisi <span class="formula">β̂₁</span> için yine tutarlıdır. Asıl sorun <strong>standart hataların küçük çıkması</strong> ve buna bağlı <strong>aşırı ret (boyut bozulması)</strong>dır.
+      </div>
+      <button class="btn" onclick="regenerate()" data-i18n="btn_regen">🔄 Yeni panel üret</button>
+    </div>
+
+    <div class="card">
+      <div class="sec" data-i18n="sec_logic">Pesaran CD testinin mantığı</div>
+      <div class="step-list">
+        <div class="step"><div class="step-num">1</div><div class="step-txt" data-i18n="step1">Her birim <span class="formula">i</span> için ayrı ayrı <span class="formula">y_it = α_i + β₁x_it + u_it</span> tahmin edilir, <span class="formula">û_it</span> artıkları elde edilir.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-txt" data-i18n="step2">Her birim çifti <span class="formula">(i,j)</span> için artıklar arası korelasyon <span class="formula">ρ̂_ij</span> hesaplanır.</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-txt" data-i18n="step3"><strong>Pesaran CD:</strong> <span class="formula">CD = √(2T / N(N-1)) · Σ Σ ρ̂_ij</span>. <span class="formula">H₀: Cov(u_it,u_jt)=0</span> altında <span class="formula">CD ~ N(0,1)</span>.</div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-txt" data-i18n="step4">|CD| büyükse H₀ reddedilir: artıklar birimler arasında sistematik olarak birlikte hareket etmektedir — yatay kesit bağımlılığı vardır.</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sec" data-i18n="sec_comment">Kısa yorum</div>
+      <div id="main-comment" class="info-box">—</div>
+    </div>
+  </div>
+
+  <div class="col-right">
+    <div class="card">
+      <div class="sec" data-i18n="sec_cd">Yatay kesit bağımlılığı göstergesi</div>
+      <div class="metric-grid-3">
+        <div class="metric"><div class="metric-lbl" data-i18n="lbl_cd">Pesaran CD</div><div class="metric-val" id="m-cd">—</div></div>
+        <div class="metric"><div class="metric-lbl" data-i18n="lbl_cdp">p-değeri</div><div class="metric-val" id="m-cdp">—</div></div>
+        <div class="metric"><div class="metric-lbl" data-i18n="lbl_avgrho">Ort. |ρ̂_ij|</div><div class="metric-val" id="m-avgrho">—</div></div>
+      </div>
+      <div id="cd-pill" class="pill pill-amber">—</div>
+      <div class="bar-wrap"><div id="cd-bar" class="bar"></div></div>
+      <div id="cd-box" class="info-box">—</div>
+    </div>
+
+    <div class="card">
+      <div class="sec" data-i18n="sec_ols_output">Panel OLS (within) çıktısı ve boyut bozulması</div>
+      <div class="metric-grid-3">
+        <div class="metric"><div class="metric-lbl" data-i18n="lbl_b1true">Gerçek β₁</div><div class="metric-val" id="m-b1true">—</div></div>
+        <div class="metric"><div class="metric-lbl" data-i18n="lbl_b1hat">β̂₁ (within)</div><div class="metric-val" id="m-b1hat">—</div></div>
+        <div class="metric"><div class="metric-lbl" data-i18n="lbl_naivese">Naif SE</div><div class="metric-val" id="m-naivese">—</div></div>
+        <div class="metric"><div class="metric-lbl" data-i18n="lbl_mcse">MC (gerçek) SE</div><div class="metric-val" id="m-mcse">—</div></div>
+        <div class="metric"><div class="metric-lbl" data-i18n="lbl_ratio">MC SE / Naif SE</div><div class="metric-val" id="m-ratio">—</div></div>
+        <div class="metric"><div class="metric-lbl" data-i18n="lbl_rejrate">Nominal %5'te ret oranı</div><div class="metric-val" id="m-rejrate">—</div></div>
+      </div>
+      <div class="info-box" data-i18n="mc_info">Monte Carlo SE, aynı λ ile tekrar tekrar panel üretilip her seferinde β̂₁'in kaydedilmesiyle elde edilen <strong>gerçek</strong> örnekleme dağılımının standart sapmasıdır. Naif SE ise yatay kesit bağımlılığını yok sayan klasik OLS formülüdür. Oran 1'den uzaklaştıkça ve ret oranı %5'in üzerine çıktıkça, standart t-testleri yanıltıcı hâle gelir.</div>
+    </div>
+
+    <div class="chart-row">
+      <div class="card">
+        <div class="sec" data-i18n="sec_units_chart">Birimler arası artık hareketi (örnek 6 birim)</div>
+        <canvas id="ch-units"></canvas>
+        <div class="note-box" data-i18n="note_units">Çizgiler ortak faktörle birlikte aynı yönde hareket ediyorsa, bu yatay kesit bağımlılığının görsel işaretidir.</div>
+      </div>
+      <div class="card">
+        <div class="sec" data-i18n="sec_hist_chart">İkili korelasyonların dağılımı (ρ̂_ij)</div>
+        <canvas id="ch-hist"></canvas>
+        <div class="note-box" data-i18n="note_hist">Dağılım sıfır etrafında dar ise bağımlılık zayıf; sağa/sola kayıp genişlerse güçlüdür.</div>
+      </div>
+    </div>
+
+    <div class="chart-row">
+      <div class="card">
+        <div class="sec" data-i18n="sec_heatmap">Birimler arası korelasyon matrisi</div>
+        <div class="heatmap-wrap"><table class="heatmap" id="heatmap"></table></div>
+        <div class="hm-scale"><span>-1</span><div class="hm-scale-bar"></div><span>+1</span></div>
+        <div class="note-box" id="heatmap-note" data-i18n="note_heatmap">Görünürlük için matris ilk 15 birimle sınırlıdır.</div>
+      </div>
+      <div class="card">
+        <div class="sec" data-i18n="sec_se_chart">Naif SE'ye göre gerçek (MC) SE</div>
+        <canvas id="ch-se"></canvas>
+        <div class="note-box" data-i18n="note_se">Kırmızı çubuk naif SE'yi, mavi çubuk Monte Carlo'dan elde edilen gerçek SE'yi gösterir.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sec" data-i18n="sec_summary">Sonuç tablosu</div>
+      <table>
+        <thead>
+          <tr>
+            <th data-i18n="tbl_test">Gösterge</th>
+            <th data-i18n="tbl_h0">H₀ / Referans</th>
+            <th class="center" data-i18n="tbl_stat">Değer</th>
+            <th data-i18n="tbl_decision">Yorum</th>
+          </tr>
+        </thead>
+        <tbody id="summary-body"></tbody>
+      </table>
+      <div class="note-box" data-i18n="workflow_note">Uygulamada güçlü bir CD testi sonucu, ikinci nesil panel birim kök testlerine (ör. CIPS) ve CSD'ye dayanıklı tahmincilere (ör. Driscoll–Kraay standart hataları, Ortak İlişkili Etkiler/CCE) geçişi gerektirir.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── i18n ────────────────────────────────────────────────────────────────────
+const dict = {
+  tr: {
+    page_title:    "Yatay Kesit Bağımlılığı Simülatörü — Pesaran CD Testi ve Çıkarıma Etkisi",
+    page_subtitle: "Doç. Dr. Erkan Ağaslan — Kütahya Dumlupınar Üniversitesi · Panel veride ortak faktör yapısı ve tanısal testler",
+    sec_params:    "Panel ve veri üretim parametreleri",
+    sl_N:          "Birim sayısı N",
+    sl_T:          "Zaman boyu T",
+    sl_b1:         "β₁ eğim",
+    sl_sig:        "İdiosinkratik hata σ",
+    sl_lam:        "Yatay Kesit Bağ. Gücü λ",
+    warn_data_gen: "<strong>R mantığıyla veri üretimi:</strong> her t için tek bir ortak faktör <span class=\"formula\">f_t ~ N(0,1)</span> üretilir (tüm birimler için aynıdır). Her birime özgü yükleme <span class=\"formula\">λ_i</span> ve idiosinkratik hata <span class=\"formula\">ε_it ~ N(0,σ²)</span> ile <span class=\"formula\">u_it = λ_i f_t + ε_it</span> kurulur. Son olarak <span class=\"formula\">y_it = α_i + β₁x_it + u_it</span> elde edilir.",
+    info_unbiased: "<strong>Tutarlılık notu:</strong> λ arttıkça hata terimleri birimler arasında ortak faktör üzerinden korelasyonlu hâle gelir; buna rağmen <span class=\"formula\">within (LSDV)</span> tahmincisi <span class=\"formula\">β̂₁</span> için yine tutarlıdır. Asıl sorun <strong>standart hataların küçük çıkması</strong> ve buna bağlı <strong>aşırı ret (boyut bozulması)</strong>dır.",
+    btn_regen:     "🔄 Yeni panel üret",
+    sec_logic:     "Pesaran CD testinin mantığı",
+    step1:         "Her birim <span class=\"formula\">i</span> için ayrı ayrı <span class=\"formula\">y_it = α_i + β₁x_it + u_it</span> tahmin edilir, <span class=\"formula\">û_it</span> artıkları elde edilir.",
+    step2:         "Her birim çifti <span class=\"formula\">(i,j)</span> için artıklar arası korelasyon <span class=\"formula\">ρ̂_ij</span> hesaplanır.",
+    step3:         "<strong>Pesaran CD:</strong> <span class=\"formula\">CD = √(2T / N(N-1)) · Σ Σ ρ̂_ij</span>. <span class=\"formula\">H₀: Cov(u_it,u_jt)=0</span> altında <span class=\"formula\">CD ~ N(0,1)</span>.",
+    step4:         "|CD| büyükse H₀ reddedilir: artıklar birimler arasında sistematik olarak birlikte hareket etmektedir — yatay kesit bağımlılığı vardır.",
+    sec_comment:   "Kısa yorum",
+    sec_cd:        "Yatay kesit bağımlılığı göstergesi",
+    lbl_cd:        "Pesaran CD",
+    lbl_cdp:       "p-değeri",
+    lbl_avgrho:    "Ort. |ρ̂_ij|",
+    sec_ols_output:"Panel OLS (within) çıktısı ve boyut bozulması",
+    lbl_b1true:    "Gerçek β₁",
+    lbl_b1hat:     "β̂₁ (within)",
+    lbl_naivese:   "Naif SE",
+    lbl_mcse:      "MC (gerçek) SE",
+    lbl_ratio:     "MC SE / Naif SE",
+    lbl_rejrate:   "Nominal %5'te ret oranı",
+    mc_info:       "Monte Carlo SE, aynı λ ile tekrar tekrar panel üretilip her seferinde β̂₁'in kaydedilmesiyle elde edilen <strong>gerçek</strong> örnekleme dağılımının standart sapmasıdır. Naif SE ise yatay kesit bağımlılığını yok sayan klasik OLS formülüdür. Oran 1'den uzaklaştıkça ve ret oranı %5'in üzerine çıktıkça, standart t-testleri yanıltıcı hâle gelir.",
+    sec_units_chart:"Birimler arası artık hareketi (örnek 6 birim)",
+    note_units:    "Çizgiler ortak faktörle birlikte aynı yönde hareket ediyorsa, bu yatay kesit bağımlılığının görsel işaretidir.",
+    sec_hist_chart:"İkili korelasyonların dağılımı (ρ̂_ij)",
+    note_hist:     "Dağılım sıfır etrafında dar ise bağımlılık zayıf; sağa/sola kayıp genişlerse güçlüdür.",
+    sec_heatmap:   "Birimler arası korelasyon matrisi",
+    note_heatmap:  "Görünürlük için matris ilk 15 birimle sınırlıdır.",
+    sec_se_chart:  "Naif SE'ye göre gerçek (MC) SE",
+    note_se:       "Kırmızı çubuk naif SE'yi, mavi çubuk Monte Carlo'dan elde edilen gerçek SE'yi gösterir.",
+    sec_summary:   "Sonuç tablosu",
+    tbl_test:      "Gösterge",
+    tbl_h0:        "H₀ / Referans",
+    tbl_stat:      "Değer",
+    tbl_decision:  "Yorum",
+    workflow_note: "Uygulamada güçlü bir CD testi sonucu, ikinci nesil panel birim kök testlerine (ör. CIPS) ve CSD'ye dayanıklı tahmincilere (ör. Driscoll–Kraay standart hataları, Ortak İlişkili Etkiler/CCE) geçişi gerektirir.",
+    // dynamic
+    cd_reject:     "H₀ reddedilir — yatay kesit bağımlılığı var",
+    cd_noreject:   "H₀ reddedilemez — bağımlılık zayıf görünüyor",
+    cd_box_reject: "<strong>Pesaran CD:</strong> p = <strong>{p}</strong>. H₀: birimler arası korelasyon yoktur varsayımı reddedilir. Artıklar ortak bir faktör etrafında birlikte hareket etmektedir.",
+    cd_box_ok:     "<strong>Pesaran CD:</strong> p = <strong>{p}</strong>. H₀ reddedilemedi. Mevcut λ ile güçlü bir yatay kesit bağımlılığı kanıtı oluşmadı.",
+    tbl_cd_h0:     "H₀: birimler arası kovaryans = 0",
+    tbl_cd_reject: "Reddet → yatay kesit bağımlılığı var",
+    tbl_cd_ok:     "Reddetme → bağımlılık kanıtı zayıf",
+    tbl_rho_h0:    "Referans: 0'a yakın",
+    tbl_ratio_h0:  "Referans: 1'e yakın",
+    tbl_ratio_bad: "Naif SE gerçek belirsizliği hafife alıyor",
+    tbl_ratio_ok:  "Naif SE gerçek belirsizliğe yakın",
+    tbl_rej_h0:    "Referans: %5",
+    tbl_rej_bad:   "Boyut bozulması var — t-testi aşırı reddediyor",
+    tbl_rej_ok:    "Nominal boyuta yakın",
+    comment_strong:"Bu simülasyonda λ güçlü bir ortak faktör yapısı yaratıyor; Pesaran CD testi H₀'ı reddediyor ve naif standart hatalar gerçek belirsizliği ciddi biçimde hafife alıyor. β̂₁ hâlâ β₁ etrafında toplanıyor, ancak buna dayanan t-testleri yanıltıcı.",
+    comment_weak:  "Mevcut λ değerinde birimler arası korelasyon zayıf; CD testi ve boyut bozulması göstergeleri makul sınırlar içinde kalıyor. λ artırılarak etki gözlemlenebilir.",
+    units_axis_x:  "t",
+    units_axis_y:  "û_it",
+    hist_axis_x:   "ρ̂_ij aralığı",
+    hist_axis_y:   "çift sayısı",
+  },
+  en: {
+    page_title:    "Cross-Sectional Dependence Simulator — Pesaran CD Test and Its Effect on Inference",
+    page_subtitle: "Assoc. Prof. Dr. Erkan Ağaslan — Kütahya Dumlupınar University · Common factor structure in panel data and diagnostic tests",
+    sec_params:    "Panel and data generation parameters",
+    sl_N:          "Cross-section units N",
+    sl_T:          "Time periods T",
+    sl_b1:         "β₁ slope",
+    sl_sig:        "Idiosyncratic error σ",
+    sl_lam:        "Cross-sectional dependence strength λ",
+    warn_data_gen: "<strong>Data generation (R logic):</strong> a single common factor <span class=\"formula\">f_t ~ N(0,1)</span> is generated per t (shared by all units). A unit-specific loading <span class=\"formula\">λ_i</span> and idiosyncratic error <span class=\"formula\">ε_it ~ N(0,σ²)</span> combine as <span class=\"formula\">u_it = λ_i f_t + ε_it</span>. Finally <span class=\"formula\">y_it = α_i + β₁x_it + u_it</span>.",
+    info_unbiased: "<strong>Consistency note:</strong> as λ increases, error terms become correlated across units through the common factor; nevertheless the <span class=\"formula\">within (LSDV)</span> estimator of <span class=\"formula\">β̂₁</span> remains consistent. The real problem is <strong>understated standard errors</strong> and the resulting <strong>over-rejection (size distortion)</strong>.",
+    btn_regen:     "🔄 Generate new panel",
+    sec_logic:     "Logic of the Pesaran CD test",
+    step1:         "For each unit <span class=\"formula\">i</span>, <span class=\"formula\">y_it = α_i + β₁x_it + u_it</span> is estimated separately, yielding residuals <span class=\"formula\">û_it</span>.",
+    step2:         "For every pair of units <span class=\"formula\">(i,j)</span>, the residual correlation <span class=\"formula\">ρ̂_ij</span> is computed.",
+    step3:         "<strong>Pesaran CD:</strong> <span class=\"formula\">CD = √(2T / N(N-1)) · Σ Σ ρ̂_ij</span>. Under <span class=\"formula\">H₀: Cov(u_it,u_jt)=0</span>, <span class=\"formula\">CD ~ N(0,1)</span>.",
+    step4:         "If |CD| is large, H₀ is rejected: residuals move systematically together across units — cross-sectional dependence is present.",
+    sec_comment:   "Brief comment",
+    sec_cd:        "Cross-sectional dependence indicator",
+    lbl_cd:        "Pesaran CD",
+    lbl_cdp:       "p-value",
+    lbl_avgrho:    "Avg. |ρ̂_ij|",
+    sec_ols_output:"Panel OLS (within) output and size distortion",
+    lbl_b1true:    "True β₁",
+    lbl_b1hat:     "β̂₁ (within)",
+    lbl_naivese:   "Naive SE",
+    lbl_mcse:      "MC (true) SE",
+    lbl_ratio:     "MC SE / Naive SE",
+    lbl_rejrate:   "Rejection rate at nominal 5%",
+    mc_info:       "The Monte Carlo SE is the standard deviation of the <strong>true</strong> sampling distribution, obtained by repeatedly regenerating the panel with the same λ and recording β̂₁ each time. The naive SE is the classical OLS formula that ignores cross-sectional dependence. As the ratio moves away from 1 and the rejection rate exceeds 5%, standard t-tests become misleading.",
+    sec_units_chart:"Cross-unit residual co-movement (6 sample units)",
+    note_units:    "If the lines move together in the same direction, this is the visual signature of cross-sectional dependence.",
+    sec_hist_chart:"Distribution of pairwise correlations (ρ̂_ij)",
+    note_hist:     "A narrow distribution around zero means weak dependence; a wide, shifted distribution means strong dependence.",
+    sec_heatmap:   "Cross-unit correlation matrix",
+    note_heatmap:  "Matrix is limited to the first 15 units for readability.",
+    sec_se_chart:  "True (MC) SE relative to naive SE",
+    note_se:       "The red bar is the naive SE; the blue bar is the true SE obtained from Monte Carlo.",
+    sec_summary:   "Results table",
+    tbl_test:      "Indicator",
+    tbl_h0:        "H₀ / Reference",
+    tbl_stat:      "Value",
+    tbl_decision:  "Interpretation",
+    workflow_note: "In practice, a strongly significant CD test motivates moving to second-generation panel unit root tests (e.g. CIPS) and CSD-robust estimators (e.g. Driscoll–Kraay standard errors, Common Correlated Effects/CCE).",
+    // dynamic
+    cd_reject:     "Reject H₀ — cross-sectional dependence present",
+    cd_noreject:   "Fail to reject H₀ — dependence appears weak",
+    cd_box_reject: "<strong>Pesaran CD:</strong> p = <strong>{p}</strong>. Reject H₀: no cross-unit correlation. Residuals move together around a common factor.",
+    cd_box_ok:     "<strong>Pesaran CD:</strong> p = <strong>{p}</strong>. Fail to reject H₀. No strong evidence of cross-sectional dependence with the current λ.",
+    tbl_cd_h0:     "H₀: cross-unit covariance = 0",
+    tbl_cd_reject: "Reject → cross-sectional dependence",
+    tbl_cd_ok:     "Fail to reject → weak evidence",
+    tbl_rho_h0:    "Reference: near 0",
+    tbl_ratio_h0:  "Reference: near 1",
+    tbl_ratio_bad: "Naive SE understates true uncertainty",
+    tbl_ratio_ok:  "Naive SE close to true uncertainty",
+    tbl_rej_h0:    "Reference: 5%",
+    tbl_rej_bad:   "Size distortion — t-test over-rejects",
+    tbl_rej_ok:    "Close to nominal size",
+    comment_strong:"In this simulation λ creates a strong common-factor structure; the Pesaran CD test rejects H₀ and naive standard errors seriously understate true uncertainty. β̂₁ still centers on β₁, but t-tests built on naive SE are misleading.",
+    comment_weak:  "At the current λ, cross-unit correlation is weak; the CD test and size-distortion indicators stay within reasonable bounds. Increasing λ makes the effect visible.",
+    units_axis_x:  "t",
+    units_axis_y:  "û_it",
+    hist_axis_x:   "ρ̂_ij range",
+    hist_axis_y:   "pair count",
+  }
+};
+
+let currentLang = localStorage.getItem("site_lang") || "tr";
+function t(key){ return (dict[currentLang]||dict.tr)[key] || key; }
+
+function applyLang(){
+  document.documentElement.lang = currentLang === "en" ? "en" : "tr";
+  document.title = currentLang === "en"
+    ? "Cross-Sectional Dependence — Pesaran CD Test"
+    : "Yatay Kesit Bağımlılığı — Pesaran CD Testi";
+
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.getAttribute("data-i18n");
+    const val = t(key);
+    if(val !== undefined) el.innerHTML = val;
+  });
+
+  if(unitsChart){
+    unitsChart.options.scales.x.title.text = t("units_axis_x");
+    unitsChart.options.scales.y.title.text = t("units_axis_y");
+    unitsChart.update("none");
+  }
+  if(histChart){
+    histChart.options.scales.x.title.text = t("hist_axis_x");
+    histChart.options.scales.y.title.text = t("hist_axis_y");
+    histChart.update("none");
+  }
+
+  if(lastOut) renderDynamic(lastOut);
+}
+
+document.getElementById("langBtn").addEventListener("click", () => {
+  currentLang = currentLang === "tr" ? "en" : "tr";
+  localStorage.setItem("site_lang", currentLang);
+  applyLang();
+});
+
+// ─── SİMÜLASYON ──────────────────────────────────────────────────────────────
+let N=15, T=25, b1=1.2, sig=1.0, lam=1.5;
+let unitsChart=null, histChart=null, seChart=null;
+let lastOut=null;
+
+function randn(){
+  const u1=Math.random()||1e-12, u2=Math.random();
+  return Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2);
+}
+function mean(a){return a.reduce((s,v)=>s+v,0)/a.length;}
+function sum(a){return a.reduce((s,v)=>s+v,0);}
+function erf(x){
+  const sign=x<0?-1:1; x=Math.abs(x);
+  const a1=0.254829592,a2=-0.284496736,a3=1.421413741,a4=-1.453152027,a5=1.061405429,p=0.3275911;
+  const t2=1/(1+p*x);
+  const y=1-(((((a5*t2+a4)*t2)+a3)*t2+a2)*t2+a1)*t2*Math.exp(-x*x);
+  return sign*y;
+}
+function erfc(x){return 1-erf(x);}
+function normalPvalue2sided(z){return Math.max(0,Math.min(1,erfc(Math.abs(z)/Math.SQRT2)));}
+function fmt(v,d=3){return Number(v).toFixed(d);}
+function fmtP(p){ return p<0.0001?'<0.0001':fmt(p,4); }
+
+function olsSimple(xv,yv){
+  const n=xv.length, xb=mean(xv), yb=mean(yv);
+  let sxx=0,sxy=0;
+  for(let i=0;i<n;i++){const dx=xv[i]-xb,dy=yv[i]-yb;sxx+=dx*dx;sxy+=dx*dy;}
+  const b1h=sxy/sxx, b0h=yb-b1h*xb;
+  const yh=xv.map(v=>b0h+b1h*v);
+  const eh=yv.map((v,i)=>v-yh[i]);
+  return{b0:b0h,b1:b1h,yhat:yh,ehat:eh};
+}
+function corr(a,b){
+  const n=a.length, am=mean(a), bm=mean(b);
+  let sab=0,saa=0,sbb=0;
+  for(let i=0;i<n;i++){const da=a[i]-am, db=b[i]-bm; sab+=da*db; saa+=da*da; sbb+=db*db;}
+  const den=Math.sqrt(saa*sbb);
+  return den<1e-12?0:sab/den;
+}
+
+// Panel üretimi: X[i][t], Y[i][t]
+function generatePanel(Nv,Tv,b1v,sigv,lamv){
+  const f=Array.from({length:Tv},()=>randn());
+  const X=[], Y=[], lamI=[];
+  for(let i=0;i<Nv;i++){
+    const lami = lamv*(0.6+0.8*Math.random()); // birimler arası heterojen yükleme
+    lamI.push(lami);
+    const alphai = randn()*1.0; // birim sabit etkisi
+    const xi=[], yi=[];
+    for(let tt=0;tt<Tv;tt++){
+      const xit = randn();
+      const eps = sigv*randn();
+      const u = lami*f[tt] + eps;
+      xi.push(xit);
+      yi.push(alphai + b1v*xit + u);
+    }
+    X.push(xi); Y.push(yi);
+  }
+  return{X,Y,f,lamI};
+}
+
+// Her birim için ayrı OLS -> artıklar
+function unitResiduals(X,Y){
+  const N=X.length;
+  const E=[];
+  for(let i=0;i<N;i++){
+    const fit=olsSimple(X[i],Y[i]);
+    E.push(fit.ehat);
+  }
+  return E;
+}
+
+function pesaranCD(E,T){
+  const N=E.length;
+  let sumRho=0, cnt=0;
+  const rhoMat=Array.from({length:N},()=>Array(N).fill(1));
+  const rhoList=[];
+  for(let i=0;i<N-1;i++){
+    for(let j=i+1;j<N;j++){
+      const r=corr(E[i],E[j]);
+      rhoMat[i][j]=r; rhoMat[j][i]=r;
+      sumRho+=r; cnt++;
+      rhoList.push(r);
+    }
+  }
+  const CD = Math.sqrt((2*T)/(N*(N-1))) * sumRho;
+  const p = normalPvalue2sided(CD);
+  const avgAbsRho = mean(rhoList.map(v=>Math.abs(v)));
+  return{CD,p,avgAbsRho,rhoMat,rhoList};
+}
+
+// Within (LSDV) tahmincisi: birim ortalamalarını çıkarıp pooled OLS
+function withinEstimate(X,Y){
+  const N=X.length, T=X[0].length;
+  const xAll=[], yAll=[];
+  for(let i=0;i<N;i++){
+    const xm=mean(X[i]), ym=mean(Y[i]);
+    for(let tt=0;tt<T;tt++){
+      xAll.push(X[i][tt]-xm);
+      yAll.push(Y[i][tt]-ym);
+    }
+  }
+  const n=xAll.length, xb=mean(xAll), yb=mean(yAll);
+  let sxx=0,sxy=0;
+  for(let k=0;k<n;k++){const dx=xAll[k]-xb, dy=yAll[k]-yb; sxx+=dx*dx; sxy+=dx*dy;}
+  const b1h=sxy/sxx;
+  const resid=xAll.map((v,k)=>yAll[k]-b1h*v);
+  const sse=sum(resid.map(v=>v*v));
+  const dof=Math.max(n-N-1,1);
+  const sigma2=sse/dof;
+  const naiveSE=Math.sqrt(sigma2/sxx);
+  return{b1:b1h,naiveSE};
+}
+
+function runOnce(){
+  const panel=generatePanel(N,T,b1,sig,lam);
+  const E=unitResiduals(panel.X,panel.Y);
+  const cd=pesaranCD(E,T);
+  const w=withinEstimate(panel.X,panel.Y);
+  return{panel,E,cd,w};
+}
+
+function monteCarlo(reps=120){
+  const b1s=[], naiveSEs=[], rejects=[];
+  for(let r=0;r<reps;r++){
+    const panel=generatePanel(N,T,b1,sig,lam);
+    const w=withinEstimate(panel.X,panel.Y);
+    b1s.push(w.b1); naiveSEs.push(w.naiveSE);
+    const tstat=(w.b1-b1)/w.naiveSE;
+    rejects.push(Math.abs(tstat)>1.96?1:0);
+  }
+  const mcSE=Math.sqrt(mean(b1s.map(v=>(v-mean(b1s))**2)));
+  const avgNaiveSE=mean(naiveSEs);
+  const rejRate=mean(rejects);
+  return{mcSE,avgNaiveSE,rejRate};
+}
+
+function corrColor(rho){
+  const clamp=Math.max(-1,Math.min(1,rho));
+  if(clamp===1) return '#ffffff';
+  if(clamp>=0){
+    const a=clamp;
+    return `rgba(24,95,165,${(a*0.85).toFixed(2)})`;
+  } else {
+    const a=-clamp;
+    return `rgba(226,75,74,${(a*0.85).toFixed(2)})`;
+  }
+}
+
+function renderHeatmap(rhoMat){
+  const table=document.getElementById('heatmap');
+  const cap=Math.min(rhoMat.length,15);
+  let html='<tr><th></th>';
+  for(let j=0;j<cap;j++) html+=`<th>${j+1}</th>`;
+  html+='</tr>';
+  for(let i=0;i<cap;i++){
+    html+=`<tr><th>${i+1}</th>`;
+    for(let j=0;j<cap;j++){
+      const r = i===j?1:rhoMat[i][j];
+      html+=`<td style="background:${corrColor(r)}" title="ρ(${i+1},${j+1})=${fmt(r,2)}"></td>`;
+    }
+    html+='</tr>';
+  }
+  table.innerHTML=html;
+}
+
+function makeLineChart(canvas,labels,datasets,yTitle,xTitle,legendOn){
+  return new Chart(document.getElementById(canvas),{
+    type:'line',data:{labels,datasets},
+    options:{responsive:true,maintainAspectRatio:true,
+      interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:!!legendOn,labels:{boxWidth:10,font:{size:10}}}},
+      scales:{
+        x:{ticks:{maxTicksLimit:8,color:'#5F5E5A'},grid:{display:false},title:{display:!!xTitle,text:xTitle,color:'#5F5E5A'}},
+        y:{ticks:{color:'#5F5E5A'},title:{display:!!yTitle,text:yTitle,color:'#5F5E5A'},grid:{color:'rgba(0,0,0,0.05)'}}
+      },
+      elements:{point:{radius:0},line:{borderWidth:1.8,tension:0.15}}}
+  });
+}
+function makeBarChart(canvas,labels,data,label,color){
+  return new Chart(document.getElementById(canvas),{
+    type:'bar',
+    data:{labels,datasets:[{label,data,backgroundColor:color}]},
+    options:{responsive:true,maintainAspectRatio:true,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{ticks:{color:'#5F5E5A',maxTicksLimit:10},grid:{display:false},title:{display:true,text:t("hist_axis_x"),color:'#5F5E5A'}},
+        y:{ticks:{color:'#5F5E5A'},grid:{color:'rgba(0,0,0,0.05)'},title:{display:true,text:t("hist_axis_y"),color:'#5F5E5A'}}
+      }}
+  });
+}
+function makeSEChart(naive,mcse){
+  return new Chart(document.getElementById('ch-se'),{
+    type:'bar',
+    data:{labels:['SE'],datasets:[
+      {label:t("lbl_naivese"),data:[naive],backgroundColor:'#E24B4A'},
+      {label:t("lbl_mcse"),data:[mcse],backgroundColor:'#185FA5'}
+    ]},
+    options:{responsive:true,maintainAspectRatio:true,indexAxis:'y',
+      plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:10,font:{size:10}}}},
+      scales:{x:{ticks:{color:'#5F5E5A'},grid:{color:'rgba(0,0,0,0.05)'}},y:{ticks:{display:false},grid:{display:false}}}}
+  });
+}
+
+function histogramBins(vals,nbins=12){
+  const min=-1, max=1;
+  const width=(max-min)/nbins;
+  const counts=Array(nbins).fill(0);
+  vals.forEach(v=>{
+    let idx=Math.floor((v-min)/width);
+    if(idx<0)idx=0; if(idx>=nbins)idx=nbins-1;
+    counts[idx]++;
+  });
+  const labels=Array.from({length:nbins},(_,i)=>fmt(min+i*width+width/2,2));
+  return{labels,counts};
+}
+
+function renderDynamic(out){
+  const cdReject = out.cd.p<0.05;
+  const cdPill=document.getElementById('cd-pill');
+  cdPill.className='pill '+(cdReject?'pill-red':'pill-grn');
+  cdPill.textContent=cdReject?t("cd_reject"):t("cd_noreject");
+  const cdBox=document.getElementById('cd-box');
+  cdBox.className=cdReject?'danger-box':'success-box';
+  cdBox.innerHTML=(cdReject?t("cd_box_reject"):t("cd_box_ok")).replace('{p}',fmtP(out.cd.p));
+
+  const body=document.getElementById('summary-body');
+  const ratioBad = out.mc.mcSE / out.mc.avgNaiveSE > 1.15;
+  const rejBad = out.mc.rejRate > 0.10;
+  body.innerHTML=`
+    <tr>
+      <td>Pesaran CD</td>
+      <td>${t("tbl_cd_h0")}</td>
+      <td class="center">${fmt(out.cd.CD,3)} (p=${fmtP(out.cd.p)})</td>
+      <td class="${cdReject?'val-bad':'val-ok'}">${cdReject?t("tbl_cd_reject"):t("tbl_cd_ok")}</td>
+    </tr>
+    <tr>
+      <td>Ort. |ρ̂_ij|</td>
+      <td>${t("tbl_rho_h0")}</td>
+      <td class="center">${fmt(out.cd.avgAbsRho,3)}</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>MC SE / Naif SE</td>
+      <td>${t("tbl_ratio_h0")}</td>
+      <td class="center">${fmt(out.mc.mcSE/out.mc.avgNaiveSE,2)}</td>
+      <td class="${ratioBad?'val-bad':'val-ok'}">${ratioBad?t("tbl_ratio_bad"):t("tbl_ratio_ok")}</td>
+    </tr>
+    <tr>
+      <td>${t("lbl_rejrate")}</td>
+      <td>${t("tbl_rej_h0")}</td>
+      <td class="center">${fmt(out.mc.rejRate*100,1)}%</td>
+      <td class="${rejBad?'val-bad':'val-ok'}">${rejBad?t("tbl_rej_bad"):t("tbl_rej_ok")}</td>
+    </tr>`;
+
+  document.getElementById('main-comment').innerHTML = (cdReject && ratioBad) ? t("comment_strong") : t("comment_weak");
+}
+
+function updateMetrics(out){
+  document.getElementById('m-cd').textContent=fmt(out.cd.CD,3);
+  document.getElementById('m-cdp').textContent=fmtP(out.cd.p);
+  document.getElementById('m-avgrho').textContent=fmt(out.cd.avgAbsRho,3);
+  const cdBar=document.getElementById('cd-bar');
+  cdBar.style.width=Math.min(100,Math.abs(out.cd.CD)/6*100)+'%';
+  cdBar.style.background=out.cd.p<0.05?'var(--red)':'var(--green)';
+
+  document.getElementById('m-b1true').textContent=fmt(b1,3);
+  document.getElementById('m-b1hat').textContent=fmt(out.w.b1,3);
+  document.getElementById('m-naivese').textContent=fmt(out.mc.avgNaiveSE,4);
+  document.getElementById('m-mcse').textContent=fmt(out.mc.mcSE,4);
+  const ratio=out.mc.mcSE/out.mc.avgNaiveSE;
+  const ratioEl=document.getElementById('m-ratio');
+  ratioEl.textContent=fmt(ratio,2)+'×';
+  ratioEl.style.color=ratio>1.15?'var(--red-dark)':'var(--green-dark)';
+  const rejEl=document.getElementById('m-rejrate');
+  rejEl.textContent=fmt(out.mc.rejRate*100,1)+'%';
+  rejEl.style.color=out.mc.rejRate>0.10?'var(--red-dark)':'var(--green-dark)';
+}
+
+function updateCharts(out){
+  const T_=T;
+  const labels=Array.from({length:T_},(_,i)=>i+1);
+  const palette=['#185FA5','#E24B4A','#3B6D11','#BA7517','#6B3FA0','#0C447C'];
+  const showN=Math.min(6,N);
+  const ds=[];
+  for(let i=0;i<showN;i++){
+    ds.push({label:'i='+(i+1),data:out.E[i],borderColor:palette[i%palette.length],backgroundColor:'transparent'});
+  }
+  if(unitsChart) unitsChart.destroy();
+  unitsChart=makeLineChart('ch-units',labels,ds,t("units_axis_y"),t("units_axis_x"),true);
+
+  const hist=histogramBins(out.cd.rhoList,14);
+  if(histChart) histChart.destroy();
+  histChart=makeBarChart('ch-hist',hist.labels,hist.counts,'',
+    'rgba(107,63,160,0.65)');
+
+  renderHeatmap(out.cd.rhoMat);
+  document.getElementById('heatmap-note').style.display = N>15?'block':'none';
+
+  if(seChart) seChart.destroy();
+  seChart=makeSEChart(out.mc.avgNaiveSE,out.mc.mcSE);
+}
+
+function readInputs(){
+  N=+document.getElementById('sl-N').value;
+  T=+document.getElementById('sl-T').value;
+  b1=+document.getElementById('sl-b1').value;
+  sig=+document.getElementById('sl-sig').value;
+  lam=+document.getElementById('sl-lam').value;
+  document.getElementById('lbl-N').textContent=N;
+  document.getElementById('lbl-T').textContent=T;
+  document.getElementById('lbl-b1').textContent=b1.toFixed(1);
+  document.getElementById('lbl-sig').textContent=sig.toFixed(1);
+  document.getElementById('lbl-lam').textContent=lam.toFixed(1);
+}
+
+function runAll(){
+  readInputs();
+  const single=runOnce();
+  const mcReps = N*T>1200 ? 60 : 120;
+  const mc=monteCarlo(mcReps);
+  const out={E:single.E,cd:single.cd,w:single.w,mc};
+  lastOut=out;
+  updateMetrics(out);
+  renderDynamic(out);
+  updateCharts(out);
+}
+function regenerate(){ runAll(); }
+
+['sl-N','sl-T','sl-b1','sl-sig','sl-lam'].forEach(id=>{
+  document.getElementById(id).addEventListener('change',runAll);
+});
+runAll();
+applyLang();
+</script>
+</body>
+</html>
